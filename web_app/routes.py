@@ -10,6 +10,7 @@ from web_app.areas import area
 from flask_login import login_user, current_user, logout_user, login_required
 from web_app import socketio
 from flask_socketio import emit
+from cryptography.fernet import Fernet
 
 
 class SendMessageToSelfError:
@@ -21,6 +22,7 @@ class SendMessageToSelfError:
 
 users = {}
 allUsers = db.session.query(User).all()
+fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
 
 
 @socketio.on('connect')
@@ -37,6 +39,13 @@ def registerConnection():
 def receive_username():
     users[current_user.username] = request.sid
 
+@socketio.on('friend-walk', namespace='/private')
+def receive_username():
+    for recipient in users:
+        if recipient != current_user.username:
+            recipient_session_id = users[recipient]
+            print(recipient)
+            emit('new_friend_walk', {"username": current_user.username}, room=recipient_session_id)
 
 @socketio.on('private_message', namespace='/private')
 def private_message(payload):
@@ -44,13 +53,15 @@ def private_message(payload):
     try:
         recipient_session_id = users[payload['username']]
         emit('new_private_message', {"msg": message, "username": current_user.username,
-                                     "send_time": datetime.now().isoformat(' ', 'seconds')}, room=recipient_session_id)
+                                     "send_time": datetime.now().isoformat(' ', 'seconds')},
+             room=recipient_session_id)
         writeMessageInHistory(current_user.username, payload['username'], message)
     except KeyError:  # so user is not logged in right now
         writeMessageInHistory(current_user.username, payload['username'], message)
 
 
 # ------ MESSAGING FUNCTIONS END ------
+
 # ------ CHAT HISTORY ------
 def getHistoryFileName(sender, recipient):
     HOME_DIR = os.getcwd() + "/web_app/chatHistory/"
@@ -61,11 +72,13 @@ def getHistoryFileName(sender, recipient):
 
 
 def writeMessageInHistory(sender, recipient, msg):
+    encMessage = fernet_with_key.encrypt(msg.encode())
     msg_json = {
-        "msg": msg,
+        "msg": encMessage.decode(),
         "sender": sender,
         "send_time": datetime.now().isoformat(' ', 'seconds')
     }
+
     file_path = getHistoryFileName(sender, recipient)
     if os.path.exists(file_path):
         file = open(file_path, "r+")
@@ -85,9 +98,9 @@ def getChatHistory(sender, recipient):
     if os.path.exists(file_path):
         file = open(file_path, "r")
         data = json.load(file)
+        file.close()
         return data
     else:
-        print("NO HISTORY")
         return {"chat": []}
 
 
@@ -95,11 +108,14 @@ def getChatHistory(sender, recipient):
 def getHistory(sender):
     if request.method == 'GET':
         history = getChatHistory(current_user.username, sender)
+        for chat in history["chat"]:
+            chat["msg"] = fernet_with_key.decrypt(chat["msg"].encode()).decode()
         return jsonify(history)
+
 
 # ------ CHAT HISTORY END ------
 
-
+# ------ WEBPAGES BACKEND START ------
 @app.context_processor
 def override_url_for():
     return dict(url_for=dated_url_for)
@@ -115,13 +131,24 @@ def dated_url_for(endpoint, **values):
     return url_for(endpoint, **values)
 
 
-
-
-
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
 @login_required
 def home():
+    update_user_location()
+
+    current_area_x, current_area_y = area.update(current_user)
+    current_user.update_user_area(current_area_x, current_area_y)
+
+    users_in_area = area.getUsersInRadius(current_user, 1000)
+    all_users_in_area_except_me = [user for user in users_in_area if user.email != current_user.email]
+    return render_template('home.html', title="Home", all_users=all_users_in_area_except_me,
+                           users_in_area=users_in_area)
+
+
+@app.route("/update_user_location", methods=['GET', 'POST'])
+@login_required
+def update_user_location():
     information = str(request.data)[3:-2]
     coordinates = information.split(',')
 
@@ -130,12 +157,7 @@ def home():
         coordinate_y = float(coordinates[1])
         current_user.update_user_location(coordinate_x, coordinate_y)
 
-    current_area_x, current_area_y = area.update(current_user)
-    current_user.update_user_area(current_area_x, current_area_y)
-
-    users_in_area = area.getUsersInRadius(current_user, 1000)
-    allUsersExceptMe = [user for user in allUsers if user.email != current_user.email]
-    return render_template('home.html', title="Home", all_users=allUsersExceptMe, users_in_area=users_in_area)
+    return "1"
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -170,6 +192,49 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+# ------ WEBPAGES BACKEND END ------
+
+# ------ GET LOCATIONS START ------
+
+@app.route("/api/locations", methods=['GET', 'POST'])
+@login_required
+def get_locations():
+    if request.method == 'GET':
+        all_locations = []
+        get_all_locations(all_locations)
+        return jsonify(all_locations)
+
+def get_all_locations(all_locations):
+    users_in_area = area.getUsersInRadius(current_user, 3000)
+    for user in users_in_area:
+        user_info = {
+            "username": user.username,
+            "pos_x": user.pos_x,
+            "pos_y": user.pos_y,
+            "image": user.image,
+        }
+        all_locations.append(user_info)
+
+# ------ GET LOCATIONS END ------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

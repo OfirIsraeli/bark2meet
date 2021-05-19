@@ -19,8 +19,8 @@ class User(db.Model, UserMixin):
     pos_x = db.Column(db.Integer, nullable=False, default=31.910664)
     pos_y = db.Column(db.Integer, nullable=False, default=34.896716)
     date_last_update = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    current_area_x = db.Column(db.Integer, nullable=False, default=31.910664)
-    current_area_y = db.Column(db.Integer, nullable=False, default=34.896716)
+    current_area_x = db.Column(db.Integer, nullable=False, default=31.771959)
+    current_area_y = db.Column(db.Integer, nullable=False, default=35.217018)
 
     def update_user_location(self, pos_x, pos_y):
         self.pos_x = pos_x
@@ -34,8 +34,8 @@ class User(db.Model, UserMixin):
         db.session.commit()
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', x:'{self.pos_x}', y:'{self.pos_y}'" \
-               f", current_area_x:'{self.current_area_x}', current_area_y:'{self.current_area_y}')"
+        return f"\n\nUser '{self.username}': \n'{self.email}'\n x:'{self.pos_x}'\n y:'{self.pos_y}'" \
+               f"\n current_area_x:'{self.current_area_x}'\n current_area_y:'{self.current_area_y}'\n"
 
 
 

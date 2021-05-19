@@ -1,9 +1,9 @@
 const space = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 $(document).ready(function () {
-  var socket = io.connect("http://127.0.0.1:5000");
+  var socket = io.connect("/");
 
-  var socket_messages = io("http://127.0.0.1:5000/messages");
+  var socket_messages = io("/messages");
 
   socket_messages.on("from flask", function (msg) {
     alert(msg);
@@ -13,7 +13,7 @@ $(document).ready(function () {
     alert(msg);
   });
 
-  var private_socket = io("http://127.0.0.1:5000/private");
+  var private_socket = io("/private");
   private_socket.emit("username");
 
   $('[id^="chat_with_"]').on("click", function () {
