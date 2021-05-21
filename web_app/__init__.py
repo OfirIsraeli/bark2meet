@@ -4,10 +4,13 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_socketio import SocketIO
 
+UPLOAD_FOLDER = '/users_data'
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628b3b0b13ce0c676dfde280ba245'
 app.config['GOOGLEMAPS_KEY'] = "AIzaSyBP2kPsOHfmf-XJMKhf-lBWeQdl5SqSRR8"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 socketio = SocketIO(app, cors_allowed_origins='*')
 
 db = SQLAlchemy(app)

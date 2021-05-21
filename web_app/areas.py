@@ -1,4 +1,4 @@
-from web_app.models import User
+from web_app.models import User, Friends
 
 X_POS = 0
 Y_POS = 1
@@ -17,6 +17,21 @@ class Areas:
         MODIIN: set(),
         BEER_SHEVA: set()
     }
+
+    def getFriendsInRadius(self, user, radius):
+        userLocationX = user.current_area_x
+        userLocationY = user.current_area_y
+        areaX = user.current_area_x
+        areaY = user.current_area_y
+        profilesInArea = self.Areas_dict[(areaX, areaY)]
+        all_friends = Friends().get_all(user.email)
+        result = set()
+        for profile in profilesInArea:
+            dist = self.distance((areaX, areaY), userLocationX, userLocationY)
+            if dist <= radius and profile.email is not user.email:
+                if profile.email in all_friends:
+                    result.add(profile)
+        return result
 
     def getUsersInRadius(self, user, radius):
         userLocationX = user.current_area_x

@@ -14,10 +14,16 @@ $(document).ready(function () {
   });
 
   var private_socket = io("/private");
-  private_socket.emit("username");
+  private_socket.emit("email");
+
+  $("#show_notifications").on("click", function () {
+    $(this).next().show();
+  });
 
   $('[id^="chat_with_"]').on("click", function () {
-    var recipient = $(this).text().slice(10);
+    var recipient = $(this).attr("id").slice(10);
+    var recipientUsername = $(this).text().slice(10);
+
     $(this).next().show();
     fetch("/api/history/" + recipient)
       .then(function (response) {
@@ -27,9 +33,9 @@ $(document).ready(function () {
         let history = text.chat;
         history.forEach((entry) => {
           if (entry.sender === recipient) {
-            $("#" + recipient).append(
+            $('[id="' + recipient + '"]').append(
               "<li>" +
-                entry.sender +
+                recipientUsername +
                 ":\t" +
                 entry.msg +
                 space.repeat(10) +
@@ -37,7 +43,7 @@ $(document).ready(function () {
                 "</li>"
             );
           } else {
-            $("#" + recipient).append(
+            $('[id="' + recipient + '"]').append(
               "<li>" + "Me:\t" + entry.msg + space.repeat(10) + entry.send_time + "</li>"
             );
           }
@@ -46,17 +52,23 @@ $(document).ready(function () {
   });
 
   $('[id^="button_"]').on("click", function () {
-    var recipient = $(this).text().slice(8);
-    var message_to_send = $("#input_text_" + recipient).val();
-    private_socket.emit("private_message", { username: recipient, message: message_to_send });
-    $("#input_text_" + recipient).val("");
-    $("#" + recipient).append(
+    var recipientUsername = $(this).text().slice(8);
+    var recipient = $(this).attr("id").slice(7);
+    var message_to_send = $('[id="input_text_' + recipient + '"]').val();
+    private_socket.emit("private_message", { email: recipient, message: message_to_send });
+    $('[id="input_text_' + recipient + '"]').val("");
+    $('[id="' + recipient + '"]').append(
       "<li>" + "Me" + ":\t" + message_to_send + space.repeat(10) + new Date() + "</li>"
     );
+
+    // $("#input_text_" + recipient).val("");
+    // $("#" + recipient).append(
+    //   "<li>" + "Me" + ":\t" + message_to_send + space.repeat(10) + new Date() + "</li>"
+    // );
   });
 
   private_socket.on("new_private_message", function (data) {
-    $("#" + data.username).append(
+    $('[id="' + data.email + '"]').append(
       "<li>" + data.username + ":\t" + data.msg + space.repeat(10) + data.send_time + "</li>"
     );
   });
@@ -71,6 +83,18 @@ $(document).ready(function () {
 
   private_socket.on("invalid_user", function (msg) {
     alert(msg);
+  });
+
+  // ------------------------------- FRIENDS WALK EVENTS -------------------------------
+  private_socket.on("new_friend_walk", function (data) {
+    createNotification(data.username + " is on the go!", "");
+    $("#notifications_list").prepend(
+      "<li class='new_notifications'>" +
+        data.username +
+        " is on the go! " +
+        data.issue_time +
+        "</li>"
+    );
   });
 });
 

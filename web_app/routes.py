@@ -5,66 +5,89 @@ from datetime import datetime
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from web_app import app, db, bcrypt
 from web_app.forms import RegistrationForm, LoginForm
-from web_app.models import User
+from web_app.models import User, Friends
 from web_app.areas import area
 from flask_login import login_user, current_user, logout_user, login_required
 from web_app import socketio
 from flask_socketio import emit
 from cryptography.fernet import Fernet
+from werkzeug.utils import secure_filename
+from web_app.notifications import Notification, FRIEND_WALK
+
+# ------ GLOBAL DATA START------
+
+PRIVATE = 1
+NO_PRIVATE = 0
+OPEN_IMG = ""
+FRIENDS_IMG = ""
+PRIVATE_IMG = ""
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+users = {}
+all_users = User.query.all()
+fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
 
 
-class SendMessageToSelfError:
-    pass
+# ------ GLOBAL DATA END------
 
 
 # ------ MESSAGING FUNCTIONS ------
-
-
-users = {}
-allUsers = db.session.query(User).all()
-fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
+def getUserByEmail(email):
+    for user in all_users:
+        if user.email == email:
+            return user
 
 
 @socketio.on('connect')
 def registerConnection():
-    print(current_user.username, "has connected")
+    print(current_user.email, "has connected")
 
 
 @socketio.on('disconnect')
 def registerConnection():
-    print(current_user.username, "has disconnected")
+    print(current_user.email, "has disconnected")
 
 
-@socketio.on('username', namespace='/private')
-def receive_username():
-    users[current_user.username] = request.sid
+@socketio.on('email', namespace='/private')
+def receive_user_email():
+    users[current_user.email] = request.sid
+
 
 @socketio.on('friend-walk', namespace='/private')
-def receive_username():
+def register_walk():
+    # friends_around = area.getFriendsInRadius(current_user, 3000)
     for recipient in users:
-        if recipient != current_user.username:
+        if recipient != current_user.email:
+            # recipient_user = getUserByEmail(recipient)
             recipient_session_id = users[recipient]
-            print(recipient)
-            emit('new_friend_walk', {"username": current_user.username}, room=recipient_session_id)
+            emit('new_friend_walk', {"username": current_user.username, "issue_time": datetime.now().isoformat(' ', 'seconds')}, room=recipient_session_id)
+            Notification(recipient, "", current_user.username + " is on the go!", current_user.pos_x, current_user.pos_y, FRIEND_WALK)
+
+    for user in all_users:
+        if user.email != current_user.email and user.email not in users:
+            Notification(user.email, "", current_user.username + " was on the go!", current_user.pos_x, current_user.pos_y, FRIEND_WALK)
+
 
 @socketio.on('private_message', namespace='/private')
 def private_message(payload):
     message = payload['message']
     try:
-        recipient_session_id = users[payload['username']]
-        emit('new_private_message', {"msg": message, "username": current_user.username,
+        sender = getUserByEmail(payload['email'])
+        sender_session_id = users[payload['email']]
+        emit('new_private_message', {"msg": message, "username": current_user.username, "email": current_user.email,
                                      "send_time": datetime.now().isoformat(' ', 'seconds')},
-             room=recipient_session_id)
-        writeMessageInHistory(current_user.username, payload['username'], message)
+             room=sender_session_id)
+        writeMessageInHistory(current_user.email, payload['email'], message)
     except KeyError:  # so user is not logged in right now
-        writeMessageInHistory(current_user.username, payload['username'], message)
+        writeMessageInHistory(current_user.email, payload['email'], message)
 
 
 # ------ MESSAGING FUNCTIONS END ------
 
 # ------ CHAT HISTORY ------
 def getHistoryFileName(sender, recipient):
-    HOME_DIR = os.getcwd() + "/web_app/chatHistory/"
+    HOME_DIR = os.getcwd() + "/web_app/databases/chatHistory/"
     if sender < recipient:
         return HOME_DIR + sender + "&" + recipient + ".json"
 
@@ -107,13 +130,43 @@ def getChatHistory(sender, recipient):
 @app.route("/api/history/<sender>", methods=['GET', 'POST'])
 def getHistory(sender):
     if request.method == 'GET':
-        history = getChatHistory(current_user.username, sender)
+        history = getChatHistory(current_user.email, sender)
         for chat in history["chat"]:
             chat["msg"] = fernet_with_key.decrypt(chat["msg"].encode()).decode()
         return jsonify(history)
 
 
 # ------ CHAT HISTORY END ------
+
+# ------ NOTIFICATIONS START ------
+def getNotificationsFileName():
+    HOME_DIR = os.getcwd() + "/web_app/databases/notificationsHistory/"
+    return HOME_DIR + current_user.email + ".json"
+
+
+def get_notifications(prev_update_time):
+    file_path = getNotificationsFileName()
+    if os.path.exists(file_path):
+        file = open(file_path, "r")
+        data = json.load(file)
+        file.close()
+        all_notifications = data["notifications"][::-1]
+        new_notifications = []
+        end = len(all_notifications)
+        for i in range(len(all_notifications)):
+            # print(all_notifications[i]['issue_time'],  current_user.date_last_session)
+            print(i)
+            if all_notifications[i]['issue_time'] > current_user.date_last_session.isoformat(' ', 'seconds'):
+                new_notifications.append(all_notifications[i])
+            else:
+                end = i
+                break
+        print(new_notifications)
+
+        return new_notifications, all_notifications[end:]
+    else:
+        return [], []
+
 
 # ------ WEBPAGES BACKEND START ------
 @app.context_processor
@@ -135,6 +188,7 @@ def dated_url_for(endpoint, **values):
 @app.route("/home", methods=['GET', 'POST'])
 @login_required
 def home():
+    prev_update_time = current_user.date_last_update.isoformat(' ', 'seconds')
     update_user_location()
 
     current_area_x, current_area_y = area.update(current_user)
@@ -142,8 +196,9 @@ def home():
 
     users_in_area = area.getUsersInRadius(current_user, 1000)
     all_users_in_area_except_me = [user for user in users_in_area if user.email != current_user.email]
+    new_notifications, old_notifications = get_notifications(prev_update_time)
     return render_template('home.html', title="Home", all_users=all_users_in_area_except_me,
-                           users_in_area=users_in_area)
+                           users_in_area=users_in_area, new_notifications=new_notifications, old_notifications=old_notifications)
 
 
 @app.route("/update_user_location", methods=['GET', 'POST'])
@@ -197,44 +252,85 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
+@app.route("/profile")
+@login_required
+def get_user_details():
+    return render_template('profile.html', user=current_user)
+
+
 # ------ WEBPAGES BACKEND END ------
 
 # ------ GET LOCATIONS START ------
+
 
 @app.route("/api/locations", methods=['GET', 'POST'])
 @login_required
 def get_locations():
     if request.method == 'GET':
         all_locations = []
-        get_all_locations(all_locations)
+        # get_all_locations(all_locations)
         return jsonify(all_locations)
+
+
+def get_private_users():
+    emails = set()
+    for user in area.getUsersInRadius(current_user, 3000):
+        if user.status == PRIVATE:
+            emails.add(user.email)
+    return emails
+
 
 def get_all_locations(all_locations):
     users_in_area = area.getUsersInRadius(current_user, 3000)
+    private_users = get_private_users()
+    friends = Friends().get_all(current_user)
     for user in users_in_area:
         user_info = {
             "username": user.username,
             "pos_x": user.pos_x,
             "pos_y": user.pos_y,
-            "image": user.image,
+            "image": OPEN_IMG,
+            "user_image": user.image,
+            "dog_image": user.image,
         }
+        if user.email in friends:
+            user_info["image"] = FRIENDS_IMG
+        elif user.email in private_users:
+            user_info["image"] = PRIVATE_IMG
+            user_info["user_image"] = PRIVATE_IMG
+            user_info["dog_image"] = PRIVATE_IMG
+
         all_locations.append(user_info)
+
 
 # ------ GET LOCATIONS END ------
 
 
+# ------ IMG UPLOAD START ------
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/img_upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            current_user.update_img(filename)
+            return redirect(url_for('uploaded_file', filename=filename))
 
-
-
-
-
-
-
-
-
-
-
-
-
+# ------ IMG UPLOAD END ------

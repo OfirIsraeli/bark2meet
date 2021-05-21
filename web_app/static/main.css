@@ -91,9 +91,22 @@ a.article-title:hover {
   overflow: visible;
   position: absolute;
 }
+.notifications {
+  display: none;
+}
+
 .show_chat {
   display: none;
 }
+
+.new_notifications{
+    color:red;
+}
+
+.old_notifications{
+    color:blue;
+}
+
 #chatbox {
   padding: 5px;
   background-color: #d0e8fa;

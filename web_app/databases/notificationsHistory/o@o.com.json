@@ -1,0 +1,13 @@
+{
+    "notifications": [
+        {
+            "email": "o@o.com",
+            "title": "",
+            "msg": "dd is on the go!",
+            "pos_x": 32.06795957807788,
+            "pos_y": 34.77797208747326,
+            "type": 0,
+            "issue_time": "2021-05-21 17:39:43"
+        }
+    ]
+}

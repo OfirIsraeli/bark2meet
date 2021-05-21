@@ -9,15 +9,31 @@
 
         <button id="new-walk">New Walk</button>
         <button id="create-notification">Create Notification</button>
+
+        <div id="notifications">
+            <button id=show_notifications>Show Notifications</button>
+            <div  class="notifications">
+                <ul id="notifications_list" >
+                    {% for notification in new_notifications %}
+                    <li class="new_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
+                    {% endfor %}
+
+                    {% for notification in old_notifications %}
+                    <li class="old_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
         {% for user in all_users %}
         <div id=chatbox>
 
-            <button id=chat_with_{{user.username}}>Chat with {{user.username}}</button>
-            <div id="show_chat_{{user.username}}" class=show_chat>
-                <ul id={{user.username}}></ul>
+            <button id=chat_with_{{user.email}}>Chat with {{user.username}}</button>
+            <div id="show_chat_{{user.email}}" class=show_chat>
+                <ul id={{user.email}}></ul>
                 <br>
-                Message: <input type="text" id="input_text_{{user.username}}">
-                <button id=button_{{user.username}}>Send to {{user.username}}</button>
+                Message: <input type="text" id="input_text_{{user.email}}">
+                <button id=button_{{user.email}}>Send to {{user.username}}</button>
             </div>
         </div>
         <br>
