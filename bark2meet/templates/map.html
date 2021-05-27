@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
+    <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='map.css')}}">
+    <title>MAP PAGE 1</title>
+  </head>
+  <body>
+
+    <script>
+
+
+      // Map's options
+      function initMap(){
+        // myLocation- needs to change in the BackEnd
+        var myLocation = {lat:31.78267,lng:35.208168}
+
+        var options = {
+          zoom:17,
+          center: myLocation,
+          mapId:'a856c89da17dedb6',
+          }
+          
+          // New map
+        map = new google.maps.Map(document.getElementById('map'), options);
+
+        // green info needed- BackEnd
+
+        var greenInformation = {
+          greenLocation:{lat:31.784390, lng:35.208860}, 
+          dogsName:'Luna', 
+          gOtherDogName:'REXY',
+          gOtherOwnerName:'NOA',
+          gDistance:'100m', 
+          gOtherOwnerGender:'Female',
+          gOtherOwnerAge:'20',
+          gOtherDogGender:'Male', 
+          gOtherDogAge:'5', 
+          gOtherProfile: "../profile2.html",
+          //gOtherDogsPic = 
+          //gOtherOwnerPic = 
+          //gOtherOwnerJob =  
+          //gOtherDogTrigger = 
+        }
+        
+        //function greenInfo(greenPersonData){
+          //needs to add somehow the var greenInformation here
+
+        //};
+
+
+      // orange info needed- BackEnd
+
+      var orangeInformation = {
+        orangeLocation: {lat:31.782680, lng:35.209770},
+        oOtherDogName:'NILI',
+        oOtherOwnerName:'GILI',
+        oDistance :'75m',
+        oOtherProfile :"url",
+        //oOtherDogsPic =
+        //oOtherOwnerPic =
+      }
+
+      //function orangeInfo(orangePersonData){
+        //needs to add somehow the var orangeInformation here
+
+       //};
+
+      // red info needed- BackEnd
+
+       var redInformation = {
+        // maybe more info? need to think about it
+        redLocation:{lat:31.782930, lng:35.210600},
+        rOtherDogsBreed:'lavrador',
+      }
+
+       //function redInfo(redPersonData){
+        //needs to add somehow the var redInformation here
+       //}
+
+
+        //greenInfo(greenPersonData);
+        //orangeInfo(orangePersonData);
+        //redInfo(redPersonData);
+        
+        // add marker function
+        function addMarker(props){
+          // add a marker
+          var marker = new google.maps.Marker({
+            position:props.coords,
+            map:map,
+            icon:props.iconImage,
+          });
+        
+          // green person marker options
+          if(props.contentMarkerGreen){
+            // open infowindow
+            var infoWindow = new google.maps.InfoWindow({
+              content: props.contentMarkerGreen,
+            });
+
+
+            marker.addListener('click', function(){
+              infoWindow.setContent(infoWindow.content);
+              infoWindow.open(map, marker);
+            });
+          }
+
+          // orange person marker options
+           if(props.contentMarkerOrange){
+            // open infowindow
+            var infoWindow = new google.maps.InfoWindow({
+              content: props.contentMarkerOrange,
+            });
+
+
+            marker.addListener('click', function(){
+              infoWindow.setContent(infoWindow.content);
+              infoWindow.open(map, marker);
+            });
+          }
+
+          // red person marker options
+           if(props.contentMarkerRed){
+            // open infowindow
+            var infoWindow = new google.maps.InfoWindow({
+              content: props.contentMarkerRed,
+              maxWidth: 250
+            });
+
+
+            marker.addListener('click', function(){
+              infoWindow.setContent(infoWindow.content);
+              infoWindow.open(map, marker);
+            });
+          }
+        }
+
+      
+
+      // needs to change the number of marker according the Back's data
+        var markers = [
+          {
+            // myLocation- needs to change in the BackEnd
+            coords: myLocation,
+            iconImage:'Pics/mepurple.png'
+          }, 
+          {
+            // needs to change in the BackEnd: 
+            coords:greenInformation.greenLocation,
+            iconImage:'Pics/GPSgreen.png',
+            title: 'green',
+            contentMarkerGreen: '<div id="infoContentGreen">'+
+                      '<div class="container1">' +
+                      '<h1 class="popup-header">New friends for ' + greenInformation.dogsName + '  & You,</h1>' +
+                      '<h1 class="popup-header">check them out!</h1>' +
+                      '<div>' +
+                        '<img src="Pics/noa_rexi.png">' +
+                      '</div>' +
+                      '<h2 class="popup-header2Name">' + greenInformation.gOtherOwnerName + ' &' + greenInformation.gOtherDogName + '</h2>' +
+                      '<h2 class="popup-header2">Only ' + greenInformation.gDistance + 'away!</h2>' +
+                      '<div class="infoBox">' +
+                        '<div class="popup-owner-side">' +
+                          '<p>' + greenInformation.gOtherOwnerGender + '</p>' +
+                          '<p>' + greenInformation.gOtherOwnerAge + 'years old</p>' +
+                        '</div>' +
+                        '<div class="vl"></div>' +
+                        '<div class="popup-dog-side">' +
+                          '<p>' + greenInformation.gOtherDogGender + '</p>' +
+                          '<p>' + greenInformation.gOtherDogAge +  'years old</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<a href=' + greenInformation.gOtherProfile + 'class="a">See full profile  <img src="Pics/arrowside.png"></a>' +
+                      '<div class="iconsBox">' +
+                        '<i><img id="addFriend" src="Pics/addfriendgreen.png"></i>' +
+                        '<i><img src="Pics/navigategreen.png"></i>' +
+                        '<i><img src="Pics/pokegreen.png"></i>' +
+                      '</div>' +
+                    '</div>'+
+                  '</div>'
+          },
+          {
+            coords: orangeInformation.orangeLocation,
+            iconImage:'Pics/GPSorenge.png',
+            title: 'orange',
+            contentMarkerOrange: 
+                          '<div id="infoContentOrange">'+
+                            '<div class="container2">' +
+                              '<h1 class="popup-header">Your friends are out!</h1>' +
+                              '<h1 class="popup-header">Join their walk</h1>' +
+                              '<div>' +
+                                '<img src="Pics/lisa_dog.svg">' +
+                              '</div>' +
+                              '<h2 class="popup-header2Name">' +  orangeInformation.oOtherOwnerName + ' & ' +  orangeInformation.oOtherDogName + '</h2>' +
+                              '<h2 class="popup-header2">Only' +  orangeInformation.oDistance + '  away!</h2>' +
+                              '<a href=' +  orangeInformation.oOtherProfile + 'class="a">See full profile  <img src="Pics/arrowside.png"></a>' +
+                              '<div class="iconsBox">' +
+                                '<i><img src="Pics/navigateorange.png"></i>' +
+                                '<i><img src="Pics/pokeorange.png"></i>' +
+                              '</div>' +
+                            '</div>' + 
+                          '</div>'  
+          },
+          {
+            coords:redInformation.redLocation,
+            iconImage:'Pics/GPSred.png',
+            title: 'green',
+            contentMarkerRed: 
+                        '<div id="infoContentRed">'+
+                          '<div class="container3">' +
+                            '<h1 class="popup-header">Pay attention:</h1>' +
+                            '<h1 class="popup-header">A' +  redInformation.rOtherDogsBreed + '  is nearby...</h1>' +
+                            '<div>' +
+                              "<p class='popup-dog-side'>These two are on private mode. so you can't reach out this time.</p>" +
+                            '</div>' +
+                          '</div>' +
+                        '</div>'  
+          }
+        ];
+
+        // loop throw markers
+        for(var i = 0; i < markers.length;i++){
+          addMarker(markers[i]);
+        }
+      }
+    </script>
+    <div class="conteiner">
+      <div class="topbar">
+        <a href="#">
+          <div class="icon">
+            <i class="far fa-map" style="color: #FFF" aria-hidden="true" style="color: #FFF"></i>
+            <i class="far fa-map" aria-hidden="true"></i>
+          </div>
+        </a>
+        <a href="#">
+          <div class="icon">
+            <i class="far fa-bell" aria-hidden="true"></i></i>
+            <i class="far fa-bell" aria-hidden="true"></i></i>
+          </div>
+        </a>
+        <a href="../chat-page.html">
+          <div class="icon">
+            <i class="far fa-comments" aria-hidden="true"></i>
+            <i class="far fa-comments" aria-hidden="true"></i>
+          </div>
+        </a>
+        <a href="../profile1.html">
+          <div class="icon">
+            <i class="far fa-user-circle" aria-hidden="true"></i>
+            <i class="far fa-user-circle" aria-hidden="true"></i>
+          </div>
+        <a href="#">
+          <div class="icon">
+            <div id="imgBar"></div>
+          </div>
+        </a>
+        <!-- <a href="">log out</a> -->
+        <!-- <a href="">map view</a>
+        <a href="">settings</a>
+        <a href="">chat</a> -->
+      </div>
+
+      <div id="map"></div>
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvGXiGpfYhNinQDu-E-G4LGSyF_Rrv1H8&map_ids=a856c89da17dedb6&callback=initMap">
+      </script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+    <div class="popup7 center">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+        <h3>Choose your walk mode</h3>  
+        <div class="container4"><br />
+            <div class="green-btn">
+                <button id="green-popup-btn">
+                <span class="green-btn__icon">
+                    <ion-icon name="paw-sharp"></ion-icon>
+                </button>
+            </div>
+            <div class="orange-btn">
+                <button id="orange-popup-btn">
+                <span class="orange-btn__icon">
+                    <ion-icon name="paw-sharp"></ion-icon>
+                </button>
+            </div>
+            <div class="red-btn">
+                <button id="red-popup-btn">
+                <span class="red-btn__icon">
+                    <ion-icon name="paw-sharp"></ion-icon>
+                </button>  
+            </div>
+        </div>
+    </div>
+    <!--<div class="center">
+      <button id="open-popup-btn">Open Popup</button>
+    </div>-->
+    <script>
+    document.getElementById("imgBar").addEventListener("click",function(){
+      document.getElementsByClassName("popup7")[0].classList.add("active7");
+    });
+    //needs to see how to close when clicked
+
+    //if (document.getElementById("green-popup-btn").addEventListener("click",function(){
+
+    //}
+    //document.getElementById("green-popup-btn").addEventListener("click",function(){
+      //document.getElementsByClassName("popup7")[0].classList.remove("active7");
+    //});
+    //document.getElementById("imgBar").addEventListener("click",function(){
+      //document.getElementsByClassName("popup7")[0].classList.remove("active7");
+    //});
+    //document.getElementById("imgBar").addEventListener("click",function(){
+      //document.getElementsByClassName("popup7")[0].classList.remove("active7");
+    //});
+    </script>
+    <div class="popup2 center">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+        <h2>You'll be out in...</h2><br />
+        <div class="now-btn">
+            <button id="now-popup-btn">Now</button>
+        </div>
+        <div class="settimer-btn">
+            <button id="settimer-popup-btn">Set Timer</button>
+        </div>
+    </div>
+    <!--<div class="center">
+        <button id="open-popup-btn">Open Popup</button>
+    </div>-->
+    <script>
+    document.getElementById("green-popup-btn").addEventListener("click",function(){
+      document.getElementsByClassName("popup2")[0].classList.add("active2");
+    });
+
+     document.getElementById("orange-popup-btn").addEventListener("click",function(){
+      document.getElementsByClassName("popup2")[0].classList.add("active2");
+    });
+
+      document.getElementById("red-popup-btn").addEventListener("click",function(){
+      document.getElementsByClassName("popup2")[0].classList.add("active2");
+    });
+     
+    //document.getElementById("settimer-popup-btn").addEventListener("click",function(){
+      //document.getElementsByClassName("popup2")[0].classList.remove("active2");
+    //});
+    document.getElementById("now-popup-btn").addEventListener("click",function(){
+      document.getElementsByClassName("popup2")[0].classList.remove("active2");
+    });
+    </script>
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+    </body>
+    </html>
