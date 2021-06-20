@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title> Sign Up - Owner </title>
+    <meta name="viewport" content="width=device-width">
 	<link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='register_user.css') }}">
 </head>
@@ -73,7 +74,26 @@
                         {{ form.confirm_password(class="form-control form-control-lg", placeholder="Confirm your password") }}
                     {% endif %}
 				</div>
+
+                <div class="input-box">
+                    {{ form.birth_date.label(class="form-control-label") }}
+
+                    {% if form.birth_date.errors %}
+                        {{ form.birth_date(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.birth_date.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.birth_date(type="date", class="form-control form-control-lg", placeholder="Confirm your password") }}
+                    {% endif %}
+				</div>
+
+
 			</div>
+
+
 
             <div class="gender-details">
 				<input type="radio" name="gender" value="1" id="dot-1" required>

@@ -43,9 +43,17 @@ class Areas:
         result = set()
         for profile in profilesInArea:
             dist = self.distance((areaX, areaY), userLocationX, userLocationY)
-            if dist <= radius and profile.email is not user.email:
-                result.add(profile)
+            if dist <= radius:# and profile.email is not user.email:
+                if profile.email != user.email:
+                    result.add(profile)
+        # print("first:", self.Areas_dict)
+        # print("second:", (areaX, areaY))
+        # print("third:", self.Areas_dict[(areaX, areaY)])
+        #
+        # print("res:", result)
         return result
+
+
 
     def init_areas(self):
         all_users = User.query.all()
@@ -78,12 +86,17 @@ class Areas:
                 not_add_user = True
         if not not_add_user:
             self.Areas_dict[(curr_x_min, curr_y_min)].add(user)
-        #print(self.Areas_dict)
-        #print("\n\n\n\n")
         return curr_x_min, curr_y_min
+
+    def remove_user(self, user):
+        try:
+            self.Areas_dict[(user.current_area_x, user.current_area_y)].remove(user)
+        except:
+            print("Error: Areas.remove_user")
 
     def distance(self, key, user_pos_x, user_pos_y):
         return (key[X_POS] - user_pos_x) ** 2 + (key[Y_POS] - user_pos_y) ** 2
+
 
 
 area = Areas()

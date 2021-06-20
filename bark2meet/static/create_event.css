@@ -1,0 +1,266 @@
+/*
+dark purple #4B0B9D
+light purple #F8EAFF
+gradient #FEFFFA #F6E6E5
+dark blue #073170
+: linear-gradient(135deg, #A1B0FF, #FFF
+); body
+
+bg gradient linear-gradient(#FEFFFA, #F6E6E5)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Montserrat', sans-serif;
+	color: #073170;
+}
+
+body {
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	background-image: url("siteBg.svg");
+	background-size: cover;
+	margin: 0 0 55px 0;
+}
+
+.back_button {
+	float: left;
+	background: transparent;
+	border: none;
+	margin: 0 0 5px 5px;
+}
+
+.event-form-box {
+	display: block;
+	max-width: 700px;
+	width: 100%;
+	background: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 25px 30px;
+	overflow: auto;
+}
+
+
+.event-form-box .title {
+	font-size: 25px;
+	font-weight: 900;
+	position: relative;
+}
+
+.event-form-box .title::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	width: 30px;
+	background: #4B0B9D;
+}
+
+.event-form-box .smallpaw {
+	margin: 0 10px 0 10px;
+}
+
+.event-form-box {
+	max-width: 600px;
+	height: 95%;
+	border: 1px solid #ced4da;
+	background-image: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 20px 20px;
+}
+
+.event-form {
+	margin-bottom: 10px;
+}
+
+/*Custom radio buttons - privacy modes
+GREEN
+width:  63.17px;
+height: 61.16px;
+border-radius: 15.99px;
+background-color: #B6E13D;
+color: #5C6C2F;
+
+ORANGE
+width:  63.17px;
+height: 61.16px;
+border-radius: 15.99px;
+background-color: #FFAD0E;
+color: #986503;
+*/
+
+input[type="radio"] {
+	-webkit-appearance:  none;
+}
+
+.private-mode, .public-mode{
+	width:  54px;
+	height: 52px;
+	border: 4px solid #B6E13D;
+	border-radius: 15.99px;
+	margin: auto;
+	position: relative;
+	color: #5C6C2F;
+	transition: 0.5s;
+}
+
+.private-mode {
+	border-color: #FFAD0E;
+	color: #986503;
+}
+
+.fa {
+	color: #5C6C2F;
+	font-size: 25px;
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	transform: translate(-50%, -80%);
+}
+
+.private-mode .fa {
+	color: #986503;
+}
+
+input[type="radio"]:checked + .public-mode {
+	border-color: #5C6C2F;
+	background-color: #B6E13D;
+	box-shadow: 0 15px 45px rgba(24, 249, 141, 0.2);
+}
+
+input[type="radio"]:checked + .private-mode {
+	border-color: #986503;
+	background-color: #FFAD0E;
+	box-shadow: 0 15px 45px rgba(255, 173, 14, 0.2);
+}
+
+.mode-checkbox {
+	float: left;
+	margin-right: 15px;
+}
+
+.mode-text {
+	font-size: 14px;
+}
+
+.radio-btn span {
+	color: #fff;
+
+	font-size: 12px;
+}
+
+.form-control, .form-control:checked::after {
+	border:  transparent;
+	border-radius: 0;
+	border-bottom: 3px solid #4B0B9D;
+	background: transparent;
+	margin: 2px 0;
+	padding: 5px 0;
+}
+
+.form-control:focus {
+	background: transparent;
+	box-shadow: none;
+	border-bottom: 4px solid #A1B0FF;
+}
+
+.event-form label, .event-form a, .section-label {
+	margin: 20px 0;
+	font-weight: 600;
+	color: #073170;
+}
+
+.event-form .btn-primary {
+	padding: 10px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	text-decoration: none;
+	float: right;
+	text-align: center;
+	height: 100%;
+	width: 100%;
+	outline: none;
+	color: #073170;
+	background: linear-gradient(135deg, #A1B0FF, #FBCBFF
+);
+	letter-spacing: 1px;
+	border-radius: 5px;
+	border: 3px solid #4B0B9D;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.btn.btn-primary:hover {
+	color: #fff;
+	box-shadow: 1px 10px 30px rgba(0,0,0,.3);
+}
+
+.row.justify-content-right.bottom-btn {
+	display: flex;
+	justify-content: flex-end;
+	margin-right: 5px;
+}
+.write-comment {
+    alt: Write a message;
+    color: #073170;
+    width: 80px;
+    height: 40px;
+    border-radius: 17px;
+    margin-left: 10px;
+    background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
+    border: 3px solid #4B0B9D;
+    box-sizing: border-box;
+    box-shadow: 0px 4.92px 15px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(24.6059px);
+}
+
+/* nav bar */
+.nav {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 55px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	background-color: #F8EAFF;
+	display: flex;
+	overflow-x: auto;
+}
+
+.nav__link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-grow: 1;
+	min-width: 50px;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px;
+	color: #4B0B9D;
+	text-decoration: none;
+	-webkit-tap-highlight-color:  transparent;
+	transition: background-color 0.1s ease-in-out;
+}
+
+.nav__link:hover {
+	text-decoration: none;
+	background-color: #F4DEFF;
+}
+
+.nav__link--active {
+	color: #fff !important;
+}
+
+.nav__icon {
+	font-size: 20px;
+}
+
+
+
+
+

@@ -1,0 +1,40 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "adaaw",
+            "joined": [
+                "d@d.com",
+		"g@g.com",
+		"o@o.com"
+            ],
+            "location": "awdad",
+            "time": "10:34:00"
+        },
+        {
+            "id": 1,
+            "privacy": "orange",
+            "creator": "d@d.com",
+            "title": "ffffff",
+            "joined": [
+                "d@d.com"
+            ],
+            "location": "fffafffff",
+            "time": "20:17:00"
+        },
+        {
+            "id": 2,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "jjjjajj",
+            "joined": [
+                "d@d.com",
+		"g@g.com"
+            ],
+            "location": "awdadawd",
+            "time": "19:15:00"
+        }
+    ]
+}

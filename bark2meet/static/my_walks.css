@@ -1,0 +1,334 @@
+/*
+dark purple #4B0B9D
+light purple #F8EAFF
+gradient #FEFFFA #F6E6E5
+dark blue #073170
+: linear-gradient(135deg, #A1B0FF, #FFF
+); body
+
+bg gradient linear-gradient(#FEFFFA, #F6E6E5)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Montserrat', sans-serif;
+	color: #073170;
+}
+
+body {
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	background-image: url("../../static/siteBg.svg");
+	background-size: cover;
+	margin: 0 0 55px 0;
+}
+
+.event-form-box {
+	display: block;
+	max-width: 700px;
+	width: 100%;
+	background: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 25px 30px;
+	overflow: auto;
+}
+
+
+.event-form-box .title {
+	font-size: 25px;
+	font-weight: 900;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.event-form-box .title::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	width: 30px;
+	background: #4B0B9D;
+}
+
+.event-form-box .smallpaw {
+	margin: 0 10px 0 0px;
+}
+
+.event-form-box {
+	max-width: 600px;
+	height: 95%;
+	border: 1px solid #ced4da;
+	background-image: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 10px 10px;
+}
+
+.event-form {
+	margin-bottom: 10px;
+}
+
+
+/*from old invite page*/
+
+
+.invite-window {
+display: flex;
+justify-content: center;
+}
+
+button {
+background: 0;
+border-width: 0px;
+}
+
+.div.col-sm-10 {
+padding: 0;
+}
+
+.row {
+margin-top: 7px
+}
+
+.col {
+align: center;
+}
+
+.back_button {
+alt: Back;
+width: 17.5px;
+height: 18.08px;
+vertical-align: middle;
+}
+
+.pull-right {
+    text-align: center;
+    vertical-align: middle;
+    line-height: 10px;
+    margin: 5px;
+}
+div.pull-right{
+    border-radius: 15px;
+    font-size: 13px;
+    margin-right: 8px;
+}
+h1 {
+    font-size: 18px;
+}
+
+.media-left.image-placeholder {
+	float: left;
+    width: 40px;
+    height: 40px;
+    Vertical-align: center;
+    line-height: 55px;
+    margin-right: 10px;
+	display: flex;
+	background-color: #eee;
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	align-items: center;
+}
+
+.pull-right {
+	float: right;
+}
+
+div.friend-card {
+    height: 70px;
+    border: 2px solid #0B469D;
+    border-radius: 7px;
+    background-color: #F6F8FF;
+    margin: 5px;
+    type: button;
+    align-items: center;
+}
+
+.friend-heading.name {
+    font-size: 18px;
+    Align: Left;
+    margin: 15px 0 0 50px;
+}
+
+.friends-list {
+    overflow: scroll;
+}
+
+.write-comment {
+    alt: Write a message;
+    color: #073170;
+    width: 80px;
+    height: 40px;
+    border-radius: 17px;
+    margin-left: 10px;
+    background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
+    border: 3px solid #4B0B9D;
+    box-sizing: border-box;
+    box-shadow: 0px 4.92px 15px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(24.6059px);
+}
+
+.form .form-control.form-input {
+    position: relative;
+    border-radius: 5px;
+    border: 3px solid #0B469D;
+}
+
+.form input[type='text'].form-control.form-input:focus{
+        outline:0;
+    }
+
+/*css for friends list*/
+
+.row > .col-lg-12 {
+	padding: 0;
+	margin: 0;
+	align-items: flex-start;
+}
+
+.sms-send-page .pull-left p {
+    color: #5b6773;
+    margin: 0;
+}
+.sms-send-page .pull-left small {
+    color: #637282;
+    font-size: 13px;
+}
+.sms-send-page .pull-left {
+    line-height: 18px;
+}
+.sms-send-page .list-group-item {
+    padding: 10px;
+    margin-bottom: 0.3em;
+    background-color: #F6F8FF;
+    border: 2px solid #073170;
+    border-radius: 5px;
+    position: relative;
+}
+
+.sms-send-page .list-group {
+    box-shadow: 0 0 11px #eceeef;
+    margin: 8px 0.8em;
+}
+
+input[type="checkbox"] {
+	width: 80px;
+	height: 40px;
+	-webkit-appearance:  none;
+	display: flex;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid #5C6C2F;
+	border-radius: 25px;
+	background: none;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.5s;
+	margin-top: 0.3em;
+}
+
+input[type="checkbox"]:focus{
+        outline:0;
+    }
+
+input[type="checkbox"]:after {
+	-webkit-appearance:  none;
+	content: 'INVITE';
+	color: #5C6C2F;
+}
+
+input[type="checkbox"]:checked {
+	-webkit-appearance:  none;
+	float: right;
+	background-color: #B6E13D;
+}
+
+input[type="checkbox"]:checked:after {
+	-webkit-appearance:  none;
+	background: none;
+	content: 'INVITED';
+}
+
+.sms-send-page .pull-left, .sms-send-page .pull-right{
+  padding: 0px;
+}
+
+/* nav bar */
+.nav {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 55px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	background-color: #F8EAFF;
+	display: flex;
+	overflow-x: auto;
+}
+
+.nav__link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-grow: 1;
+	min-width: 50px;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px;
+	color: #4B0B9D !important;
+	text-decoration: none;
+	-webkit-tap-highlight-color:  transparent;
+	transition: background-color 0.1s ease-in-out;
+}
+
+.nav__link:hover {
+	text-decoration: none;
+	background-color: #F4DEFF;
+}
+
+.nav__link--active {
+	color: #fff !important;
+}
+
+.nav__icon {
+	font-size: 20px;
+}
+
+div.profile-pics {
+    margin-top: 0.5em;
+}
+
+
+        img.head {
+            position:absolute;
+            float: left;
+            z-index: 3;
+            width: 30px;
+            height: 30px;
+            border-radius: 90px;
+        }
+        img.mid {
+            position:absolute;
+            float: left;
+            z-index: 1;
+            left: 30px;
+            width: 30px;
+            height: 30px;
+            border-radius: 90px;
+        }
+
+        img.tail {
+            position:absolute;
+            float: left;
+            z-index: 2;
+            left: 52px;
+            width: 30px;
+            height: 30px;
+            border-radius: 90px;
+        }

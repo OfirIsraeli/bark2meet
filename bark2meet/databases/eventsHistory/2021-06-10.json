@@ -1,0 +1,15 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "privacy": "orange",
+            "creator": "d@d.com",
+            "title": "axac",
+            "joined": [
+                "d@d.com"
+            ],
+            "location": "axaXa",
+            "time": "14:04:00"
+        }
+    ]
+}

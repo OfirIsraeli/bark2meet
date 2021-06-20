@@ -29,7 +29,7 @@ dark blue #073170
 	justify-content: center;
 	align-items: center;
 	padding: 10px;
-	background-image: url("../../static/siteBg4.svg");
+	background-image: url("../../static/siteBg.svg");
 	/*background-repeat: no-repeat;*/
 	background-size: cover;
 }
@@ -147,7 +147,7 @@ form input[type="radio"] {
 	margin: 45px 0;
 }*/
 
-/*form .button */#submitOwner, #submitDog {
+#submitOwner, #submitDog {
 	padding: 10px;
 	margin-top: 10px;
 	text-decoration: none;

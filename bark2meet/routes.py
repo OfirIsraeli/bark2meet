@@ -1,7 +1,7 @@
 import json
 import os
+import sched, time
 from datetime import datetime
-
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from bark2meet import app, db, bcrypt
 from bark2meet.forms import *
@@ -13,6 +13,7 @@ from flask_socketio import emit
 from cryptography.fernet import Fernet
 from werkzeug.utils import secure_filename
 from bark2meet.notifications import Notification, FRIEND_WALK
+from bark2meet.event import Event
 
 # ------ GLOBAL DATA START------
 
@@ -21,10 +22,6 @@ NO_PRIVATE = 0
 OPEN_IMG = "static/GPSgreen.png"
 FRIENDS_IMG = "static/GPSorange.png"
 PRIVATE_IMG = "static/GPSred.png"
-
-OPEN = "green"
-FRIENDS = "orange"
-HIDDEN = "red"
 
 REGISTER_DOG_LEVEL = 1
 IMG_LEVEL = 2
@@ -49,8 +46,11 @@ fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
 
 # ------ MESSAGING FUNCTIONS ------
 def getUserByEmail(email):
-
     return User.query.filter_by(email=email).first()
+
+
+def getUserById(user_id):
+    return User.query.filter_by(id=user_id).first()
 
 
 @socketio.on('connect')
@@ -60,6 +60,7 @@ def registerConnection():
 
 @socketio.on('disconnect')
 def registerConnection():
+    # area.remove_user(current_user)
     print(current_user.email, "has disconnected")
 
 
@@ -210,22 +211,23 @@ def landing_page():
     return render_template('index.html')
 
 
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/map", methods=['GET', 'POST'])
 @login_required
-def home():
-    prev_update_time = current_user.date_last_update.isoformat(' ', 'seconds')
-    update_user_location()
+def map():
+    if current_user.sing_up_level == REGISTER_DOG_LEVEL:
+        return redirect(url_for('register_dog'))
 
-    current_area_x, current_area_y = area.update(current_user)
-    current_user.update_user_area(current_area_x, current_area_y)
-
-    users_in_area = area.getUsersInRadius(current_user, current_user.radius_view)
-    all_users_in_area_except_me = [user for user in users_in_area if
-                                   user.email != current_user.email]
-    new_notifications, old_notifications = get_notifications(prev_update_time)
-    return render_template('home.html', title="Home", all_users=all_users_in_area_except_me,
-                           users_in_area=users_in_area, new_notifications=new_notifications,
-                           old_notifications=old_notifications)
+    # update_user_location()
+    #
+    # current_area_x, current_area_y = area.update(current_user)
+    # current_user.update_user_area(current_area_x, current_area_y)
+    print(current_user.email)
+    # prev_update_time = current_user.date_last_update.isoformat(' ', 'seconds')
+    # users_in_area = area.getUsersInRadius1(current_user, current_user.radius_view)
+    # all_users_in_area_except_me = [user for user in users_in_area if
+    #                                user.email != current_user.email]
+    # new_notifications, old_notifications = get_notifications(prev_update_time)
+    return render_template('map.html', title="Map")
 
 
 @app.route("/update_user_location", methods=['GET', 'POST'])
@@ -238,20 +240,23 @@ def update_user_location():
         coordinate_x = float(coordinates[0])
         coordinate_y = float(coordinates[1])
         current_user.update_user_location(coordinate_x, coordinate_y)
-
+        # TODO: update areas
+        # TODO: photo albums
     return "1"
 
 
 @app.route("/register_user", methods=['GET', 'POST'])
 def register_user():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
+    if current_user.is_authenticated and current_user.sing_up_level > REGISTER_DOG_LEVEL:
+        return redirect(url_for('map'))
+    if current_user.is_authenticated and current_user.sing_up_level == REGISTER_DOG_LEVEL:
+        return redirect(url_for('register_dog'))
     form = RegistrationUserForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         gender = request.form['gender']
         user = User(full_name=form.full_name.data, email=form.email.data,
-                    password=hashed_password, gender=gender)
+                    password=hashed_password, gender=gender, birth_date=form.birth_date.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -263,7 +268,7 @@ def register_user():
 @app.route("/register_dog", methods=['GET', 'POST'])
 def register_dog():
     if current_user.is_authenticated and current_user.sing_up_level != REGISTER_DOG_LEVEL:
-        return redirect(url_for('home'))
+        return redirect(url_for('map'))
     form = RegistrationDogForm()
     if form.validate_on_submit():
         # todo: validate gender field
@@ -286,7 +291,7 @@ def allowed_file(filename):
 @app.route('/upload_file', methods=['GET', 'POST'])
 def upload_file():
     if current_user.is_authenticated and current_user.sing_up_level != IMG_LEVEL:
-        return redirect(url_for('home'))
+        return redirect(url_for('map'))
 
     form = FileUploadForm()
 
@@ -330,26 +335,27 @@ def upload_file():
             dog_img_file.save(dog_img_path)
 
         current_user.update_user_and_dog_img(user_img_path, dog_img_path)
-        flash('Your account has been created! You are now able to log in', 'success')
         current_user.update_sing_level()
-        return redirect(url_for('home'))
+        flash('Your account has been created successfully!', 'register_success')
+        return redirect(url_for('map'))
     return render_template('upload.html', form=form)
 
 
 # ------ IMG UPLOAD END ------
+event_id = 0
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('map'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
+            return redirect(next_page) if next_page else redirect(url_for('map'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'login_error')
     return render_template('login.html', title='Login', form=form)
@@ -358,8 +364,9 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
+    area.remove_user(current_user)
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('map'))
 
 
 @app.route("/profile")
@@ -368,64 +375,284 @@ def get_user_details():
     return render_template('profile.html', user=current_user)
 
 
+
+@app.route("/event", methods=['GET', 'POST'])
+@login_required
+def create_event():
+    global event_id
+    print(datetime.now().time())
+    form = EventForm()
+    if form.validate_on_submit():
+        privacy = request.form['privacy']
+        date = request.form['date']
+        Event().create_event(email=current_user.email, title=form.title.data,
+                             privacy=privacy,
+                             location=form.location.data, time=form.time.data, date=date,
+                             id=event_id)
+
+        if form.invite.data:
+            Friends().get_all_friends_of(current_user.email)
+
+        event_id += 1
+        flash('The event has been created successfully', 'event_success')
+        # return redirect(url_for('home'))
+
+    return render_template('create_event.html', form=form, title="Create Event")
+
+
+@app.route("/join", methods=['GET', 'POST'])
+@login_required
+def join_walk():
+    form = SearchForm()
+    event_filter = form.search_filter.data
+    all_today_events = Event().get_today_events(current_user.email)
+    show_events = []
+    users_imgs = []
+
+    counter = 0
+    if event_filter == None:
+        show_events = all_today_events
+    else:
+        for event in all_today_events:
+            if event_filter in event["title"]:
+                show_events.append(event)
+
+    for event in show_events:
+        img_dict = {
+            "id": event["id"],
+            "imgs": []
+        }
+        for email in event["joined"]:
+            if counter > 2: break
+            user_img = getUserByEmail(email).user_img
+            img_dict["imgs"].append(user_img)
+
+        users_imgs.append(img_dict)
+        counter = 0
+
+    print(users_imgs)
+
+    return render_template("join_walk.html", title="Join a Walk", events=show_events,
+                           my_email=current_user.email, users_imgs=users_imgs, form=form)
+
+
+@app.route("/join_to_event", methods=['GET', 'POST'])
+@login_required
+def join_event_by_id():
+    event_id = str(request.data)[3:-2]
+
+    Event().join_to_event(int(event_id), [current_user.email])
+
+    return "1"
+
+
+@app.route("/exit_from_event", methods=['GET', 'POST'])
+@login_required
+def exit_event_by_id():
+    event_id = str(request.data)[3:-2]
+
+    Event().exit_from_event(int(event_id), [current_user.email])
+
+    return "1"
+
+
+NEW_INVITE = 2
+
+
+@app.route("/invite_friends", methods=['GET', 'POST'])
+@login_required
+def invite_friends():
+    form = SearchForm()
+    search_friend = form.search_filter.data
+    all_friends_emails = Friends().get_all_friends_of(current_user.email)
+    all_friends_users_list = []
+
+    for friend_email in all_friends_emails:
+        complete_user = getUserByEmail(friend_email)
+        if search_friend == None:
+            all_friends_users_list.append(complete_user)
+        elif search_friend in complete_user.full_name:
+            all_friends_users_list.append(complete_user)
+
+    return render_template("friends_invite_list.html", title="Invite Friends",
+                           friends=all_friends_users_list,
+                           form=form)
+
+
+@app.route("/invite_this_friend", methods=['GET', 'POST'])
+@login_required
+def create_notification_to_friend():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Notification(friend.email,
+                 "New walk invite",
+                 "You got new invite from: ",
+                 friend.pos_x,
+                 friend.pos_y,
+                 NEW_INVITE)
+
+    return "1"
+
+
+@app.route("/add_friend", methods=['GET', 'POST'])
+@login_required
+def add_friend():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Friends().add(current_user.email, friend.email)
+    # print(Friends().get_all_friends_of(current_user.email))
+    return "1"
+
+
+@app.route("/remove_friend", methods=['GET', 'POST'])
+@login_required
+def remove_friend():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Friends().delete(current_user.email, friend.email)
+    # print(Friends().get_all_friends_of(current_user.email))
+    return "1"
+
+def getEventsFileName(date):
+    HOME_DIR = os.getcwd() + "/bark2meet/databases/eventsHistory/"
+    return HOME_DIR + date + ".json"
+
+
+def getUserWalksByDate(date):
+    file_path = getEventsFileName(date)
+    if os.path.exists(file_path):
+        result = []
+        file = open(file_path, "r")
+        data = json.load(file)
+        file.close()
+        all_events = data["events"]
+        for i in range(len(all_events)):
+            if current_user.email in all_events[i]["joined"]:
+                result.append(all_events[i])
+            else:
+                break
+        return result
+    else:
+        return []
+
+@app.route("/my_walks", methods=['GET', 'POST'])
+@login_required
+def my_walks():
+    # todo: implemente
+    form = SearchForm()
+    walk_filter = form.search_filter.data
+    past_walks = getUserWalksByDate("2021-06-02")
+    future_walks = getUserWalksByDate("2021-06-07")
+    print(current_user.email)
+    return render_template("my_walks.html", title="My Walks", walks=past_walks + future_walks,
+                           form=form)
+
+
+@app.route("/profile/<user_id>", methods=['GET', 'POST'])
+def get_profile(user_id):
+    user = getUserById(user_id)
+    print(current_user.id, "hello!")
+    return render_template("profile.html", title="Profile", user=user)
+
 # ------ WEBPAGES BACKEND END ------
 
 # ------ GET LOCATIONS START ------
+FRIENDS = 1
 
 
 @app.route("/api/locations", methods=['GET', 'POST'])
 @login_required
 def get_locations():
     if request.method == 'GET':
+        print("users:", users)
         all_locations = []
         get_all_locations(all_locations)
         return jsonify(all_locations)
 
 
-def get_private_users():
+def get_private_users(users_in_area):
     emails = set()
-    for user in area.getUsersInRadius(current_user, current_user.radius_view):
+    for user in users_in_area:
         if user.status == PRIVATE:
             emails.add(user.email)
     return emails
 
 
 def get_all_locations(all_locations):
+    print("current:" , current_user.email)
     users_in_area = area.getUsersInRadius(current_user, current_user.radius_view)
-    #private_users = get_private_users()
-    #friends = Friends().get_all(current_user)
-    for user in users_in_area:
+
+    connected_in_area = {user for user in users_in_area if user.email in users.keys()}
+
+    # print("users_in_area: ", users_in_area )
+    # print("logged in:", users )
+    # print("connected_in_area", [i.email for i in connected_in_area])
+
+    if current_user not in connected_in_area:
+        connected_in_area.add(current_user)
+
+    private_users = get_private_users(users_in_area)
+
+    all_friends_of_user = Friends().get_all_friends_of(current_user.email)
+    all_users_with_friend_status = {user.email for user in connected_in_area if
+                                    user.status == FRIENDS and user.email not in all_friends_of_user}
+
+    #print([i.email for i in connected_in_area], "here")
+
+
+    for user in connected_in_area:
         user_info = {
-            "privacy": OPEN,
-            "username": user.full_name,
+            "privacy": "green",
+            "full_name": user.full_name,
             "pos_x": user.pos_x,
             "pos_y": user.pos_y,
             "image": OPEN_IMG,
-            "user_image": user.user_img,
-            "dog_image": user.dog_img,
+            "user_image": user.user_img.replace('\\', '/'),
+            "dog_image": user.dog_img.replace('\\', '/'),
             "gender": user.gender,
             "dog_name": user.dog_name,
             "dog_age": user.dog_age,
+            "dog_gender": user.dog_gender,
+            "dog_breed": user.dog_breed,
+            "id": user.id
         }
-        # todo: need to be else if and last one after debug
-        #if user.email == current_user.email:
-            #user_info["image"] = "static/userPic.png"
-        all_locations.append(user_info)
-        return
-        if user.email in friends:
-            user_info["privacy"] = FRIENDS
+
+        if user.email in all_users_with_friend_status:
+            user_info["privacy"] = "orange"
             user_info["image"] = FRIENDS_IMG
         elif user.email in private_users:
-            user_info["privacy"] = HIDDEN
+            user_info["privacy"] = "red"
             user_info["image"] = PRIVATE_IMG
             user_info["user_image"] = ""
             user_info["dog_image"] = ""
             user_info["gender"] = ""
             user_info["dog_age"] = ""
+        elif user.email == current_user.email:
+            # user_info["privacy"] = "me"
+            user_info["image"] = "static/userPic.png"
 
         all_locations.append(user_info)
 
+
 # ------ GET LOCATIONS END ------
+
+# ------ GET MAINTAIN START ------
+
+# s = sched.scheduler(time.time, time.sleep)
+# TWELVE_HOURS = 43200
+
+
+# def scheduled_func(arg1):
+# print("Doing stuff...")
+# do your stuff
+# s.enter(5, 1, scheduled_func, (arg1, ))
+
+
+# s.enter(5, 1, scheduled_func, (s, ))
+# s.run()
+
+
+# ------ GET MAINTAIN END ------
 
 
 ############ DEBUG FUNCTIONS ################
@@ -435,3 +662,8 @@ def debug_friends():
         Friends.add("d@d.com", "o@o.com")
     except:
         print("this friend has been added before")
+
+
+@app.route("/temp", methods=['GET', 'POST'])
+def temp():
+    return render_template("my_walks.html")

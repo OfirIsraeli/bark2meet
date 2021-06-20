@@ -1,0 +1,15 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "adaaw",
+            "joined": [
+                "d@d.com"
+            ],
+            "location": "awdad",
+            "time": "09:41:00"
+        }
+    ]
+}

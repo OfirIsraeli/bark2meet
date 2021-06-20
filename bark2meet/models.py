@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     gender = db.Column(db.Integer, nullable=False, default=MALE)
+    birth_date = db.Column(db.DateTime, nullable=False)
 
     # user saved data for backend op
     user_img = db.Column(db.String(200), nullable=False, default=DEFAULT_IMG)
@@ -103,6 +104,11 @@ class User(db.Model, UserMixin):
         return f"\n\nUser '{self.full_name}': \n'{self.email}'\n x:'{self.pos_x}'\n y:'{self.pos_y}'" \
                f"\n current_area_x:'{self.current_area_x}'\n current_area_y:'{self.current_area_y}'\n"
 
+    def __eq__(self, other):
+        return self.email == other.email
+
+    def __hash__(self):
+        return hash(self.email)
 
 class Friends(db.Model):
     # static class of Friends
@@ -112,8 +118,9 @@ class Friends(db.Model):
     #friend_email = db.Column(db.String(120), db.ForeignKey("user.email"), nullable=False)
     friend_email = db.Column(db.String(120), nullable=False)
 
-    def get_all(self, user_email):
+    def get_all(self):
         friends_emails = set()
+
         #all_friends = Friends.query.filter_by(user_email=user_email).all()
         all_friends = db.session.query(Friends).all()
 
@@ -121,12 +128,21 @@ class Friends(db.Model):
             friends_emails.add(friend.friend_email)
         return friends_emails
 
+    def get_all_friends_of(self, user_email):
+        friends_emails = set()
+        all_friends = Friends.query.filter_by(user_email=user_email).all()
+
+        for friend in all_friends:
+            friends_emails.add(friend.friend_email)
+        return friends_emails
+
     def add(self, user_email, friend_email):
-        to_add = Friends(user_email, friend_email)
+        if Friends.query.filter_by(user_email=user_email, friend_email=friend_email).first():
+            return
+        to_add = Friends(user_email=user_email, friend_email=friend_email)
         db.session.add(to_add)
         db.session.commit()
 
     def delete(self, user_email, friend_email):
-        to_delete = Friends(user_email, friend_email)
-        db.session.delete(to_delete)
+        Friends.query.filter_by(user_email=user_email, friend_email=friend_email).delete()
         db.session.commit()

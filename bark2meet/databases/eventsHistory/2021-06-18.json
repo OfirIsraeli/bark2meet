@@ -1,0 +1,26 @@
+{
+    "events": [
+        {
+            "id": 1,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "adawdwa",
+            "joined": [
+                "d@d.com"
+            ],
+            "location": "awdawdawd",
+            "time": "13:42:00"
+        },
+        {
+            "id": 0,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "wadawdawdaw",
+            "joined": [
+                "d@d.com"
+            ],
+            "location": "awdawdwad",
+            "time": "21:20:00"
+        }
+    ]
+}
