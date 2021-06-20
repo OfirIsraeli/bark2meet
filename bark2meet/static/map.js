@@ -75,7 +75,7 @@ function initializeMarkers() {
 }
 
 function attachInfoWindow(marker, userToPush){
-  console.log(userToPush);
+  console.log(userToPush.full_name);
   let infoWindow;
   // green\orange person marker options
   if (userToPush.privacy === "green" || userToPush.privacy === "orange") {
@@ -115,7 +115,6 @@ function attachInfoWindow(marker, userToPush){
 }
 
 function addMarkers(all_locations) {
-  // all_locations = all_locations.reverse()
   for (let i = 0; i < all_locations.length; i++) {
     // for debugging:
     if (all_locations[i].full_name == "Ofir Israeli"){
@@ -141,7 +140,7 @@ function updateMarkers() {
     })
     .then(function (all_locations) {
       // remove all users locations
-      for (let i = 0; i < all_locations.length; i++) {
+      for (let i = 0; i < all_markers.length; i++) {
         all_markers[i].setMap(null);
       }
       all_markers = [];
@@ -236,7 +235,7 @@ function createPopupMarker(userInfo) {
       '<a href="/profile/'+ userInfo.id +'" class="a">See full profile  <img src="static/arrowside.png"></a>' +
       '<div class="iconsBox">' +
       '<input type="checkbox" onClick="addFriend(this)" name="addFriendBtn" value="'+ userInfo.id +'" class="">' +
-      '<i><img id="addFriend" src="static/addfriendgreen.png"></i>' +
+      '<i><img id="addFriend" src="static/addfriendgreen.png"  id="bababa"></i>' +
       '<i><img onClick="navigateTo(' + userInfo.pos_x + ', '+ userInfo.pos_y + ')" src="static/navigategreen.png"></i>' +
       '<i><img src="static/pokegreen.png"></i>' +
       "</div>" +
@@ -244,7 +243,7 @@ function createPopupMarker(userInfo) {
       "</div>"
     );
   }
-
+// onClick="addFriend(this)"
   if (userInfo.privacy === "orange") {
     return (
       '<div id="infoContentOrange">' +

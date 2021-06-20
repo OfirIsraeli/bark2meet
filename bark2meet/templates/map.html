@@ -28,6 +28,7 @@
 
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 <script src="{{ url_for('static', filename='notifications.js') }}"></script>
+<br><br><br>
 <div id="chat">
 
 
@@ -37,17 +38,17 @@
 
     <div id="notifications">
         <button id=show_notifications>Show Notifications</button>
-        <!-- <div class="notifications">
+        <div class="notifications">
             <ul id="notifications_list">
-                {% for notification in new_notifications %}
+                <!-- {% for notification in new_notifications %}
                 <li class="new_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
                 {% endfor %}
 
                 {% for notification in old_notifications %}
                 <li class="old_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
-                {% endfor %}
+                {% endfor %} -->
             </ul>
-        </div> -->
+        </div>
 
     </div>
     <!-- {% for user in all_users %}

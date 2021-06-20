@@ -1,7 +1,5 @@
 import json
 import os
-import sched, time
-from datetime import datetime
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from bark2meet import app, db, bcrypt
 from bark2meet.forms import *
@@ -14,6 +12,7 @@ from cryptography.fernet import Fernet
 from werkzeug.utils import secure_filename
 from bark2meet.notifications import Notification, FRIEND_WALK
 from bark2meet.event import Event
+from datetime import timedelta
 
 # ------ GLOBAL DATA START------
 
@@ -92,7 +91,7 @@ def register_walk():
 def private_message(payload):
     message = payload['message']
     try:
-        sender = getUserByEmail(payload['email'])
+        # sender = getUserByEmail(payload['email'])
         sender_session_id = users[payload['email']]
         emit('new_private_message',
              {"msg": message, "username": current_user.full_name, "email": current_user.email,
@@ -164,7 +163,7 @@ def getNotificationsFileName():
     return HOME_DIR + current_user.email + ".json"
 
 
-def get_notifications(prev_update_time):
+def get_notifications():
     file_path = getNotificationsFileName()
     if os.path.exists(file_path):
         file = open(file_path, "r")
@@ -174,16 +173,12 @@ def get_notifications(prev_update_time):
         new_notifications = []
         end = len(all_notifications)
         for i in range(len(all_notifications)):
-            # print(all_notifications[i]['issue_time'],  current_user.date_last_session)
-            print(i)
             if all_notifications[i]['issue_time'] > current_user.date_last_session.isoformat(' ',
                                                                                              'seconds'):
                 new_notifications.append(all_notifications[i])
             else:
                 end = i
                 break
-        print(new_notifications)
-
         return new_notifications, all_notifications[end:]
     else:
         return [], []
@@ -216,17 +211,8 @@ def landing_page():
 def map():
     if current_user.sing_up_level == REGISTER_DOG_LEVEL:
         return redirect(url_for('register_dog'))
-
-    # update_user_location()
-    #
-    # current_area_x, current_area_y = area.update(current_user)
-    # current_user.update_user_area(current_area_x, current_area_y)
-    print(current_user.email)
-    # prev_update_time = current_user.date_last_update.isoformat(' ', 'seconds')
-    # users_in_area = area.getUsersInRadius1(current_user, current_user.radius_view)
-    # all_users_in_area_except_me = [user for user in users_in_area if
-    #                                user.email != current_user.email]
-    # new_notifications, old_notifications = get_notifications(prev_update_time)
+    current_area_x, current_area_y = area.update(current_user)
+    current_user.update_user_area(current_area_x, current_area_y)
     return render_template('map.html', title="Map")
 
 
@@ -240,6 +226,7 @@ def update_user_location():
         coordinate_x = float(coordinates[0])
         coordinate_y = float(coordinates[1])
         current_user.update_user_location(coordinate_x, coordinate_y)
+
         # TODO: update areas
         # TODO: photo albums
     return "1"
@@ -355,6 +342,11 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            print("on login")
+            # TODO: AREA INSTANCE PROBLEM - LOGIN AREA UPDATE DO NOT UPDATE AREAS OF USERS THAT ARE ALREADY LOGGED IN
+            current_area_x, current_area_y = area.update(current_user, True)
+            current_user.update_user_area(current_area_x, current_area_y)
+
             return redirect(next_page) if next_page else redirect(url_for('map'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'login_error')
@@ -375,12 +367,10 @@ def get_user_details():
     return render_template('profile.html', user=current_user)
 
 
-
 @app.route("/event", methods=['GET', 'POST'])
 @login_required
 def create_event():
     global event_id
-    print(datetime.now().time())
     form = EventForm()
     if form.validate_on_submit():
         privacy = request.form['privacy']
@@ -429,9 +419,6 @@ def join_walk():
 
         users_imgs.append(img_dict)
         counter = 0
-
-    print(users_imgs)
-
     return render_template("join_walk.html", title="Join a Walk", events=show_events,
                            my_email=current_user.email, users_imgs=users_imgs, form=form)
 
@@ -457,6 +444,7 @@ def exit_event_by_id():
 
 
 NEW_INVITE = 2
+NEW_FRIEND_REQUEST = 3
 
 
 @app.route("/invite_friends", methods=['GET', 'POST'])
@@ -493,14 +481,32 @@ def create_notification_to_friend():
 
     return "1"
 
+@socketio.on('friend_request_approve', namespace='/private')
+def add_friend(payload):
+    friend = payload["friend"]
+    Friends().add(current_user.email, friend.email)
+    Friends().add(friend.email, current_user.email)
+
 
 @app.route("/add_friend", methods=['GET', 'POST'])
 @login_required
 def add_friend():
     friend_id = str(request.data)[3:-2]
     friend = getUserById(int(friend_id))
-    Friends().add(current_user.email, friend.email)
-    # print(Friends().get_all_friends_of(current_user.email))
+    # Friends().add(current_user.email, friend.email)
+    Notification(friend.email,
+                 "New friend request",
+                 "You got new friend request from: ",
+                 friend.pos_x,
+                 friend.pos_y,
+                 NEW_FRIEND_REQUEST)
+    if friend.email not in users.keys():
+        return
+    recipient_session_id = users[friend.email]
+    emit('new_friend_request', {"username": current_user.full_name,
+                                "email": current_user.email,
+                             "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
     return "1"
 
 
@@ -510,53 +516,73 @@ def remove_friend():
     friend_id = str(request.data)[3:-2]
     friend = getUserById(int(friend_id))
     Friends().delete(current_user.email, friend.email)
-    # print(Friends().get_all_friends_of(current_user.email))
     return "1"
 
-def getEventsFileName(date):
+
+def getEventsFileName(event_date):
     HOME_DIR = os.getcwd() + "/bark2meet/databases/eventsHistory/"
-    return HOME_DIR + date + ".json"
+    return HOME_DIR + event_date + ".json"
 
 
-def getUserWalksByDate(date):
-    file_path = getEventsFileName(date)
+def getUserWalksByDate(event_date):
+    file_path = getEventsFileName(event_date)
     if os.path.exists(file_path):
         result = []
         file = open(file_path, "r")
         data = json.load(file)
         file.close()
         all_events = data["events"]
-        for i in range(len(all_events)):
-            if current_user.email in all_events[i]["joined"]:
-                result.append(all_events[i])
-            else:
-                break
+        for event in all_events:
+            if current_user.email in event["joined"]:
+                result.append(event)
         return result
     else:
         return []
 
+
+def generateWalks():
+    today = date.today()
+    yesterday = today - timedelta(1)
+    tomorrow = today + timedelta(1)
+    yesterday_walks = getUserWalksByDate(yesterday.isoformat())
+    today_walks = getUserWalksByDate(today.isoformat())
+    tomorrow_walks = getUserWalksByDate(tomorrow.isoformat())
+    past_walks = []
+    future_walks = []
+    for walk in today_walks:
+        if walk["time"] > datetime.now().time().isoformat('seconds'):
+            future_walks.append(walk)
+        else:
+            past_walks.append(walk)
+    future_walks = tomorrow_walks + future_walks
+    past_walks = past_walks + yesterday_walks
+    return future_walks, past_walks
+
+
 @app.route("/my_walks", methods=['GET', 'POST'])
 @login_required
 def my_walks():
-    # todo: implemente
-    form = SearchForm()
-    walk_filter = form.search_filter.data
-    past_walks = getUserWalksByDate("2021-06-02")
-    future_walks = getUserWalksByDate("2021-06-07")
-    print(current_user.email)
-    return render_template("my_walks.html", title="My Walks", walks=past_walks + future_walks,
-                           form=form)
+    # todo: implement
+    search_form = SearchForm()
+    # walk_filter = search_form.search_filter.data
+    # past_walks = getUserWalksByDate("2021-06-02")
+    # future_walks = getUserWalksByDate("2021-06-07")
+    future_walks, past_walks = generateWalks()
+    return render_template("my_walks.html", title="My Walks", walks=future_walks + past_walks,
+                           form=search_form)
 
 
 @app.route("/profile/<user_id>", methods=['GET', 'POST'])
 def get_profile(user_id):
     user = getUserById(user_id)
-    print(current_user.id, "hello!")
     return render_template("profile.html", title="Profile", user=user)
+
 
 # ------ WEBPAGES BACKEND END ------
 
 # ------ GET LOCATIONS START ------
+
+
 FRIENDS = 1
 
 
@@ -564,7 +590,6 @@ FRIENDS = 1
 @login_required
 def get_locations():
     if request.method == 'GET':
-        print("users:", users)
         all_locations = []
         get_all_locations(all_locations)
         return jsonify(all_locations)
@@ -579,15 +604,8 @@ def get_private_users(users_in_area):
 
 
 def get_all_locations(all_locations):
-    print("current:" , current_user.email)
     users_in_area = area.getUsersInRadius(current_user, current_user.radius_view)
-
     connected_in_area = {user for user in users_in_area if user.email in users.keys()}
-
-    # print("users_in_area: ", users_in_area )
-    # print("logged in:", users )
-    # print("connected_in_area", [i.email for i in connected_in_area])
-
     if current_user not in connected_in_area:
         connected_in_area.add(current_user)
 
@@ -596,9 +614,11 @@ def get_all_locations(all_locations):
     all_friends_of_user = Friends().get_all_friends_of(current_user.email)
     all_users_with_friend_status = {user.email for user in connected_in_area if
                                     user.status == FRIENDS and user.email not in all_friends_of_user}
-
-    #print([i.email for i in connected_in_area], "here")
-
+    if current_user.email == "o@o.com":
+        # print("connected users", [user for user in users.keys()])
+        # print("users_in_area", [user.email for user in users_in_area])
+        # print("connected_in_area", [user.email for user in connected_in_area])
+        pass
 
     for user in connected_in_area:
         user_info = {
@@ -643,7 +663,6 @@ def get_all_locations(all_locations):
 
 
 # def scheduled_func(arg1):
-# print("Doing stuff...")
 # do your stuff
 # s.enter(5, 1, scheduled_func, (arg1, ))
 
@@ -655,7 +674,7 @@ def get_all_locations(all_locations):
 # ------ GET MAINTAIN END ------
 
 
-############ DEBUG FUNCTIONS ################
+# ------ DEBUG FUNCTIONS ------ #
 
 def debug_friends():
     try:

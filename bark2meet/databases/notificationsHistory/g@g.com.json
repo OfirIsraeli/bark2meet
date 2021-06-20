@@ -1,0 +1,22 @@
+{
+    "notifications": [
+        {
+            "email": "g@g.com",
+            "title": "New friend request",
+            "msg": "You got new friend request from: ",
+            "pos_x": 31.780832660796843,
+            "pos_y": 35.21481388790959,
+            "type": 3,
+            "issue_time": "2021-06-20 17:44:52"
+        },
+        {
+            "email": "g@g.com",
+            "title": "New friend request",
+            "msg": "You got new friend request from: ",
+            "pos_x": 31.780828440240608,
+            "pos_y": 35.21478049548482,
+            "type": 3,
+            "issue_time": "2021-06-20 17:47:06"
+        }
+    ]
+}

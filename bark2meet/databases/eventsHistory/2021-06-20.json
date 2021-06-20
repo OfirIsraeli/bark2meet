@@ -4,36 +4,37 @@
             "id": 0,
             "privacy": "green",
             "creator": "d@d.com",
-            "title": "adaaw",
+            "title": "third",
             "joined": [
                 "d@d.com",
 		"g@g.com",
 		"o@o.com"
             ],
-            "location": "awdad",
+            "location": "today past 1",
             "time": "10:34:00"
         },
         {
             "id": 1,
             "privacy": "orange",
             "creator": "d@d.com",
-            "title": "ffffff",
+            "title": "only G",
             "joined": [
+		"g@g.com",
                 "d@d.com"
             ],
-            "location": "fffafffff",
+            "location": "only G location",
             "time": "20:17:00"
         },
         {
             "id": 2,
             "privacy": "green",
             "creator": "d@d.com",
-            "title": "jjjjajj",
+            "title": "today future 1",
             "joined": [
                 "d@d.com",
-		"g@g.com"
+		"o@o.com"
             ],
-            "location": "awdadawd",
+            "location": "fourth location",
             "time": "19:15:00"
         }
     ]

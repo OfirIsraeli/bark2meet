@@ -4,24 +4,24 @@
             "id": 0,
             "privacy": "orange",
             "creator": "d@d.com",
-            "title": "BBBBBBBBBBBBBBBB",
+            "title": "tomorrow walk 1",
             "joined": [
                 "d@d.com",
 		"g@g.com",
 		"o@o.com"
             ],
-            "location": "adadwafffffff",
+            "location": "first location",
             "time": "23:28:00"
         },
         {
             "id": 1,
             "privacy": "green",
             "creator": "d@d.com",
-            "title": "AAAA",
+            "title": "tomorrow walk 2",
             "joined": [
                 "d@d.com"
             ],
-            "location": "adadwafffffff",
+            "location": "second location",
             "time": "23:28:00"
         }
     ]

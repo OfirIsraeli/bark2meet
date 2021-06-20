@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from bark2meet import db, login_manager
 from flask_login import UserMixin
-from bark2meet.notifications import Notification
 DEFAULT_IMG = "static/default-account-img.png"
 MALE = 1
 
@@ -35,7 +34,7 @@ class User(db.Model, UserMixin):
     date_last_session = db.Column(db.DateTime, nullable=False, default=datetime.now())
     status = db.Column(db.Integer, nullable=False, default=0)
     sing_up_level = db.Column(db.Integer, nullable=False, default=0)
-    #friends = db.relationship("Friends", backref="user", lazy=True)
+    # friends = db.relationship("Friends", backref="user", lazy=True)
 
     # dog:
     dog_name = db.Column(db.String(30), nullable=False, default="NULL")
@@ -45,12 +44,8 @@ class User(db.Model, UserMixin):
     dog_breed = db.Column(db.String(50), nullable=False, default="NULL")
     dog_gender = db.Column(db.Integer, nullable=False, default=MALE)
     dog_img = db.Column(db.String(200), nullable=False, default=DEFAULT_IMG)
-
-
-
-    # for debbugging:
-    #date_last_session = datetime.now() - timedelta(1) # just means yesterday
-
+    # for debugging:
+    # date_last_session = datetime.now() - timedelta(1) # just means yesterday
 
     def check_new_notifications(self):
         pass
@@ -110,18 +105,19 @@ class User(db.Model, UserMixin):
     def __hash__(self):
         return hash(self.email)
 
+
 class Friends(db.Model):
     # static class of Friends
     id = db.Column(db.Integer, primary_key=True)
-    #user_email = db.Column(db.String(120), db.ForeignKey("user.email"), unique=True, nullable=False)
+    # user_email = db.Column(db.String(120), db.ForeignKey("user.email"), unique=True, nullable=False)
     user_email = db.Column(db.String(120), nullable=False)
-    #friend_email = db.Column(db.String(120), db.ForeignKey("user.email"), nullable=False)
+    # friend_email = db.Column(db.String(120), db.ForeignKey("user.email"), nullable=False)
     friend_email = db.Column(db.String(120), nullable=False)
 
     def get_all(self):
         friends_emails = set()
 
-        #all_friends = Friends.query.filter_by(user_email=user_email).all()
+        # all_friends = Friends.query.filter_by(user_email=user_email).all()
         all_friends = db.session.query(Friends).all()
 
         for friend in all_friends:

@@ -3,8 +3,8 @@ import os
 from datetime import datetime
 from bark2meet.models import Friends
 
+# TODO: add joined users' images
 class Event:
-
     def create_event(self, email, title, privacy, location, time, date, id):
         self.time = time
         self.date = date
