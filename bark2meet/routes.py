@@ -3,7 +3,7 @@ import os
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from bark2meet import app, db, bcrypt
 from bark2meet.forms import *
-from bark2meet.models import User, Friends
+from bark2meet.models import User, Friends, START_WALK, OPEN, PRIVATE, FRIENDS
 from bark2meet.areas import area
 from flask_login import login_user, current_user, logout_user, login_required
 from bark2meet import socketio
@@ -16,8 +16,7 @@ from datetime import timedelta
 
 # ------ GLOBAL DATA START------
 
-PRIVATE = 1
-NO_PRIVATE = 0
+
 OPEN_IMG = "static/GPSgreen.png"
 FRIENDS_IMG = "static/GPSorange.png"
 PRIVATE_IMG = "static/GPSred.png"
@@ -28,7 +27,7 @@ IMG_LEVEL = 2
 DEFAULT_IMG = "static/default-account-img.png"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-users = {}
+connected_users = {}
 
 # todo: check if needed
 all_users = None
@@ -51,39 +50,50 @@ def getUserByEmail(email):
 def getUserById(user_id):
     return User.query.filter_by(id=user_id).first()
 
+def get_all_connected_users():
+    all_connected_users = []
+    for users_email in connected_users:
+        user = getUserByEmail(users_email)
+        all_connected_users.append(user)
+
+    return all_connected_users
+
 
 @socketio.on('connect')
 def registerConnection():
+    connected_users[current_user.email] = request.sid
+    #area.add_user(current_user)
     print(current_user.email, "has connected")
 
 
 @socketio.on('disconnect')
-def registerConnection():
-    # area.remove_user(current_user)
+def registerDisconnection():
+    del connected_users[current_user.email]
     print(current_user.email, "has disconnected")
 
 
 @socketio.on('email', namespace='/private')
 def receive_user_email():
-    users[current_user.email] = request.sid
+    connected_users[current_user.email] = request.sid
+    pass
 
 
 @socketio.on('friend-walk', namespace='/private')
 def register_walk():
     # friends_around = area.getFriendsInRadius(current_user, current_user.radius_view)
-    for recipient in users:
+    for recipient in connected_users:
         if recipient != current_user.email:
             # recipient_user = getUserByEmail(recipient)
-            recipient_session_id = users[recipient]
+            recipient_session_id = connected_users[recipient]
             emit('new_friend_walk', {"username": current_user.full_name,
                                      "issue_time": datetime.now().isoformat(' ', 'seconds')},
                  room=recipient_session_id)
-            Notification(recipient, "", current_user.full_name + " is on the go!",
+            Notification().create_notification(recipient, "", current_user.full_name + " is on the go!",
                          current_user.pos_x, current_user.pos_y, FRIEND_WALK)
 
     for user in all_users:
-        if user.email != current_user.email and user.email not in users:
-            Notification(user.email, "", current_user.full_name + " was on the go!",
+        if user.email != current_user.email and user.email not in connected_users:
+            Notification().create_notification(user.email, "", current_user.full_name + " was on the go!",
                          current_user.pos_x, current_user.pos_y, FRIEND_WALK)
 
 
@@ -92,7 +102,7 @@ def private_message(payload):
     message = payload['message']
     try:
         # sender = getUserByEmail(payload['email'])
-        sender_session_id = users[payload['email']]
+        sender_session_id = connected_users[payload['email']]
         emit('new_private_message',
              {"msg": message, "username": current_user.full_name, "email": current_user.email,
               "send_time": datetime.now().isoformat(' ', 'seconds')},
@@ -173,16 +183,34 @@ def get_notifications():
         new_notifications = []
         end = len(all_notifications)
         for i in range(len(all_notifications)):
-            if all_notifications[i]['issue_time'] > current_user.date_last_session.isoformat(' ',
-                                                                                             'seconds'):
+            if all_notifications[i]['issue_time'] > current_user.date_last_session.isoformat(' ','seconds'):
+                if all_notifications[i]['type'] == NEW_FRIEND_REQUEST or all_notifications[i]['type'] == NEW_INVITE:
+                    all_notifications[i]['needApproval'] = True
+                else:
+                    all_notifications[i]['needApproval'] = False
                 new_notifications.append(all_notifications[i])
             else:
                 end = i
                 break
+        for old in all_notifications[end:]:
+            if old['type'] == NEW_FRIEND_REQUEST or old['type'] == NEW_INVITE:
+                old['needApproval'] = True
+            else:
+                old['needApproval'] = False
+
         return new_notifications, all_notifications[end:]
     else:
         return [], []
 
+@login_required
+@app.route("/notifications")
+def notifications_page():
+    new, old = get_notifications()
+    print(current_user.email)
+    print(old)
+    print(new)
+
+    return render_template('notifications.html', old_notifications=old, new_notifications=new)
 
 # ------ WEBPAGES BACKEND START ------
 @app.context_processor
@@ -211,9 +239,10 @@ def landing_page():
 def map():
     if current_user.sing_up_level == REGISTER_DOG_LEVEL:
         return redirect(url_for('register_dog'))
-    current_area_x, current_area_y = area.update(current_user)
+    current_area_x, current_area_y = area.update(current_user, True)
     current_user.update_user_area(current_area_x, current_area_y)
-    return render_template('map.html', title="Map")
+    area.update_areas_for_connected_users(get_all_connected_users())
+    return render_template('map.html', title="Map", status=current_user.status)
 
 
 @app.route("/update_user_location", methods=['GET', 'POST'])
@@ -342,11 +371,8 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            print("on login")
-            # TODO: AREA INSTANCE PROBLEM - LOGIN AREA UPDATE DO NOT UPDATE AREAS OF USERS THAT ARE ALREADY LOGGED IN
             current_area_x, current_area_y = area.update(current_user, True)
             current_user.update_user_area(current_area_x, current_area_y)
-
             return redirect(next_page) if next_page else redirect(url_for('map'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'login_error')
@@ -356,7 +382,6 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
-    area.remove_user(current_user)
     logout_user()
     return redirect(url_for('map'))
 
@@ -420,18 +445,29 @@ def join_walk():
         users_imgs.append(img_dict)
         counter = 0
     return render_template("join_walk.html", title="Join a Walk", events=show_events,
-                           my_email=current_user.email, users_imgs=users_imgs, form=form)
+                           my_email=current_user.email, users_imgs=users_imgs, form=form,
+                           status=current_user.status)
 
 
 @app.route("/join_to_event", methods=['GET', 'POST'])
 @login_required
 def join_event_by_id():
     event_id = str(request.data)[3:-2]
-
     Event().join_to_event(int(event_id), [current_user.email])
-
     return "1"
 
+@app.route("/api/update_status", methods=['GET', 'POST'])
+@login_required
+def update_user_status():
+    status = str(request.data)[2:-1]
+    current_user.change_status(int(status))
+    return "1"
+
+@app.route("/api/get_status", methods=['GET', 'POST'])
+@login_required
+def get_user_status():
+    if request.method == 'GET':
+        return jsonify(current_user.status)
 
 @app.route("/exit_from_event", methods=['GET', 'POST'])
 @login_required
@@ -472,7 +508,7 @@ def invite_friends():
 def create_notification_to_friend():
     friend_id = str(request.data)[3:-2]
     friend = getUserById(int(friend_id))
-    Notification(friend.email,
+    Notification().create_notification(friend.email,
                  "New walk invite",
                  "You got new invite from: ",
                  friend.pos_x,
@@ -488,25 +524,33 @@ def add_friend(payload):
     Friends().add(friend.email, current_user.email)
 
 
-@app.route("/add_friend", methods=['GET', 'POST'])
+@app.route("/send_friend_request", methods=['GET', 'POST'])
 @login_required
-def add_friend():
+def send_friend_request():
     friend_id = str(request.data)[3:-2]
     friend = getUserById(int(friend_id))
-    # Friends().add(current_user.email, friend.email)
-    Notification(friend.email,
+    Notification().create_notification(friend.email,
                  "New friend request",
                  "You got new friend request from: ",
                  friend.pos_x,
                  friend.pos_y,
-                 NEW_FRIEND_REQUEST)
-    if friend.email not in users.keys():
+                 NEW_FRIEND_REQUEST,
+                 current_user.id)
+    if friend.email not in connected_users.keys():
         return
-    recipient_session_id = users[friend.email]
-    emit('new_friend_request', {"username": current_user.full_name,
-                                "email": current_user.email,
-                             "issue_time": datetime.now().isoformat(' ', 'seconds')},
-         room=recipient_session_id)
+    recipient_session_id = connected_users[friend.email]
+    #emit('new_friend_request', {"username": current_user.full_name,
+                                #"email": current_user.email,
+                                #"issue_time": datetime.now().isoformat(' ', 'seconds')},room=recipient_session_id)
+    return "1"
+
+
+@app.route("/unsend_friend_request", methods=['GET', 'POST'])
+@login_required
+def unsend_friend_request():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Notification().delete_notifications(friend.email, NEW_FRIEND_REQUEST, current_user.id)
     return "1"
 
 
@@ -568,14 +612,15 @@ def my_walks():
     # past_walks = getUserWalksByDate("2021-06-02")
     # future_walks = getUserWalksByDate("2021-06-07")
     future_walks, past_walks = generateWalks()
+
     return render_template("my_walks.html", title="My Walks", walks=future_walks + past_walks,
-                           form=search_form)
+                           form=search_form, status=current_user.status)
 
 
 @app.route("/profile/<user_id>", methods=['GET', 'POST'])
 def get_profile(user_id):
     user = getUserById(user_id)
-    return render_template("profile.html", title="Profile", user=user)
+    return render_template("profile.html", title="Profile", user=user, status=current_user.status)
 
 
 # ------ WEBPAGES BACKEND END ------
@@ -583,7 +628,6 @@ def get_profile(user_id):
 # ------ GET LOCATIONS START ------
 
 
-FRIENDS = 1
 
 
 @app.route("/api/locations", methods=['GET', 'POST'])
@@ -598,59 +642,82 @@ def get_locations():
 def get_private_users(users_in_area):
     emails = set()
     for user in users_in_area:
-        if user.status == PRIVATE:
+        if user.status == 3:
             emails.add(user.email)
     return emails
 
 
+def map_privacy_to_string(privacy_int, is_friend, user):
+    if user.email == current_user.email:
+        return "me"
+    if privacy_int == PRIVATE:
+        return "red"
+
+    if privacy_int == START_WALK or privacy_int == OPEN:
+        return "green"
+
+    if privacy_int == FRIENDS:
+        if is_friend:
+            return "green"
+        else:
+            return "orange"
+    raise Exception("PRIVACY MODE ERROR", privacy_int)
+
+
+def map_image_to_user(user, is_friend):
+    if user.email == current_user.email:
+        return "static/userPic.png"
+    if user.status == PRIVATE:
+        return PRIVATE_IMG
+    if is_friend:
+        return FRIENDS_IMG
+    return OPEN_IMG
+
 def get_all_locations(all_locations):
     users_in_area = area.getUsersInRadius(current_user, current_user.radius_view)
-    connected_in_area = {user for user in users_in_area if user.email in users.keys()}
+    connected_in_area = {user for user in users_in_area if user.email in connected_users.keys()}
+
     if current_user not in connected_in_area:
         connected_in_area.add(current_user)
 
     private_users = get_private_users(users_in_area)
 
     all_friends_of_user = Friends().get_all_friends_of(current_user.email)
-    all_users_with_friend_status = {user.email for user in connected_in_area if
-                                    user.status == FRIENDS and user.email not in all_friends_of_user}
-    if current_user.email == "o@o.com":
-        # print("connected users", [user for user in users.keys()])
-        # print("users_in_area", [user.email for user in users_in_area])
-        # print("connected_in_area", [user.email for user in connected_in_area])
-        pass
+    # all_users_with_friend_status = {user.email for user in connected_in_area if
+    #                                 user.status == FRIENDS and user.email not in all_friends_of_user
+    #                                 and user.email != current_user.email and user.status == 2}
 
     for user in connected_in_area:
+        is_friend = user.email in all_friends_of_user
         user_info = {
-            "privacy": "green",
+            "privacy": map_privacy_to_string(user.status, is_friend, user),
             "full_name": user.full_name,
             "pos_x": user.pos_x,
             "pos_y": user.pos_y,
-            "image": OPEN_IMG,
-            "user_image": user.user_img.replace('\\', '/'),
-            "dog_image": user.dog_img.replace('\\', '/'),
-            "gender": user.gender,
+            "image": map_image_to_user(user, is_friend),
+            "user_image": user.user_img.replace('\\', '/') if user.status != PRIVATE else "",
+            "dog_image": user.dog_img.replace('\\', '/') if user.status != PRIVATE else "",
+            "gender": user.gender if user.status != PRIVATE else "",
             "dog_name": user.dog_name,
-            "dog_age": user.dog_age,
+            "dog_age": user.dog_age if user.status != PRIVATE else "",
             "dog_gender": user.dog_gender,
             "dog_breed": user.dog_breed,
             "id": user.id
         }
 
-        if user.email in all_users_with_friend_status:
-            user_info["privacy"] = "orange"
-            user_info["image"] = FRIENDS_IMG
-        elif user.email in private_users:
-            user_info["privacy"] = "red"
-            user_info["image"] = PRIVATE_IMG
-            user_info["user_image"] = ""
-            user_info["dog_image"] = ""
-            user_info["gender"] = ""
-            user_info["dog_age"] = ""
-        elif user.email == current_user.email:
-            # user_info["privacy"] = "me"
-            user_info["image"] = "static/userPic.png"
-
+        # if user.email in all_users_with_friend_status:
+        #     user_info["privacy"] = "orange"
+        #     user_info["image"] = FRIENDS_IMG
+        # elif user.email in private_users:
+        #     user_info["privacy"] = "red"
+        #     user_info["image"] = PRIVATE_IMG
+        #     user_info["user_image"] = ""
+        #     user_info["dog_image"] = ""
+        #     user_info["gender"] = ""
+        #     user_info["dog_age"] = ""
+        # elif user.email == current_user.email:
+        #     user_info["privacy"] = "me"
+        #     user_info["image"] = "static/userPic.png"
         all_locations.append(user_info)
 
 

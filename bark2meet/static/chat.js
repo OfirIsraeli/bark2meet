@@ -96,13 +96,24 @@ $(document).ready(function () {
         "</li>"
     );
   });
-  $('[id^="bababa"]').on("click", function () {
-    console.log("helloss")
-  })
-  $('[id^="infoContentGreen"]').bind("DOMNodeInserted",function(){
-    console.log("helloss")
+  // $('[id^="bababa"]').on("click", function () {
+  //   console.log("helloss")
+  // })
+  // $('[id^="infoContentGreen"]').bind("DOMNodeInserted",function(){
+  //   console.log("helloss")
 
-  })
+  // })
+  // ------------------------------- FRIENDS REQUEST EVENTS -------------------------------
+  function acceptFriend(email){
+    private_socket.emit("friend_request_approve", { email: email});
+  }
+  private_socket.on("new_friend_request", function (data) {
+    const acceptButton = '<input type="checkbox" onClick="acceptFriend(data.email)" name="acceptFriendBtn" value="'+ userInfo.id +'" class="">'
+    $('[id="' + "notifications_list" + '"]').append(
+      "<li>" + data.username + ":\t" + data.msg + space.repeat(10) + data.send_time + acceptButton + "</li>"
+    );
+  });
+
 });
 
 /*
@@ -124,13 +135,4 @@ function writeMessageInHistory(sender, recipient, msg) {
     });
 }*/
 
-// ------------------------------- FRIENDS REQUEST EVENTS -------------------------------
-function acceptFriend(email){
-  private_socket.emit("friend_request_approve", { email: email});
-}
-private_socket.on("new_friend_request", function (data) {
-  const acceptButton = '<input type="checkbox" onClick="acceptFriend(data.email)" name="acceptFriendBtn" value="'+ userInfo.id +'" class="">'
-  $('[id="' + "notifications_list" + '"]').append(
-    "<li>" + data.username + ":\t" + data.msg + space.repeat(10) + data.send_time + acceptButton + "</li>"
-  );
-});
+

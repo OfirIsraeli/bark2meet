@@ -57,9 +57,22 @@
 
                             </div>
                               <div class="col-xs-8 pull-left">
-                              <div class="media-left image-placeholder">
-                                    </div>
-                              <p class="walk-name"><strong>{{ event["title"] }}</strong></p>
+                              <p class="walk-name"><strong>{{ event.title
+                                  }},  {{event.location}}</strong></p>
+                                  <div class="profile-pics">
+
+                                    {% for img_dict in users_imgs %}
+                                        {% if img_dict["id"] == event["id"] %}
+                                            {% for img in img_dict["imgs"] %}
+                                            <img class="head" src="{{ img }}">
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <img clsss="head" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                    <img class="mid" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                    <img class="tail" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                </div>
                             </div>
                           </li>
 
@@ -81,11 +94,11 @@
 
                             </div>
                               <div class="col-xs-8 pull-left">
-                              <p class="walk-name"><strong>{{ event["title"] }}</strong></p>
+                                <p class="walk-name"><strong>{{walk.title}},
+                                        {{walk.location}}</strong></p>
                                 <div class="profile-pics">
 
                                     {% for img_dict in users_imgs %}
-                                        {{ img_dict }}
                                         {% if img_dict["id"] == event["id"] %}
                                             {% for img in img_dict["imgs"] %}
                                             <img class="head" src="{{ img }}">
@@ -97,7 +110,6 @@
                                     <img class="mid" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
                                     <img class="tail" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
                                 </div>
-
                             </div>
                           </li>
 

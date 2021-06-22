@@ -20,19 +20,20 @@ bg gradient linear-gradient(#FEFFFA, #F6E6E5)
 
 body {
 	display: flex;
-	height: 100%;
+	height: 100vh;
 	justify-content: center;
 	align-items: center;
 	padding: 0;
-	background-image: url("../../static/siteBg.svg");
+	background-image: url("siteBg4.svg");
 	background-size: cover;
-	margin: 0 0 55px 0;
+	/*margin: 0 0 55px 0;*/
 }
-
+/*light container*/
 .event-form-box {
 	display: block;
 	max-width: 700px;
 	width: 100%;
+	min-height: 100vh;
 	background: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 25px 30px;
 	overflow: auto;
@@ -68,120 +69,69 @@ body {
 	padding: 10px 10px;
 }
 
-.event-form {
-	margin-bottom: 10px;
-}
-
-
-/*from old invite page*/
-
-
-.invite-window {
-display: flex;
-justify-content: center;
-}
-
-button {
-background: 0;
-border-width: 0px;
-}
-
-.div.col-sm-10 {
-padding: 0;
-}
-
-.row {
-margin-top: 7px
-}
-
-.col {
-align: center;
-}
-
 .back_button {
-alt: Back;
-width: 17.5px;
-height: 18.08px;
-vertical-align: middle;
-}
-
-.pull-right {
-    text-align: center;
-    vertical-align: middle;
-    line-height: 10px;
-    margin: 5px;
-}
-div.pull-right{
-    border-radius: 15px;
-    font-size: 13px;
-    margin-right: 8px;
-}
-h1 {
-    font-size: 18px;
-}
-
-.media-left.image-placeholder {
 	float: left;
-    width: 40px;
-    height: 40px;
-    Vertical-align: center;
-    line-height: 55px;
-    margin-right: 10px;
-	display: flex;
-	background-color: #eee;
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
-	align-items: center;
+	background: transparent;
+	border: none;
+	margin: 0 0 5px 5px;
 }
 
-.pull-right {
-	float: right;
+/*Profile pics & names*/
+
+.profile-titles {
+    text-align: center;
 }
 
-div.friend-card {
-    height: 70px;
-    border: 2px solid #0B469D;
-    border-radius: 7px;
-    background-color: #F6F8FF;
-    margin: 5px;
-    type: button;
-    align-items: center;
-}
-
-.friend-heading.name {
-    font-size: 18px;
-    Align: Left;
-    margin: 15px 0 0 50px;
-}
-
-.friends-list {
-    overflow: scroll;
-}
-
-.write-comment {
-    alt: Write a message;
-    color: #073170;
-    width: 80px;
-    height: 40px;
-    border-radius: 17px;
-    margin-left: 10px;
-    background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
-    border: 3px solid #4B0B9D;
-    box-sizing: border-box;
-    box-shadow: 0px 4.92px 15px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(24.6059px);
-}
-
-.form .form-control.form-input {
+.owner-pic {
     position: relative;
-    border-radius: 5px;
-    border: 3px solid #0B469D;
+    left: 15px;
+    z-index: 2;
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    border: 4px solid #073170;
+    box-shadow: 0 0 8px #4B0B9D;
+    }
+
+.dog-pic {
+    position: relative;
+    right: 15px;
+    z-index: 1;
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    border: 4px solid #073170;
+    box-shadow: 0 0 8px #4B0B9D;
+}
+.names {
+    ont-family: "Montserrat", sans-serif;
+    font-style: bold;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 150%;
+    text-align: center;
+    color: #073170;
+    padding-top: 10px;
+
 }
 
-.form input[type='text'].form-control.form-input:focus{
-        outline:0;
-    }
+/*infos*/
+.info-box {
+padding: 10px;
+margin: 0;
+}
+
+.info-owner {
+	border-right: 3px solid #4B0B9D; 
+	padding-right: 10px;
+	min-width: 150px;
+	text-align: right;
+}
+
+.info-dog {
+	padding-left: 10px;
+	min-width: 150px;
+}
 
 /*css for friends list*/
 
@@ -221,7 +171,6 @@ input[type="checkbox"] {
 	height: 40px;
 	-webkit-appearance:  none;
 	display: flex;
-	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 25px;
@@ -234,10 +183,12 @@ input[type="checkbox"] {
 
 input[type="checkbox"].green {
     border: 2px solid #5C6C2F;
+    float: right;
 }
 
 input[type="checkbox"].orange {
     border: 2px solid #986503;
+    float: right;
 }
 
 input[type="checkbox"]:focus{
@@ -250,6 +201,7 @@ input[type="checkbox"].green:after {
 	text-align: center;
     vertical-align: middle;
 	color: #5C6C2F;
+	float: right;
 }
 
 input[type="checkbox"].orange:after {
@@ -258,6 +210,7 @@ input[type="checkbox"].orange:after {
 	text-align: center;
     vertical-align: middle;
 	color: #986503;
+	float: right;
 }
 
 input[type="checkbox"].green:checked {
@@ -306,7 +259,7 @@ input[type="checkbox"]:checked:after {
 	overflow: hidden;
 	white-space: nowrap;
 	font-size: 13px;
-	color: #4B0B9D !important;
+	color: #4B0B9D;
 	text-decoration: none;
 	-webkit-tap-highlight-color:  transparent;
 	transition: background-color 0.1s ease-in-out;
@@ -325,35 +278,83 @@ input[type="checkbox"]:checked:after {
 	font-size: 20px;
 }
 
+.nav__icon.current {
+	color: #fff;
+}
+
+/*participants little pics*/
 div.profile-pics {
     margin-top: 0.5em;
+    margin-bottom: 2em;
 }
 
 
-        img.head {
-            position:absolute;
-            float: left;
-            z-index: 1;
-            width: 30px;
-            height: 30px;
-            border-radius: 90px;
-        }
-        img.mid {
-            position:absolute;
-            float: left;
-            z-index: 2;
-            left: 30px;
-            width: 30px;
-            height: 30px;
-            border-radius: 90px;
-        }
+.head {
+    position:absolute;
+    float: left;
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    border-radius: 90px;
+    background-color: #ccc;
+}
+.mid {
+    position:absolute;
+    float: left;
+    z-index: 1;
+    left: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 90px;
+    background-color: #ccc;
+}
 
-        img.tail {
-            position:absolute;
-            float: left;
-            z-index: 3;
-            left: 52px;
-            width: 30px;
-            height: 30px;
-            border-radius: 90px;
-        }
+.tail {
+    position:absolute;
+    float: left;
+    z-index: 2;
+    left: 52px;
+    width: 30px;
+    height: 30px;
+    border-radius: 90px;
+    background-color: #ccc;
+}
+
+.nav.middle_nav {
+	position: relative;
+}
+
+/*Add Friend buttons (as checkboxes)*/
+
+.icon-box {
+	width: 50px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid #4B0B9D;
+	border-radius: 25px;
+	background: none;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.5s;
+	font-family: FontAwesome;
+	font-size: 18px;
+}
+
+input[type="checkbox"].add_friend {
+	width: 50px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	border-radius: 25px;
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+input[type="checkbox"].add_friend:checked ~ .icon-box {
+	-webkit-appearance:  none;
+	background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
+}
+

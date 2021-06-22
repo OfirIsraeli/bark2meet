@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "nav_bar.html" %}
 {% block content %}
 
 <!-- Required meta tags -->
@@ -28,52 +28,16 @@
 
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 <script src="{{ url_for('static', filename='notifications.js') }}"></script>
-<br><br><br>
-<div id="chat">
-
-
-
-    <button id="new-walk">New Walk</button>
-    <button id="create-notification">Create Notification</button>
-
-    <div id="notifications">
-        <button id=show_notifications>Show Notifications</button>
-        <div class="notifications">
-            <ul id="notifications_list">
-                <!-- {% for notification in new_notifications %}
-                <li class="new_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
-                {% endfor %}
-
-                {% for notification in old_notifications %}
-                <li class="old_notifications">{{notification.msg}}&nbsp;{{notification.issue_time}}</li>
-                {% endfor %} -->
-            </ul>
-        </div>
-
-    </div>
-    <!-- {% for user in all_users %}
-    <div id=chatbox>
-
-        <button id=chat_with_{{user.email}}>Chat with {{user.username}}</button>
-        <div id="show_chat_{{user.email}}" class=show_chat>
-            <ul id={{user.email}}></ul>
-            <br>
-            Message: <input type="text" id="input_text_{{user.email}}">
-            <button id=button_{{user.email}}>Send to {{user.username}}</button>
-        </div>
-    </div>
-    <br>
-    {% endfor %} -->
-    <br>
-
-</div>
 
 <script type=text/javascript>
 
     </script>
 
 <div id="map"></div>
-<script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=&v=weekly" async></script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvGXiGpfYhNinQDu-E-G4LGSyF_Rrv1H8&map_ids=a856c89da17dedb6&callback=initMap">
+    </script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=&v=weekly" async></script> -->
 
 
 {% endblock content %}

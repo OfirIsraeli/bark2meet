@@ -17,6 +17,15 @@
             "pos_y": 35.21478049548482,
             "type": 3,
             "issue_time": "2021-06-20 17:47:06"
+        },
+        {
+            "email": "g@g.com",
+            "title": "New friend request",
+            "msg": "You got new friend request from: ",
+            "pos_x": 31.78083130526777,
+            "pos_y": 35.21481631406623,
+            "type": 3,
+            "issue_time": "2021-06-20 23:13:23"
         }
     ]
 }

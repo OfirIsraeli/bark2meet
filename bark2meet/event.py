@@ -45,19 +45,21 @@ class Event:
 
     def get_today_events(self, user_email):
         all_events = []
+        data = ""
         time = datetime.today().strftime('%Y-%m-%d')
         file_path = self.getEventFileName(time)
         if os.path.exists(file_path):
             with open(file_path, "r") as file:
                 data = json.load(file)
-                for event in data["events"]:
-                    friends = Friends().get_all_friends_of(event["creator"])
-                    if event["privacy"] == "orange" and user_email in friends:
-                        all_events.append(event)
-                    elif event["privacy"] == "green":
-                        all_events.append(event)
 
-                return all_events
+            for event in data["events"]:
+                friends = Friends().get_all_friends_of(event["creator"])
+                if event["privacy"] == "orange" and user_email in friends:
+                    all_events.append(event)
+                elif event["privacy"] == "green":
+                    all_events.append(event)
+
+            return all_events
         else:
             return []
 

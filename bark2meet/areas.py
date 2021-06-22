@@ -12,7 +12,6 @@ class Areas:
     # todo: add haifa and more cities
 
     Areas_dict = {
-        (1.32, 2.43): set(),
         JERUSALEM: set(),
         TEL_AVIV: set(),
         MODIIN: set(),
@@ -56,16 +55,20 @@ class Areas:
                 if profile.email != user.email:
                     result.add(profile)
 
-        if user.email == "o@o.com":
-            print("all areas:")
-            self.printAreasDict()
-            print("area:", [user.email for user in self.Areas_dict[(areaX, areaY)]])
+        #if user.email == "o@o.com":
+            #print("all areas:")
+            #self.printAreasDict()
+            #print("area:", [user.email for user in self.Areas_dict[(areaX, areaY)]])
 
         return result
 
     def init_areas(self):
         all_users = User.query.all()
         for user in all_users:
+            self.update(user, True)
+
+    def update_areas_for_connected_users(self, connected_users):
+        for user in connected_users:
             self.update(user, True)
 
     def update(self, user, to_initialized=False):
@@ -89,8 +92,8 @@ class Areas:
 
         # if user is in the same area as before
         if curr_x_min == user.current_area_x and curr_y_min == user.current_area_y:
-            print("same as before:")
-            self.printAreasDict()
+            #print("same as before:")
+            #self.printAreasDict()
             return curr_x_min, curr_y_min
         try:
             # remove old user area
@@ -98,8 +101,8 @@ class Areas:
         except KeyError:
             # add user to new area
             self.Areas_dict[(curr_x_min, curr_y_min)].add(user)
-            print("new area for ", user.email, ":")
-            self.printAreasDict()
+            #print("new area for ", user.email, ":")
+            #self.printAreasDict()
             return curr_x_min, curr_y_min
 
 
@@ -132,6 +135,9 @@ class Areas:
             self.Areas_dict[(user.current_area_x, user.current_area_y)].remove(user)
         except:
             print("Error: Areas.remove_user")
+
+    def add_user(self, user):
+        self.Areas_dict[(user.current_area_x, user.current_area_y)].add(user)
 
     def distance(self, key, user_pos_x, user_pos_y):
         return (key[X_POS] - user_pos_x) ** 2 + (key[Y_POS] - user_pos_y) ** 2

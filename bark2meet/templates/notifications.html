@@ -1,0 +1,181 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='notifications-style.css')}}">
+
+<title>Notifications</title>
+
+<body>
+    <nav class="nav">
+        <a href="my_walks" class="nav__link">
+            <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
+            <span class="nav__text">Walks</span>
+        </a>
+        <a href="map" class="nav__link">
+            <i class="far fa-map nav__icon" aria-hidden="true"></i>
+            <span class="nav__text">Map</span>
+        </a>
+        <a href="#" class="nav__link_img">
+            <div class="walkButton">
+                <button id="walkButton">
+                    <span class="walkButton__icon">
+                        <ion-icon name="paw-sharp"></ion-icon>
+                </button>
+            </div>
+            </i>
+        </a>
+        <a href="chat-page" class="nav__link">
+            <i class="far fa-bell nav__icon" aria-hidden="true"></i>
+            <span class="nav__text">Notification</span>
+        </a>
+        <a href="profile" class="nav__link">
+            <i class="far fa-user-circle nav__icon" aria-hidden="true"></i>
+            <span class="nav__text">Profile</span>
+        </a>
+    </nav>
+    <div class="event-form-box">
+        <div class="search">
+            <button id="searchbox">
+                <input type="text" placeholder="Search here!">
+                <img src="{{url_for('static', filename='search.svg')}}" alt="..." id=searchIcon />
+            </button>
+            <br /><br />
+            <div class="notify">
+                <img src="{{url_for('static', filename='smallpaw.svg')}}" alt="..." />
+                <span>Notifications</span>
+            </div>
+            <br />
+
+
+
+            <h3>New</h3>
+            {% for notification in new_notifications %}
+            <div class="notifi-item3">
+                <img src="{{url_for('static', filename='avatar2.png')}}" alt="..." />
+                <div class="text">
+                    <h4>{{notification.title}}</h4>
+                    <p>{{notification.msg}}</p>
+                    <div class="clock">{{notification.issue_time}}</div>
+                </div>
+                {% if notification["needApproval"] == True %}
+                &nbsp;<div class="buttons">
+                    <span class="allow-btn">
+                        <button id="allow-btn">Allow</button>
+                    </span>
+                    &nbsp;&nbsp;<span class="Deny-btn">
+                        <button id="Deny-btn">Deny</button>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <h3>Earlier</h3>
+            {% for notification in old_notifications %}
+            <div class="notifi-item">
+                <img src="{{url_for('static', filename='avatar2.png')}}" alt="..." />
+                <div class="text">
+                    <h4>{{notification.title}}</h4>
+                    <p>{{notification.msg}}</p>
+                    <div class="clock">{{notification.issue_time}}</div>
+                </div>
+                {% if notification["needApproval"] == True %}
+                &nbsp;<div class="buttons">
+                    <span class="allow-btn">
+                        <button id="allow-btn">Allow</button>
+                    </span>
+                    &nbsp;&nbsp;<span class="Deny-btn">
+                        <button id="Deny-btn">Deny</button>
+                    </span>
+                </div>
+                {% endif %}
+
+
+            </div>
+            {% endfor %}
+
+            <!-- 
+            <div class="notifi-item3">
+                <img src="{{url_for('static', filename='lee.jpg')}}" alt="..." />
+                <div class="text">
+                    <h4>Navigation</h4>
+                    <p>Lee wants to join you&Kanye on your walk!</p>
+                    <div class="clock">21:18PM</div>
+                </div>
+                &nbsp;<div class="buttons">
+                    <span class="allow-btn">
+                        <button id="allow-btn">Allow</button>
+                    </span>
+                    &nbsp;&nbsp;<span class="Deny-btn">
+                        <button id="Deny-btn">Deny</button>
+                    </span>
+                </div>
+            </div>
+            <div class="notifi-item1">
+                <img src="{{url_for('static', filename='avatar.svg')}}" alt="..." />
+                <div class="text">
+                    <h4>Rush Hour!</h4>
+                    <p>There are 5 or more people around who are on green mode. Ready for new friendships?</p>
+                    <div class="clock">12:35PM</div>
+                </div>
+            </div>
+            <div class="notifi-item2">
+                <img src="{{url_for('static', filename='avatar2.png')}}" alt="..." />
+                <div class="text">
+                    <h4>User&Dog</h4>
+                    <p>Noa & Rexi invited you to join them, view walk details!</p>
+                    <div class="clock">08:13AM</div>
+                </div>
+            </div>
+
+            <div class="notifi-item">
+                <img src="{{url_for('static', filename='avatar3.png')}}" alt="..." />
+                <div class="text">
+                    <h4>User&Dog</h4>
+                    <p>John sent you an invitation to join his new event, view event details!</p>
+                    <div class="clock">22:18PM</div>
+                </div>
+            </div>
+
+            <div class="notifi-item">
+                <img src="{{url_for('static', filename='avatar4.jpg')}}" alt="..." />
+                <div class="text">
+                    <h4>Friend request</h4>
+                    <p>Lisa has accepted your friend request!</p>
+                    <div class="clock">19:20PM</div>
+                </div>
+            </div>
+
+            <div class="notifi-item3">
+                <img src="{{url_for('static', filename='avatar5.png')}}" alt="..." />
+                <div class="text">
+                    <h4>Friend request</h4>
+                    <p>Shir has sent you a friend request!</p>
+                    <div class="clock">21:18PM</div>
+                </div>
+                &nbsp;<div class="buttons">
+                    <span class="confirm-btn">
+                        <button id="confirm-btn">confirm</button>
+                    </span>
+                    &nbsp;&nbsp;<span class="delete-btn">
+                        <button id="delete-btn">delete</button>
+                    </span>
+                </div>
+            </div>
+            <div class="notifi-item">
+                <img src="{{url_for('static', filename='avatar6.png')}}" alt="..." />
+                <div class="text">
+                    <h4>Friend's event alert!</h4>
+                    <p>Your friend Lucy created a new event, check it out!</p>
+                    <div class="clock">03:15AM</div>
+                </div>
+            </div> -->
+</body>
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+<script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
+<script>
+    var searchbox = document.getElementById("searchbox");
+    var searchIcon = document.getElementById("searchIcon");
+    searchIcon.onclick = function () {
+        searchbox.classList.toggle("active");
+
+    }
+</script>

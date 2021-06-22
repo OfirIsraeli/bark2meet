@@ -4,9 +4,10 @@ from flask_login import UserMixin
 DEFAULT_IMG = "static/default-account-img.png"
 MALE = 1
 
-OPEN = 0
-FRIENDS = 1
-PRIVATE = 2
+START_WALK = 0
+OPEN = 1
+FRIENDS = 2
+PRIVATE = 3
 
 
 @login_manager.user_loader
@@ -32,7 +33,7 @@ class User(db.Model, UserMixin):
     current_area_x = db.Column(db.Integer, nullable=False, default=31.771959)
     current_area_y = db.Column(db.Integer, nullable=False, default=35.217018)
     date_last_session = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    status = db.Column(db.Integer, nullable=False, default=0)
+    status = db.Column(db.Integer, nullable=False, default=-1)
     sing_up_level = db.Column(db.Integer, nullable=False, default=0)
     # friends = db.relationship("Friends", backref="user", lazy=True)
 
@@ -90,7 +91,7 @@ class User(db.Model, UserMixin):
         db.session.commit()
 
     def change_status(self, status):
-        if status not in {OPEN, FRIENDS, PRIVATE}:
+        if status not in {START_WALK, OPEN, FRIENDS, PRIVATE}:
             return
         self.status = status
         db.session.commit()
@@ -103,7 +104,7 @@ class User(db.Model, UserMixin):
         return self.email == other.email
 
     def __hash__(self):
-        return hash(self.email)
+        return hash(self.id)
 
 
 class Friends(db.Model):
@@ -142,3 +143,7 @@ class Friends(db.Model):
     def delete(self, user_email, friend_email):
         Friends.query.filter_by(user_email=user_email, friend_email=friend_email).delete()
         db.session.commit()
+
+    def areFriends(self, user1_email, user2_email):
+        user1_friends = self.get_all_friends_of(user1_email)
+        return user2_email in user1_friends
