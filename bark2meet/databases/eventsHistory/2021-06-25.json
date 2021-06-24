@@ -33,6 +33,17 @@
             ],
             "location": "Gals place",
             "time": "21:23:00"
+        },
+        {
+            "id": 25,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "Ofir walk2",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "tlv2",
+            "time": "22:00:00"
         }
     ]
 }

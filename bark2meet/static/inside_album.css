@@ -29,16 +29,6 @@ body {
 	/*margin: 0 0 55px 0;*/
 }
 /*light container*/
-.container {
-	height: 50vh;
-	overflow: hidden;
-	overflow-y: scroll;
-}
-
-#walks {
-	padding: 30px 10px;
-	padding-top: 10px;
-}
 
 .event-form-box {
 	display: block;
@@ -261,8 +251,7 @@ input[type="checkbox"]:checked:after {
 	z-index: 999;
 }
 
-.nav__link, .nav__link_middle {
-	background-color: #F8EAFF;
+.nav__link {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -276,13 +265,6 @@ input[type="checkbox"]:checked:after {
 	text-decoration: none;
 	-webkit-tap-highlight-color:  transparent;
 	transition: background-color 0.1s ease-in-out;
-}
-
-.nav__link_middle {
-	border: none;
-}
-
-.nav__link {
 	padding-bottom: 30px;
 }
 
@@ -299,6 +281,9 @@ input[type="checkbox"]:checked:after {
 	font-size: 20px;
 }
 
+.nav__icon.current {
+	color: #fff;
+}
 
 /*participants little pics*/
 div.profile-pics {
@@ -379,7 +364,7 @@ input[type="checkbox"].add_friend:checked ~ .icon-box {
 /*grid albums gallery*/
 .container {
 	padding: 0;
-	height: 50vh;
+	height: 85vh;
 	overflow: hidden;
 	overflow-y: scroll;
 }
@@ -387,15 +372,15 @@ input[type="checkbox"].add_friend:checked ~ .icon-box {
 .albums-gallery {
 	max-width: 1200;
 	margin: 20px 0;
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-gap: 20px;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-gap: 5px;
 
 }
 
 .one-album-item {
-	border-radius: 7px;
+	border-radius: 2px;
 	overflow: hidden;
 	box-shadow: 0 2px 5px rgba(7, 49, 112, 0.1);
 	text-align: center;
@@ -405,7 +390,7 @@ input[type="checkbox"].add_friend:checked ~ .icon-box {
 }
 
 .one-album-item-img {
-	height: 150px;
+	height: 100px;
 	background-size: cover;
 	background-position: center;
 }
@@ -414,4 +399,32 @@ input[type="checkbox"].add_friend:checked ~ .icon-box {
 	.albums-gallery {
 		grid-template-columns: 1fr;
 	}
+}
+
+
+/*add files to album button*/
+input[type="file"] {
+	display: none;
+	float: right;
+
+	padding-left: 50px;
+}
+
+.add_files_label {
+	color: white;
+	background-color: #A1B0FF;
+	padding: 7px 10px;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 7px;
+	box-shadow: 0 2px 5px rgba(7, 49, 112, 0.5);
+}
+
+.add_files_label i {
+	color: white;
 }

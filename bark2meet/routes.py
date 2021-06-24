@@ -28,6 +28,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
 
+event_id = -1
 
 # ------ GLOBAL DATA END------
 
@@ -392,6 +393,7 @@ def add_to_event_count():
     file_path = os.getcwd() + "/bark2meet/databases/eventsHistory/ID_COUNT"
     if os.path.exists(file_path):
         with open(file_path, "r+") as file:
+
             current = int(file.read())
             file.close()
             f = open(file_path, "w")
@@ -408,21 +410,23 @@ def add_to_event_count():
 @app.route("/event", methods=['GET', 'POST'])
 @login_required
 def create_event():
-    event_id = add_to_event_count()
     form = EventForm()
     if form.validate_on_submit():
+        global event_id
+        event_id = add_to_event_count()
         privacy = request.form['privacy']
         date = request.form['date']
-        Event().create_event(email=current_user.email, title=form.title.data,
+        event = Event().create_event(email=current_user.email, title=form.title.data,
                              privacy=privacy,
                              location=form.location.data, time=form.time.data, date=date,
                              id=event_id)
 
-        if form.invite.data:
-            Friends().get_all_friends_of(current_user.email)
+        # if form.invite.data:
+        #     Friends().get_all_friends_of(current_user.email)
 
         flash('The event has been created successfully', 'event_success')
         # return redirect(url_for('home'))
+        return redirect(url_for('invite_friends'))
 
     return render_template('create_event.html', form=form, title="Create Event")
 
@@ -512,7 +516,6 @@ def invite_friends():
             all_friends_users_list.append(complete_user)
         elif search_friend in complete_user.full_name:
             all_friends_users_list.append(complete_user)
-
     return render_template("friends_invite_list.html", title="Invite Friends",
                            friends=all_friends_users_list,
                            form=form)
@@ -579,11 +582,10 @@ def join_event():
 def create_notification_to_friend():
     friend_id = str(request.data)[3:-2]
     friend = getUserById(int(friend_id))
-    Notification().create_walk_invitation_notification(current_user, friend)
+    Notification().create_walk_invitation_notification(current_user, friend, event_id)
 
     return "1"
 
-# @socketio.on('friend_request_approve', namespace='/private')
 @app.route("/friend_request_approve", methods=['GET', 'POST'])
 def add_friend():
     req = str(request.data)[3:-2].split(",")

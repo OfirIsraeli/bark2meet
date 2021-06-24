@@ -13,6 +13,36 @@
     <link rel="stylesheet" type="text/css" href="../static/my_profile.css">
 </head>
 <body>
+    <script type="text/javascript">
+        function openPage(pageName, elmnt) {
+            // Hide all elements with class="tabcontent" by default */
+            var i, container, tablinks;
+            container = document.getElementsByClassName("container");
+            for (i = 0; i < container.length; i++) {
+                container[i].style.display = "none";
+            }
+
+            // Remove the background color of all tablinks/buttons
+            tablinks = document.getElementsByClassName("nav__link_middle");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.backgroundColor = "#F8EAFF";
+            }
+
+            // Show the specific tab content
+            document.getElementById(pageName).style.display = "block";
+
+            // Add the specific color to the button used to open the tab content
+            elmnt.style.backgroundColor = "#F4DEFF";
+            linkIcon = elmnt.getElementsByClassName("nav__icon");
+            linkIcon.style.color = "#FFF";
+        }
+
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    
+    </script>
+
     <div class="event-form-box">
         <div class="row">
             <button class = "back_button">
@@ -50,13 +80,13 @@
 
         <!-- My profile section bar -->
         <div class="nav middle_nav">
-            <a href="#" class="nav__link">
+            <button class="nav__link_middle" onclick="openPage('settings', this)" id="defaultOpen">
                 <i class="fas fa-cog nav__icon" aria-hidden="true"></i>
-            </a>
-            <a href="#" class="nav__link">
+            </button>
+            <button class="nav__link_middle" onclick="openPage('albums', this)" id="defaultOpen">
                 <i class="far fa-images nav__icon current" aria-hidden="true"></i>
-            </a>
-            <a href="#" class="nav__link">
+            </button>
+            <a href="#" class="nav__link_middle">
                 <i class="fas fa-sign-out-alt nav__icon" aria-hidden="true"></i>
                 <span class="nav__text">Log Out</span>
             </a>
@@ -64,41 +94,164 @@
         </div>
 
         <!-- Albums -->
-        <div class='container'>
+        <div id="albums"class='container'>
             <section class="albums-gallery">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Gan Saker Evening</strong></p>
+                        <p>15 pictures</p>
+                    </div>
+                </a>
+                
+                
             </section>
         </div>
+
+        <!-- settings -->
+        <div id="settings" class="container">
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h1>Map:</h1></div>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h2>Radius of view on map:</h2></div>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="slidecontainer">
+                        <input type="range" min="1" max="10" value="50" class="slider" id="myRange">
+                        <p class="map-radius">Radius By KM: <span
+                                id="demo"></span></p>
+                    </div>
+                    <script>
+                        var slider = document.getElementById("myRange");
+                        var output = document.getElementById("demo");
+                        output.innerHTML = slider.value;
+
+                        slider.oninput = function() {
+                          output.innerHTML = this.value;
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h1>Notifications:</h1></div>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h2>Notify a walk started by:</h2></div>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <label class="pref-box"> My friends only
+                        <input type="radio" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="pref-box"> New walkers around, My friends
+                        <input type="radio" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="pref-box"> Mute all notifications
+                        <input type="radio" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h1>Profile:</h1></div>
+                </div>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <div class="page-header"><h1>Edit your profile
+                        pictures:</h1></div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                                    {% if messages%}
+                                        <div class="invalid-feedback">
+                                        {% for category, message in messages %}
+                                            {% if category == "file_format_error" %}
+                                          <span>{{ message }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                       </div>
+                                    {% endif %}
+                {% endwith %}
+
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="col-sm-6 img-wrapper human">
+                        {{ form.user_img(class="my-file") }}
+                    </div>
+                    <div class="col-sm-6 img-wrapper dog">
+                        {{ form.dog_img(class="my-file") }}
+                    </div>
+                    {{ form.submit(class="button") }}
+                </form>
+            </div>
+
+            <div class = "row justify-content-center">
+                <div class = "col-sm-6 d-inline float-left">
+                    <button class="delete">Delete Account</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    
 
     <!-- nav bar -->
     

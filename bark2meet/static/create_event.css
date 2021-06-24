@@ -229,6 +229,7 @@ input[type="radio"]:checked + .private-mode {
 	background-color: #F8EAFF;
 	display: flex;
 	overflow-x: auto;
+	z-index: 999;
 }
 
 .nav__link {
@@ -245,6 +246,7 @@ input[type="radio"]:checked + .private-mode {
 	text-decoration: none;
 	-webkit-tap-highlight-color:  transparent;
 	transition: background-color 0.1s ease-in-out;
+	padding-bottom: 30px;
 }
 
 .nav__link:hover {

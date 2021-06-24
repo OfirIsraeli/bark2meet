@@ -1,26 +1,28 @@
-
 {% extends "nav_bar.html" %}
 {% block content %}
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
-    <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='create_event.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+    crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
+<script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='create_event.css') }}">
 
 
-        <div class="event-form-box">
-        <div class="row">
-            <button class = "back_button">
-                <a src="#"><img src="{{url_for('static', filename='Vector.svg')}}"></a>
-            </button>
-        </div>
+<div class="event-form-box">
+    <div class="row">
+        <button class="back_button">
+            <a src="#"><img src="{{url_for('static', filename='Vector.svg')}}"></a>
+        </button>
+    </div>
 
-            <form method="POST" action="">
+    <form method="POST" action="">
         {{ form.hidden_tag() }}
 
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
             <div class="col-xs-2"><img src="{{url_for('static', filename='smallpaw.svg')}}" class="smallpaw"></div>
             <div class="col-xs-10 title"><span>New Walk Event!</span></div>
         </div>
@@ -53,70 +55,68 @@
 
         </div><br><br>
 
-            <div class="event-form">
-                {{ form.title.label(class="form-control-label") }}
+        <div class="event-form">
+            {{ form.title.label(class="form-control-label") }}
 
-                    {% if form.title.errors %}
-                        {{ form.title(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.title.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.title(class="form-control", placeholder="Make them wanna join you!") }}
-                    {% endif %}
-
-
-                {{ form.location.label(class="form-control-label") }}
-
-                    {% if form.location.errors %}
-                        {{ form.location(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.location.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.location(class="form-control", placeholder="Or: Where to poop this time?") }}
-                    {% endif %}
-
-
-                {{ form.date.label(class="form-control-label") }}
-
-                    {% if form.date.errors %}
-                        {{ form.date(class="form-control select-time is-invalid", type="date") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.date.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.date(class="form-control select-time", type="date") }}
-                    {% endif %}
-
-
-                {{ form.time.label(class="form-control-label") }}
-
-                    {% if form.time.errors %}
-                        {{ form.time(class="form-control select-time is-invalid", type="time") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.time.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.time(class="form-control select-time", type="time") }}
-                    {% endif %}
-
-                {{ form.invite(class="btn") }}
-                {{ form.invite.label(class="form-check-label") }}
-
-                <br><a href="#">Invite specific friends ></a><br>
-
-                {{ form.submit(class="btn btn-primary") }}
+            {% if form.title.errors %}
+            {{ form.title(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
             </div>
-                </form>
+            {% else %}
+            {{ form.title(class="form-control", placeholder="Make them wanna join you!") }}
+            {% endif %}
+
+
+            {{ form.location.label(class="form-control-label") }}
+
+            {% if form.location.errors %}
+            {{ form.location(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.location.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.location(class="form-control", placeholder="Or: Where to poop this time?") }}
+            {% endif %}
+
+
+            {{ form.date.label(class="form-control-label") }}
+
+            {% if form.date.errors %}
+            {{ form.date(class="form-control select-time is-invalid", type="date") }}
+            <div class="invalid-feedback">
+                {% for error in form.date.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.date(class="form-control select-time", type="date") }}
+            {% endif %}
+
+
+            {{ form.time.label(class="form-control-label") }}
+
+            {% if form.time.errors %}
+            {{ form.time(class="form-control select-time is-invalid", type="time") }}
+            <div class="invalid-feedback">
+                {% for error in form.time.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.time(class="form-control select-time", type="time") }}
+            {% endif %}
+
+
+
+
+            {{ form.submit(class="btn btn-primary") }}
         </div>
+    </form>
+</div>
 
 {% endblock content %}

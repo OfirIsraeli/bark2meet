@@ -24,18 +24,48 @@ body {
 	justify-content: center;
 	align-items: center;
 	padding: 0;
-	background-image: url("../../static/siteBg.svg");
+	background-image: url("siteBg4.svg");
 	background-size: cover;
 	margin: 0 0 55px 0;
+	overflow: hidden;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+	padding: .4rem;
+}
+
+li i {
+	margin: 0 5px;
+}
+li span {
+	margin: 20px 0;
+	font-weight: 600;
+	color: #073170;
+}
+
+li img {
+	width:  54px;
+	height: 52px;
+}
+
+.back_button {
+	float: left;
+	background: transparent;
+	border: none;
 }
 
 .event-form-box {
 	display: block;
 	max-width: 700px;
 	width: 100%;
+	align-items: center;
 	background: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 25px 30px;
-	overflow: auto;
+	overflow: hidden;
 }
 
 
@@ -65,7 +95,7 @@ body {
 	height: 95%;
 	border: 1px solid #ced4da;
 	background-image: linear-gradient(#FEFFFA, #F6E6E5);
-	padding: 10px 15px;
+	padding: 10px 10px;
 }
 
 .event-form {
@@ -216,45 +246,59 @@ div.friend-card {
 .sms-send-page .list-group {
     box-shadow: 0 0 11px #eceeef;
     margin: 8px 0.8em;
+    padding-bottom: 50%;
 }
 
-input[type="checkbox"] {
-	width: 80px;
+/*Add Friend buttons (as checkboxes)*/
+
+.icon-box {
+	width: 50px;
 	height: 40px;
-	-webkit-appearance:  none;
-	display: flex;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 2px solid #5C6C2F;
+	border: 2px solid #4B0B9D;
 	border-radius: 25px;
 	background: none;
 	font-weight: bold;
 	cursor: pointer;
 	transition: 0.5s;
+	font-family: FontAwesome;
+	font-size: 18px;
 }
 
-input[type="checkbox"]:focus{
+input[type="checkbox"] {
+	width: 50px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	border-radius: 25px;
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+/*input[type="checkbox"]:focus ~ .icon-box{
         outline:0;
     }
 
-input[type="checkbox"]:after {
+input[type="checkbox"]:after ~ .icon-box{
 	-webkit-appearance:  none;
-	content: 'INVITE';
-	color: #5C6C2F;
-}
+	content: '\f234';
+	color: #4B0B9D;
+}*/
 
-input[type="checkbox"]:checked {
+input[type="checkbox"]:checked ~ .icon-box {
 	-webkit-appearance:  none;
 	float: right;
-	background-color: #B6E13D;
+	background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
 }
-
-input[type="checkbox"]:checked:after {
+/*
+input[type="checkbox"]:checked:after ~ .icon-box{
 	-webkit-appearance:  none;
 	background: none;
-	content: 'INVITED';
-}
+
+}*/
 
 .sms-send-page .pull-left, .sms-send-page .pull-right{
   padding: 0px;
@@ -301,4 +345,32 @@ input[type="checkbox"]:checked:after {
 
 .nav__icon {
 	font-size: 20px;
+}
+
+.participants {
+	height: 55vh;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+.create_album {
+	text-decoration: none;
+	color: white;
+	background-color: #A1B0FF;
+	padding: 5px 3px;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 7px;
+	box-shadow: 0 2px 5px rgba(7, 49, 112, 0.5);
+}
+
+.create_album:hover, .create_album:active, .create_album:focus {
+    text-decoration:none;
+    color: white;
+    background-color: rgba(113, 136, 255, 1);
 }

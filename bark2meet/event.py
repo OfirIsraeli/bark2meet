@@ -14,7 +14,7 @@ class Event:
         self.privacy = privacy
         self.id = id
 
-        self.write_event()
+        return self.write_event()
 
     def getEventFileName(self, date):
         HOME_DIR = os.getcwd() + "/bark2meet/databases/eventsHistory/"
@@ -42,6 +42,8 @@ class Event:
             with open(file_path, "w") as file:
                 data = {"events": [event_json]}
                 json.dump(data, file, default=str, indent=4)
+
+        return event_json
 
     def get_today_events(self, user_email):
         all_events = []

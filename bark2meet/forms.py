@@ -56,8 +56,8 @@ class EventForm(FlaskForm):
     date = DateField('Start Date', validators=[DataRequired(), DateRange(min=date.today())])
     time = TimeField('Start Time', validators=[DataRequired()])
     #time = TimeField('Start Time', validators=[DataRequired(), DateRange(min=datetime.now().time())])
-    invite = BooleanField('Invite all my friends')
-    submit = SubmitField('Create')
+    # invite = BooleanField('Invite all my friends')
+    submit = SubmitField('Continue')
 
 
 class SearchForm(FlaskForm):
