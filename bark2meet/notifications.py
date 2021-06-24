@@ -7,12 +7,16 @@ FRIEND_WALK = 0
 NEW_MSG = 1
 NEW_INVITE = 2
 NEW_FRIEND_REQUEST = 3
+FRIEND_REQUEST_APPROVED = 4
+WALK_INVITATION_APPROVED = 5
 
 ##
 # RUSH_HOUR = 1
 # NEW_JOIN_WALK_INVITE = 2
 # USER_WANTS_TO_JOIN_WALK = 3
 ##
+
+
 class Notification:
 
     def create_notification(self, email, title, msg, pos_x, pos_y, notification_type, noti_from=""):
@@ -30,6 +34,14 @@ class Notification:
     def getNotificationsFileName(self, email):
         HOME_DIR = os.getcwd() + "/bark2meet/databases/notificationsHistory/"
         return HOME_DIR + email + ".json"
+
+    def create_walk_invitation_notification(self, current_user, user_dest, event_id):
+        title = "New event invitation"
+        msg = current_user.full_name + " and " + current_user.dog_name + "has sent you an invitation to join their" \
+                                                                         " new event!"
+        invite_address = "invite_" + event_id
+        self.create_notification(user_dest, title, msg, current_user.pos_x, current_user.pos_y, NEW_INVITE, invite_address)
+
 
     def write_notification_in_history(self):
         msg_json = {

@@ -47,6 +47,8 @@ function initMap() {
       lng: 35.217018,
     });
   }
+  var geoloccontrol = new klokantech.GeolocationControl(map, 1);
+
   initializeMarkers();
 }
 
@@ -120,7 +122,7 @@ function addMarkers(all_locations) {
     if (all_locations[i].full_name == "Ofir Israeli"){
       all_locations[i].pos_x += 0.0015;
     }
-    // end for debb
+    // end for debugging
 
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(all_locations[i].pos_x, all_locations[i].pos_y),

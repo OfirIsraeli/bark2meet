@@ -1,0 +1,15 @@
+{
+    "events": [
+        {
+            "id": 4,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "yesterday walk",
+            "joined": [
+		"o@o.com"
+            ],
+            "location": "adawdwad",
+            "time": "08:18:00"
+        }
+    ]
+}

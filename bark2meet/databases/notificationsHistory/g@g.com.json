@@ -26,6 +26,26 @@
             "pos_y": 35.21481631406623,
             "type": 3,
             "issue_time": "2021-06-20 23:13:23"
+        },
+        {
+            "email": "g@g.com",
+            "title": "Invitation approved",
+            "msg": "Ofir Israeli has accepted your walk invitation!",
+            "pos_x": 32.0599191,
+            "pos_y": 34.7851156,
+            "type": 5,
+            "from": "o@o.com",
+            "issue_time": "2021-06-24 17:47:45"
+        },
+        {
+            "email": "g@g.com",
+            "title": "Invitation approved",
+            "msg": "Ofir Israeli has accepted your walk invitation!",
+            "pos_x": 32.0599191,
+            "pos_y": 34.7851156,
+            "type": 5,
+            "from": "o@o.com",
+            "issue_time": "2021-06-24 17:54:44"
         }
     ]
 }

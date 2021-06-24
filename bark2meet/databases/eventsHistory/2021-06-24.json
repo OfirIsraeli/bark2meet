@@ -1,0 +1,49 @@
+{
+    "events": [
+        {
+            "id": 8,
+            "privacy": "orange",
+            "creator": "o@o.com",
+            "title": "tomorrow walk 1",
+            "joined": [
+                "o@o.com",
+                "g@g.com"
+            ],
+            "location": "first location",
+            "time": "23:28:00"
+        },
+        {
+            "id": 9,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "tomorrow walk 2",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "second location",
+            "time": "23:28:00"
+        },
+        {
+            "id": 7,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "Ofir walk",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "tlv",
+            "time": "18:10:00"
+        },
+        {
+            "id": 8,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "Ofir walk",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "tlv",
+            "time": "18:10:00"
+        }
+    ]
+}

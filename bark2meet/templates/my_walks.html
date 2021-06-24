@@ -48,17 +48,20 @@
                                         {{walk.location}}</strong></p>
                                 <div class="profile-pics">
 
-                                    {% for img_dict in users_imgs %}
-                                        {% if img_dict["id"] == walk["id"] %}
-                                            {% for img in img_dict["imgs"] %}
-                                            <img class="head" src="{{ img }}">
-                                            {% endfor %}
-                                        {% endif %}
-                                    {% endfor %}
+                                    {% if walk['users_images'][0] %}
+                                    <img class="head" src="../{{walk['users_images'][0][10:]}}">
+                                    {% endif %}
+                                    {% if walk['users_images'][1] %}
+                                    <img class="mid" src="../{{walk['users_images'][1][10:]}}">
+                                    {% endif %}
+                                    {% if walk['users_images'][2] %}
+                                    <img class="tail" src="../{{walk['users_images'][2][10:]}}">
+                                    {% endif %}
 
-                                    <img clsss="head" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
-                                    <img class="mid" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
-                                    <img class="tail" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+
+
+                                    <img clsss="head"
+                                        src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
                                 </div>
                             </div>
                         </li>

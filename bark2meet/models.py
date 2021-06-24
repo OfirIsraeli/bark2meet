@@ -32,9 +32,19 @@ class User(db.Model, UserMixin):
     date_last_update = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     current_area_x = db.Column(db.Integer, nullable=False, default=31.771959)
     current_area_y = db.Column(db.Integer, nullable=False, default=35.217018)
+
+    # last time user checked notifications
+    # TODO: update correctly
     date_last_session = db.Column(db.DateTime, nullable=False, default=datetime.now())
+
+    # privacy status
     status = db.Column(db.Integer, nullable=False, default=-1)
+
+    # current stage of signup
     sing_up_level = db.Column(db.Integer, nullable=False, default=0)
+
+    is_online = db.Column(db.Boolean, nullable=False, default=False)
+    session = db.Column(db.String(100), unique=True, nullable=True)
     # friends = db.relationship("Friends", backref="user", lazy=True)
 
     # dog:
@@ -47,6 +57,18 @@ class User(db.Model, UserMixin):
     dog_img = db.Column(db.String(200), nullable=False, default=DEFAULT_IMG)
     # for debugging:
     # date_last_session = datetime.now() - timedelta(1) # just means yesterday
+
+    def update_date_last_session(self, date_last_session):
+        self.date_last_session = date_last_session
+        db.session.commit()
+
+    def update_is_online(self, is_online):
+        self.is_online = is_online
+        db.session.commit()
+
+    def update_session(self, session):
+        self.session = session
+        db.session.commit()
 
     def check_new_notifications(self):
         pass
@@ -136,12 +158,15 @@ class Friends(db.Model):
     def add(self, user_email, friend_email):
         if Friends.query.filter_by(user_email=user_email, friend_email=friend_email).first():
             return
-        to_add = Friends(user_email=user_email, friend_email=friend_email)
-        db.session.add(to_add)
+        to_add1 = Friends(user_email=user_email, friend_email=friend_email)
+        to_add2 = Friends(user_email=friend_email, friend_email=user_email)
+        db.session.add(to_add1)
+        db.session.add(to_add2)
         db.session.commit()
 
     def delete(self, user_email, friend_email):
         Friends.query.filter_by(user_email=user_email, friend_email=friend_email).delete()
+        Friends.query.filter_by(user_email=friend_email, friend_email=user_email).delete()
         db.session.commit()
 
     def areFriends(self, user1_email, user2_email):

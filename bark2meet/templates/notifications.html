@@ -59,10 +59,25 @@
                 {% if notification["needApproval"] == True %}
                 &nbsp;<div class="buttons">
                     <span class="allow-btn">
-                        <button id="allow-btn">Allow</button>
+                        {% if notification["type"] == 2 %}
+                        <!-- so NEW_INVITE -->
+                        <button id="allow-btn" onClick="acceptInvite(true, '{{notification['from']}}')">Allow</button>
+                        {% endif %}
+                        {% if notification["type"] == 3 %}
+                        <!-- so NEW_FRIEND_REQUEST -->
+                        <button id="allow-btn" onClick="acceptFriend(true, '{{notification['from']}}')">Allow</button>
+                        {% endif %}
                     </span>
                     &nbsp;&nbsp;<span class="Deny-btn">
-                        <button id="Deny-btn">Deny</button>
+                        {% if notification["type"] == 2 %}
+                        <!-- so NEW_INVITE -->
+                        <button id="Deny-btn" onClick="acceptInvite(false, '{{notification['from']}}')">Deny</button>
+                        {% endif %}
+                        {% if notification["type"] == 3 %}
+                        <!-- so NEW_FRIEND_REQUEST -->
+                        <button id="Deny-btn" onClick="acceptFriend(false, '{{notification['from']}}')">Deny</button>
+                        {% endif %}
+
                     </span>
                 </div>
                 {% endif %}
@@ -80,10 +95,25 @@
                 {% if notification["needApproval"] == True %}
                 &nbsp;<div class="buttons">
                     <span class="allow-btn">
-                        <button id="allow-btn">Allow</button>
+                        {% if notification["type"] == 2 %}
+                        <!-- so NEW_INVITE -->
+                        <button id="allow-btn" onClick="acceptInvite(true, '{{notification['from']}}')">Allow</button>
+                        {% endif %}
+                        {% if notification["type"] == 3 %}
+                        <!-- so NEW_FRIEND_REQUEST -->
+                        <button id="allow-btn" onClick="acceptFriend(true, '{{notification['from']}}')">Allow</button>
+                        {% endif %}
                     </span>
                     &nbsp;&nbsp;<span class="Deny-btn">
-                        <button id="Deny-btn">Deny</button>
+                        {% if notification["type"] == 2 %}
+                        <!-- so NEW_INVITE -->
+                        <button id="Deny-btn" onClick="acceptInvite(false, '{{notification['from']}}')">Deny</button>
+                        {% endif %}
+                        {% if notification["type"] == 3 %}
+                        <!-- so NEW_FRIEND_REQUEST -->
+                        <button id="Deny-btn" onClick="acceptFriend(false, '{{notification['from']}}')">Deny</button>
+                        {% endif %}
+
                     </span>
                 </div>
                 {% endif %}
@@ -92,7 +122,7 @@
             </div>
             {% endfor %}
 
-            <!-- 
+            <!--
             <div class="notifi-item3">
                 <img src="{{url_for('static', filename='lee.jpg')}}" alt="..." />
                 <div class="text">
@@ -177,5 +207,19 @@
     searchIcon.onclick = function () {
         searchbox.classList.toggle("active");
 
+    }
+    function acceptInvite(shouldAccept, requester) {
+        const URL = '/event_invite_approve';
+        const xhr = new XMLHttpRequest();
+        let sender = JSON.stringify([shouldAccept, requester]);
+        xhr.open("POST", URL);
+        xhr.send(sender);
+    }
+    function acceptFriend(shouldAccept, requester) {
+        const URL = '/friend_request_approve';
+        const xhr = new XMLHttpRequest();
+        let sender = JSON.stringify([shouldAccept, requester]);
+        xhr.open("POST", URL);
+        xhr.send(sender);
     }
 </script>

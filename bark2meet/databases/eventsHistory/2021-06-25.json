@@ -1,0 +1,38 @@
+{
+    "events": [
+        {
+            "id": 10,
+            "privacy": "green",
+            "creator": "d@d.com",
+            "title": "adawdwa",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "awdawdawd",
+            "time": "13:42:00"
+        },
+        {
+            "id": 11,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "wadawdawdaw",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "awdawdwad",
+            "time": "21:20:00"
+        },
+        {
+            "id": 12,
+            "privacy": "green",
+            "creator": "g@g.com",
+            "title": "Gal's Event",
+            "joined": [
+                "g@g.com",
+                "o@o.com"
+            ],
+            "location": "Gals place",
+            "time": "21:23:00"
+        }
+    ]
+}

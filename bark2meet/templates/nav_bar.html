@@ -1,449 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="refresh" content="3600">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="refresh" content="3600">
 
-   <!-- Bootstrap CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
-   <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+  <!-- Bootstrap CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 
-   <!-- OUR CSS -->
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style_navbar.css')}}">
+  <!-- OUR CSS -->
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style_navbar.css')}}">
 
 
-   <!-- JQUERY -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- JQUERY -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    {% if title %}
-        <title>{{ title }}</title>
-    {% else %}
-        <title>Bark2Meet</title>
-    {% endif %}
+  {% if title %}
+  <title>{{ title }}</title>
+  {% else %}
+  <title>Bark2Meet</title>
+  {% endif %}
 </head>
+
 <body>
 
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 
-    <!-- nav bar -->
-    <nav class="nav">
-        <a href="{{ url_for('my_walks') }}" class="nav__link">
-        {% if title == "My Walks" %}
-            <i class="fas fa-shoe-prints nav__icon text-white" aria-hidden="true"></i>
-            <span class="nav__text text-white">Walks</span>
+  <!-- nav bar -->
+  <nav class="nav">
+    <a href="{{ url_for('my_walks') }}" class="nav__link">
+      {% if title == "My Walks" %}
+      <i class="fas fa-shoe-prints nav__icon text-white" aria-hidden="true"></i>
+      <span class="nav__text text-white">Walks</span>
 
-        {% else %}
-            <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
-            <span class="nav__text">Walks</span>
-        {% endif %}
-        </a>
+      {% else %}
+      <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
+      <span class="nav__text">Walks</span>
+      {% endif %}
+    </a>
 
-        <a href="{{ url_for('map') }}" class="nav__link">
+    <a href="{{ url_for('map') }}" class="nav__link">
+      {% if title == "Map" %}
+
+      <i class="far fa-map nav__icon text-white" aria-hidden="true"></i>
+      <span class="nav__text text-white">Map</span>
+
+      {% else %}
+      <i class="far fa-map nav__icon" aria-hidden="true"></i>
+      <span class="nav__text">Map</span>
+      {% endif %}
+    </a>
+
+
+    <a class="nav__link_img">
+      <div class="walkButton">
         {% if title == "Map" %}
+        {% if status == 0 or status == -1 %}
+        <button id="walkButton">
 
-            <i class="far fa-map nav__icon text-white" aria-hidden="true"></i>
-            <span class="nav__text text-white">Map</span>
+          {% elif status == 1 %}
+          <button id="walkButton">
 
-        {% else %}
-            <i class="far fa-map nav__icon" aria-hidden="true"></i>
-            <span class="nav__text">Map</span>
-        {% endif %}
-        </a>
+            {% elif status == 2 %}
+            <button id="walkButton">
 
-
-        <a class="nav__link_img">
-          <div class="walkButton">
-              {% if title == "Map" %}
-                  {% if status == 0 %}
+              {% elif status == 3 %}
               <button id="walkButton">
+
+                {% endif %}
+
+
+                {% else %}
+                {% if status == 0 or status == -1 %}
+                <button id="walkButtonDisableStart">
 
                   {% elif status == 1 %}
-              <button id="walkButton">
+                  <button id="walkButtonDisableGreen">
 
-                  {% elif status == 2 %}
-              <button id="walkButton">
+                    {% elif status == 2 %}
+                    <button id="walkButtonDisableOrange">
 
-                  {% elif status == 3 %}
-              <button id="walkButton">
+                      {% elif status == 3 %}
+                      <button id="walkButtonDisableRed">
 
-                  {% endif %}
+                        {% endif %}
+                        {% endif %}
 
-
-              {% else %}
-                  {% if status == 0 %}
-              <button id="walkButtonDisableStart">
-
-                  {% elif status == 1 %}
-              <button id="walkButtonDisableGreen">
-
-                  {% elif status == 2 %}
-              <button id="walkButtonDisableOrange">
-
-                  {% elif status == 3 %}
-              <button id="walkButtonDisableRed">
-
-                  {% endif %}
-              {% endif %}
-
-              <span class="walkButton__icon">
-                  <ion-icon name="paw-sharp"></ion-icon>
-              </button>
-          </div>
-          </i>
-        </a>
+                        <span class="walkButton__icon">
+                          <ion-icon name="paw-sharp"></ion-icon>
+                      </button>
+      </div>
+      </i>
+    </a>
 
 
-        <a href="{{ url_for('invite_friends') }}" class="nav__link">
-        {% if title == "Notification" %}
-            <i class="far fa-bell nav__icon text-white" aria-hidden="true"></i>
-            <span class="nav__text text-white">Notification</span>
-        {% else %}
-            <i class="far fa-bell nav__icon" aria-hidden="true"></i>
-            <span class="nav__text">Notification</span>
-        {% endif %}
-        </a>
+    <a href="{{ url_for('notifications_page') }}" class="nav__link">
+      {% if title == "Notification" %}
+      <i class="far fa-bell nav__icon text-white" aria-hidden="true"></i>
+      <span class="nav__text text-white">Notification</span>
+      {% else %}
+      <i class="far fa-bell nav__icon" aria-hidden="true"></i>
+      <span class="nav__text">Notification</span>
+      {% endif %}
+    </a>
 
 
-        <a href="{{ url_for('join_walk') }}" class="nav__link">
-        {% if title == "Profile" %}
-            <i class="far fa-user-circle nav__icon text-white" aria-hidden="true"></i>
-            <span class="nav__text text-white">Profile</span>
-        {% else %}
-            <i class="far fa-user-circle nav__icon" aria-hidden="true"></i>
-            <span class="nav__text">Profile</span>
-        {% endif %}
-        </a>
-    </nav>
+    <a href="{{ url_for('get_user_details') }}" class="nav__link">
+      {% if title == "Profile" %}
+      <i class="far fa-user-circle nav__icon text-white" aria-hidden="true"></i>
+      <span class="nav__text text-white">Profile</span>
+      {% else %}
+      <i class="far fa-user-circle nav__icon" aria-hidden="true"></i>
+      <span class="nav__text">Profile</span>
+      {% endif %}
+    </a>
+  </nav>
 
 
-    {% if title == "Map" %}
+  {% if title == "Map" %}
 
-          <div class="popup5 center">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-          <div id="close1">
-            <i class="fas fa-times"></i>
-          </div>
-            <h3 class="popup-header">Wait a second! Read about your three possible walk modes before you start:</h3>
-        <div class="container0">
-            <div class="img">
-                <img src="static/3walk-modes.svg" width="110" hight="50px" alt="">
-            </div>
-            <link rel="preconnect" href="https://fonts.gstatic.com">
-            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800&display=swap" rel="stylesheet">
-            <div class="description5">
-                Everyone can see my current location and contact me.
-                <br /><br /><br />
-                Only my friends can see my current location and contact me.
-                <br /><br /><br />
-                Only my dog's breed is visible with my location. No walker can contact, navigate, or view my profile.
-            </div>
-        </div>
-              <br>
-        <div class="gotit-btn">
-            <button id="gotit-popup-btn">Got it</button>
-        </div>
-        </div>
+  <div class="popup5 center">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <div id="close1">
+      <i class="fas fa-times"></i>
     </div>
-
-     <!-- Popup choose a walk mode in the beginning of the walk -->
-
-    <div class="popup7 center">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-         <div id="close2">
-            <i class="fas fa-times"></i>
-          </div>
-        <h3 class="popup-header">Choose your walk mode</h3>
-        <div class="container4"><br />
-            <div class="green-btn">
-                <button id="green-popup-btn" onclick = "greenFunc(true)">
-                <span class="green-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-            <div class="orange-btn">
-                <button id="orange-popup-btn" onclick = "orangeFunc(true)">
-                <span class="orange-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-            <div class="red-btn">
-                <button id="red-popup-btn" onclick = "redFunc(true)">
-                <span class="red-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-        </div>
+    <h3 class="popup-header">Wait a second! Read about your three possible walk modes before you start:</h3>
+    <div class="container0">
+      <div class="img">
+        <img src="static/3walk-modes.svg" width="110" hight="50px" alt="">
+      </div>
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800&display=swap" rel="stylesheet">
+      <div class="description5">
+        Everyone can see my current location and contact me.
+        <br /><br /><br />
+        Only my friends can see my current location and contact me.
+        <br /><br /><br />
+        Only my dog's breed is visible with my location. No walker can contact, navigate, or view my profile.
+      </div>
     </div>
-
-
-     <!-- Popup choose time to go for a walk- now, timer or event -->
-
-    <div class="popup2 center">
-
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-         <div id="close3">
-            <i class="fas fa-times"></i>
-          </div>
-        <h2 class="popup-header">You'll be out in...</h2><br />
-        <div class="now-btn">
-            <button id="now-popup-btn">Now</button>
-        </div>
-        <div class="create-event-btn">
-          <button id="createEvent-popup-btn">Create event</button>
-        </div>
+    <br>
+    <div class="gotit-btn">
+      <button id="gotit-popup-btn">Got it</button>
     </div>
+  </div>
+  </div>
 
+  <!-- Popup choose a walk mode in the beginning of the walk -->
 
-
-    <!-- Popup change mode in the middle or finish walk -->
-
-    <div class="popup6 center">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-         <div id="close4">
-            <i class="fas fa-times"></i>
-          </div>
-        <p><h3 class="popup-header">Choose your walk mode or finish walk</h3></p>
-        <div class="container5"><br />
-            <div class="green-btn">
-                <button id="green-popup-btn2" onclick = "greenFunc()">
-                <span class="green-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-            <div class="orange-btn">
-                <button id="orange-popup-btn2" onclick = "orangeFunc()">
-                <span class="orange-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-            <div class="red-btn">
-                <button id="red-popup-btn2" onclick = "redFunc()">
-                <span class="red-btn__icon">
-                    <ion-icon name="paw-sharp"></ion-icon>
-                </button>
-            </div>
-            <div class="exit-btn">
-                <button id="exit-popup-btn" onclick = "finishedWlkFunc()">
-                <span class="exit-btn__icon">
-                    <ion-icon name="close-circle-sharp"></ion-icon>
-                </button>
-            </div>
-        </div>
+  <div class="popup7 center">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <div id="close2">
+      <i class="fas fa-times"></i>
     </div>
-
-    <!-- Popup finished walk msg -->
-
-    <div class="popup1 center">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-         <div id="close5">
-            <i class="fas fa-times"></i>
-          </div>
-        <h2 class="popup-header">What a great walk it was!</h2>
-        <div class="description1">
-            <h3 class="popup-header2">See you soon! Maybe your friends will want to set a date together</h3>
-        </div>
-        <div class="continue-btn">
-            <button id="continue-popup-btn">Continue</button>
-        </div>
+    <h3 class="popup-header">Choose your walk mode</h3>
+    <div class="container4"><br />
+      <div class="green-btn">
+        <button id="green-popup-btn" onclick="greenFunc(true)">
+          <span class="green-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
+      <div class="orange-btn">
+        <button id="orange-popup-btn" onclick="orangeFunc(true)">
+          <span class="orange-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
+      <div class="red-btn">
+        <button id="red-popup-btn" onclick="redFunc(true)">
+          <span class="red-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
     </div>
+  </div>
 
-    <script type="text/javascript">
-    let userStatus =0;
+
+  <!-- Popup choose time to go for a walk- now, timer or event -->
+
+  <div class="popup2 center">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <div id="close3">
+      <i class="fas fa-times"></i>
+    </div>
+    <h2 class="popup-header">You'll be out in...</h2><br />
+    <div class="now-btn">
+      <button id="now-popup-btn">Now</button>
+    </div>
+    <div class="create-event-btn">
+      <a id="createEvent-popup-btn" href="{{ url_for('create_event') }}">Create event</a>
+    </div>
+  </div>
+
+
+
+  <!-- Popup change mode in the middle or finish walk -->
+
+  <div class="popup6 center">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <div id="close4">
+      <i class="fas fa-times"></i>
+    </div>
+    <p>
+    <h3 class="popup-header">Choose your walk mode or finish walk</h3>
+    </p>
+    <div class="container5"><br />
+      <div class="green-btn">
+        <button id="green-popup-btn2" onclick="greenFunc()">
+          <span class="green-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
+      <div class="orange-btn">
+        <button id="orange-popup-btn2" onclick="orangeFunc()">
+          <span class="orange-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
+      <div class="red-btn">
+        <button id="red-popup-btn2" onclick="redFunc()">
+          <span class="red-btn__icon">
+            <ion-icon name="paw-sharp"></ion-icon>
+        </button>
+      </div>
+      <div class="exit-btn">
+        <button id="exit-popup-btn" onclick="finishedWlkFunc()">
+          <span class="exit-btn__icon">
+            <ion-icon name="close-circle-sharp"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup finished walk msg -->
+
+  <div class="popup1 center">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <div id="close5">
+      <i class="fas fa-times"></i>
+    </div>
+    <h2 class="popup-header">What a great walk it was!</h2>
+    <div class="description1">
+      <h3 class="popup-header2">See you soon! Maybe your friends will want to set a date together</h3>
+    </div>
+    <div class="continue-btn">
+      <button id="continue-popup-btn">Continue</button>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    let userStatus = 0;
+
+    {% if status == -1 %}
+    console.log("hey1")
+    {% endif %}
 
     getStatus();
 
-      function greenFunc(needUpdate){
-        document.getElementById("walkButton").style.background = "#B6E13D";
-        document.getElementById("walkButton").style.color = "#5C6C2F";
-        if(needUpdate) update_status(1);
-      }
+    function greenFunc(needUpdate) {
+      document.getElementById("walkButton").style.background = "#B6E13D";
+      document.getElementById("walkButton").style.color = "#5C6C2F";
+      if (needUpdate) update_status(1);
+    }
 
-      function orangeFunc(needUpdate){
-        document.getElementById("walkButton").style.background = "#FFAD0E";
-        document.getElementById("walkButton").style.color = "#986503";
-        if(needUpdate) update_status(2);
-      }
+    function orangeFunc(needUpdate) {
+      document.getElementById("walkButton").style.background = "#FFAD0E";
+      document.getElementById("walkButton").style.color = "#986503";
+      if (needUpdate) update_status(2);
+    }
 
-      function redFunc(needUpdate){
-        document.getElementById("walkButton").style.background = "#E73E30";
-        document.getElementById("walkButton").style.color = "#F5A29B";
-        if(needUpdate) update_status(3);
-      }
+    function redFunc(needUpdate) {
+      document.getElementById("walkButton").style.background = "#E73E30";
+      document.getElementById("walkButton").style.color = "#F5A29B";
+      if (needUpdate) update_status(3);
+    }
 
-      function finishedWlkFunc(){
-        document.getElementById("walkButton").style.background = "linear-gradient(#A1B0FF,#FBCBFF)";
-        document.getElementById("walkButton").style.color = "#4B0B9D";
-        update_status(0);
-      }
+    function finishedWlkFunc() {
+      document.getElementById("walkButton").style.background = "linear-gradient(#A1B0FF,#FBCBFF)";
+      document.getElementById("walkButton").style.color = "#4B0B9D";
+      update_status(0);
+    }
 
-     function getStatus() {
+    function getStatus() {
       fetch("/api/get_status")
         .then(function (response) {
           return response.json();
         })
         .then(function (status) {
-          userStatus= status;
-            updateStatusBtn();
-  });
+          userStatus = status;
+          updateStatusBtn();
+        });
     }
 
     function updateStatusBtn() {
-        switch (userStatus) {
-            case 1:
-                greenFunc(false);
-                return;
-            case 2:
-                orangeFunc(false);
-                return;
-            case 3:
-                redFunc(false);
-                return;
-        }
+      switch (userStatus) {
+        case 1:
+          greenFunc(false);
+          return;
+        case 2:
+          orangeFunc(false);
+          return;
+        case 3:
+          redFunc(false);
+          return;
+      }
     }
 
     ////////////////// popups ///////////////////
 
     const button = document.querySelector('button')
 
-      // active the popups
+    // active the popups
 
-      document.getElementById("walkButton").addEventListener("click",function(){
-        document.getElementsByClassName("popup5")[0].classList.add("active5");
+    document.getElementById("walkButton").addEventListener("click", function () {
+      document.getElementsByClassName("popup5")[0].classList.add("active5");
+      button.disabled = true;
+    });
+
+    document.getElementById("gotit-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup2")[0].classList.add("active2");
+    });
+
+    document.getElementById("gotit-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup5")[0].classList.remove("active5");
+    });
+
+    document.getElementById("now-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup7")[0].classList.add("active7");
+    });
+
+    document.getElementById("now-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup2")[0].classList.remove("active2");
+    });
+
+    document.getElementById("green-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup7")[0].classList.remove("active7");
+      insidePopUp()
+    });
+
+
+    document.getElementById("orange-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup7")[0].classList.remove("active7");
+      insidePopUp()
+
+    });
+    document.getElementById("red-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup7")[0].classList.remove("active7");
+      insidePopUp()
+
+    });
+
+    document.getElementById("now-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup2")[0].classList.remove("active2");
+    });
+
+
+    document.getElementById("createEvent-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup2")[0].classList.remove("active2");
+    });
+
+    document.getElementById("createEvent-popup-btn").addEventListener("click", function () {
+      document.getElementsByClassName("popup5")[0].classList.remove("active5");
+    });
+
+    function insidePopUp() {
+
+      button.disabled = false;
+      document.getElementById("gotit-popup-btn").addEventListener("click", function () {
+        document.getElementsByClassName("popup5")[0].classList.remove("active5");
+      });
+
+      document.getElementById("walkButton").addEventListener("click", function () {
+        document.getElementsByClassName("popup7")[0].classList.remove("active7");
+      });
+
+      document.getElementById("walkButton").addEventListener("click", function () {
+        document.getElementsByClassName("popup6")[0].classList.add("active6");
         button.disabled = true;
       });
 
-      document.getElementById("gotit-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup2")[0].classList.add("active2");
-      });
-
-      document.getElementById("gotit-popup-btn").addEventListener("click",function(){
+      document.getElementById("walkButton").addEventListener("click", function () {
         document.getElementsByClassName("popup5")[0].classList.remove("active5");
       });
 
-      document.getElementById("now-popup-btn").addEventListener("click",function(){
-          document.getElementsByClassName("popup7")[0].classList.add("active7");
-        });
-
-      document.getElementById("now-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup2")[0].classList.remove("active2");
-      });
-
-      document.getElementById("green-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-        insidePopUp()
-      });
-
-
-      document.getElementById("orange-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-        insidePopUp()
-
-      });
-      document.getElementById("red-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-        insidePopUp()
-
-      });
-
-      document.getElementById("now-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup2")[0].classList.remove("active2");
-      });
-
-
-      document.getElementById("createEvent-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup2")[0].classList.remove("active2");
-      });
-
-      document.getElementById("createEvent-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup5")[0].classList.remove("active5");
-      });
-
-      function insidePopUp(){
-
-        button.disabled = false;
-      document.getElementById("gotit-popup-btn").addEventListener("click",function(){
-        document.getElementsByClassName("popup5")[0].classList.remove("active5");
-      });
-
-        document.getElementById("walkButton").addEventListener("click",function(){
-          document.getElementsByClassName("popup7")[0].classList.remove("active7");
-        });
-
-        document.getElementById("walkButton").addEventListener("click",function(){
-          document.getElementsByClassName("popup6")[0].classList.add("active6");
-          button.disabled = true;
-        });
-
-        document.getElementById("walkButton").addEventListener("click",function(){
-          document.getElementsByClassName("popup5")[0].classList.remove("active5");
-        });
-
-        document.getElementById("green-popup-btn2").addEventListener("click",function(){
-          document.getElementsByClassName("popup6")[0].classList.remove("active6");
-          button.disabled = false;
-        });
-
-        document.getElementById("orange-popup-btn2").addEventListener("click",function(){
-          document.getElementsByClassName("popup6")[0].classList.remove("active6");
-          button.disabled = false;
-        });
-
-        document.getElementById("red-popup-btn2").addEventListener("click",function(){
-          document.getElementsByClassName("popup6")[0].classList.remove("active6");
-          button.disabled = false;
-        });
-
-        document.getElementById("exit-popup-btn").addEventListener("click",function(){
-          document.getElementsByClassName("popup1")[0].classList.add("active1");
-        });
-
-        document.getElementById("continue-popup-btn").addEventListener("click",function(){
-          document.getElementsByClassName("popup1")[0].classList.remove("active1");
-        });
-        document.getElementById("exit-popup-btn").addEventListener("click",function(){
-          document.getElementsByClassName("popup6")[0].classList.remove("active6");
-        });
-        document.getElementById("continue-popup-btn").addEventListener("click",function(){
-          document.getElementsByClassName("popup7")[0].classList.remove("active7");
-
-        });
-      }
-
-      // close windows in X
-      document.getElementById("close1").addEventListener("click",function(){
-        document.getElementsByClassName("popup5")[0].classList.remove("active5");
-        button.disabled = false;
-        });
-      document.getElementById("close2").addEventListener("click",function(){
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-        button.disabled = false;
-        });
-      document.getElementById("close3").addEventListener("click",function(){
-        document.getElementsByClassName("popup2")[0].classList.remove("active2");
-        button.disabled = false;
-        });
-      document.getElementById("close4").addEventListener("click",function(){
+      document.getElementById("green-popup-btn2").addEventListener("click", function () {
         document.getElementsByClassName("popup6")[0].classList.remove("active6");
         button.disabled = false;
-        });
-      document.getElementById("close5").addEventListener("click",function(){
-        document.getElementsByClassName("popup1")[0].classList.remove("active1");
+      });
+
+      document.getElementById("orange-popup-btn2").addEventListener("click", function () {
+        document.getElementsByClassName("popup6")[0].classList.remove("active6");
         button.disabled = false;
-        });
+      });
 
-    </script>
+      document.getElementById("red-popup-btn2").addEventListener("click", function () {
+        document.getElementsByClassName("popup6")[0].classList.remove("active6");
+        button.disabled = false;
+      });
+
+      document.getElementById("exit-popup-btn").addEventListener("click", function () {
+        document.getElementsByClassName("popup1")[0].classList.add("active1");
+      });
+
+      document.getElementById("continue-popup-btn").addEventListener("click", function () {
+        document.getElementsByClassName("popup1")[0].classList.remove("active1");
+      });
+      document.getElementById("exit-popup-btn").addEventListener("click", function () {
+        document.getElementsByClassName("popup6")[0].classList.remove("active6");
+      });
+      document.getElementById("continue-popup-btn").addEventListener("click", function () {
+        document.getElementsByClassName("popup7")[0].classList.remove("active7");
+
+      });
+    }
+
+    // close windows in X
+    document.getElementById("close1").addEventListener("click", function () {
+      document.getElementsByClassName("popup5")[0].classList.remove("active5");
+      button.disabled = false;
+    });
+    document.getElementById("close2").addEventListener("click", function () {
+      document.getElementsByClassName("popup7")[0].classList.remove("active7");
+      button.disabled = false;
+    });
+    document.getElementById("close3").addEventListener("click", function () {
+      document.getElementsByClassName("popup2")[0].classList.remove("active2");
+      button.disabled = false;
+    });
+    document.getElementById("close4").addEventListener("click", function () {
+      document.getElementsByClassName("popup6")[0].classList.remove("active6");
+      button.disabled = false;
+    });
+    document.getElementById("close5").addEventListener("click", function () {
+      document.getElementsByClassName("popup1")[0].classList.remove("active1");
+      button.disabled = false;
+    });
+
+  </script>
 
 
 
-{% endif %}
+  {% endif %}
 
 
 </body>
+
 </html>

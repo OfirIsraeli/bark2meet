@@ -21,7 +21,7 @@ login_manager.login_message_category = 'info'
 from bark2meet import routes
 from bark2meet.areas import area
 
-try:
-    area.init_areas()
-except:
-    print("no users in db")
+# try:
+#     area.init_areas()
+# except:
+#     print("no users in db")
