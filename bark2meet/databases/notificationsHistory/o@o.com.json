@@ -2,23 +2,36 @@
     "notifications": [
         {
             "email": "o@o.com",
-            "title": "",
-            "msg": "oo was on the go!",
-            "pos_x": 32.067819,
-            "pos_y": 34.7777832,
-            "type": 0,
-            "issue_time": "2021-05-21 17:39:35",
-            "from": "g@g.com"
+            "title": "first walk just got an addition!",
+            "msg": "Gal Kelman has joined your walk",
+            "pos_x": 32.06790328847119,
+            "pos_y": 34.777892221680354,
+            "type": 6,
+            "from": "g@g.com",
+            "issue_time": "2021-06-27 15:17:02",
+            "image": "bark2meet/static/users_data/g@g.com\\g.png"
         },
         {
             "email": "o@o.com",
-            "title": "Friend request",
-            "msg": "Dolev has accepted your friend request!",
-            "pos_x": 32.06795957807788,
-            "pos_y": 34.77797208747326,
-            "type": 3,
-            "issue_time": "2021-05-21 17:39:43",
-            "from": "g@g.com"
+            "title": "Invitation approved",
+            "msg": "Gal Kelman has accepted your walk invitation!",
+            "pos_x": 32.06790328847119,
+            "pos_y": 34.777892221680354,
+            "type": 5,
+            "from": "g@g.com",
+            "issue_time": "2021-06-27 15:22:53",
+            "image": "bark2meet/static/users_data/g@g.com\\g.png"
+        },
+        {
+            "email": "o@o.com",
+            "title": "Invitation approved",
+            "msg": "Gal Kelman has accepted your walk invitation!",
+            "pos_x": 32.06790328847119,
+            "pos_y": 34.777892221680354,
+            "type": 5,
+            "from": "g@g.com",
+            "issue_time": "2021-06-27 16:00:53",
+            "image": "bark2meet/static/users_data/g@g.com\\g.png"
         }
     ]
 }

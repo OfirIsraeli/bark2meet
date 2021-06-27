@@ -120,7 +120,8 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"\n\nUser '{self.full_name}': \n'{self.email}'\n x:'{self.pos_x}'\n y:'{self.pos_y}'" \
-               f"\n current_area_x:'{self.current_area_x}'\n current_area_y:'{self.current_area_y}'\n"
+               f"\n current_area_x:'{self.current_area_x}'\n current_area_y:'{self.current_area_y}'\n"\
+               f"\n online: '{self.is_online}'"
 
     def __eq__(self, other):
         return self.email == other.email

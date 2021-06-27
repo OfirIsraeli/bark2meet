@@ -1,49 +1,40 @@
 {
     "events": [
         {
-            "id": 10,
-            "privacy": "green",
-            "creator": "d@d.com",
-            "title": "adawdwa",
-            "joined": [
-                "o@o.com"
-            ],
-            "location": "awdawdawd",
-            "time": "13:42:00"
-        },
-        {
-            "id": 11,
+            "id": 32,
             "privacy": "green",
             "creator": "o@o.com",
-            "title": "wadawdawdaw",
+            "title": "first walk",
             "joined": [
-                "o@o.com"
+                "o@o.com",
+                "g@g.com"
             ],
-            "location": "awdawdwad",
-            "time": "21:20:00"
+            "location": "first place",
+            "time": "18:46:00"
         },
         {
-            "id": 12,
-            "privacy": "green",
-            "creator": "g@g.com",
-            "title": "Gal's Event",
-            "joined": [
-                "g@g.com",
-                "o@o.com"
-            ],
-            "location": "Gals place",
-            "time": "21:23:00"
-        },
-        {
-            "id": 25,
+            "id": 33,
             "privacy": "green",
             "creator": "o@o.com",
-            "title": "Ofir walk2",
+            "title": "2nd walk",
             "joined": [
-                "o@o.com"
+                "o@o.com",
+                "g@g.com"
             ],
-            "location": "tlv2",
-            "time": "22:00:00"
+            "location": "2nd location",
+            "time": "19:21:00"
+        },
+        {
+            "id": 34,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "tlv",
+            "joined": [
+                "o@o.com",
+                "g@g.com"
+            ],
+            "location": "tlv",
+            "time": "21:22:00"
         }
     ]
 }

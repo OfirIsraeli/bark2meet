@@ -1,259 +1,229 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>My profile</title>
-    <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
-    <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="../static/my_profile.css">
-</head>
-<body>
-    <script type="text/javascript">
-        function openPage(pageName, elmnt) {
-            // Hide all elements with class="tabcontent" by default */
-            var i, container, tablinks;
-            container = document.getElementsByClassName("container");
-            for (i = 0; i < container.length; i++) {
-                container[i].style.display = "none";
-            }
+{% extends "nav_bar.html" %}
+{% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>My profile</title>
+<link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+    crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
+<script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="../static/my_profile.css">
 
-            // Remove the background color of all tablinks/buttons
-            tablinks = document.getElementsByClassName("nav__link_middle");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].style.backgroundColor = "#F8EAFF";
-            }
-
-            // Show the specific tab content
-            document.getElementById(pageName).style.display = "block";
-
-            // Add the specific color to the button used to open the tab content
-            elmnt.style.backgroundColor = "#F4DEFF";
-            linkIcon = elmnt.getElementsByClassName("nav__icon");
-            linkIcon.style.color = "#FFF";
+<script type="text/javascript">
+    function openPage(pageName, elmnt) {
+        // Hide all elements with class="tabcontent" by default */
+        var i, container, tablinks;
+        container = document.getElementsByClassName("container");
+        for (i = 0; i < container.length; i++) {
+            container[i].style.display = "none";
         }
 
+        // Remove the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("nav__link_middle");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "#F8EAFF";
+        }
 
-        // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultOpen").click();
-    
-    </script>
+        // Show the specific tab content
+        document.getElementById(pageName).style.display = "block";
 
-    <div class="event-form-box">
-        <div class="row">
-            <button class = "back_button">
-                <img src="../static/Vector.svg">
-            </button>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-xs-2"><img src="../static/smallpaw.svg" class="smallpaw"></div>
-            <div class="col-xs-10 title"><span>My Profile</span></div>
-        </div>
+        // Add the specific color to the button used to open the tab content
+        elmnt.style.backgroundColor = "#F4DEFF";
+        linkIcon = elmnt.getElementsByClassName("nav__icon");
+        linkIcon.style.color = "#FFF";
+    }
 
-        <div class="profile-titles">
-            <img class="owner-pic" src="../static/dogs_owners1.jpg">
-            <img class="dog-pic" src="../static/dog_head.jpg">
-            <div class="names">
-                <span class="owner-name">Kim</span>
-                <span> & </span>
-                <span class="dog-name">Pup</span>
-            </div>
-        </div>
 
-        <div class="row justify-content-center info-box">
-            <div class="column-md-12 info-owner">
-                <span>Gender</span><br>
-                <span>Age</span>
-            </div>
-            <div class="column-md-12 info-dog">
-                <span>Gender</span><br>
-                <span>Age</span><br>
-                <span>Temperament</span><br>
-                <span>Colors</span>
-            </div>
-            
-        </div>
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
 
-        <!-- My profile section bar -->
-        <div class="nav middle_nav">
-            <button class="nav__link_middle" onclick="openPage('settings', this)" id="defaultOpen">
-                <i class="fas fa-cog nav__icon" aria-hidden="true"></i>
-            </button>
-            <button class="nav__link_middle" onclick="openPage('albums', this)" id="defaultOpen">
-                <i class="far fa-images nav__icon current" aria-hidden="true"></i>
-            </button>
-            <a href="#" class="nav__link_middle">
-                <i class="fas fa-sign-out-alt nav__icon" aria-hidden="true"></i>
-                <span class="nav__text">Log Out</span>
-            </a>
-            <i class=""></i>
-        </div>
+</script>
 
-        <!-- Albums -->
-        <div id="albums"class='container'>
-            <section class="albums-gallery">
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                <a href="inside_album.html">
-                    <div class="one-album-item">
-                        <div style="background-image: url('../static/dog_head.jpg');"class="one-album-item-img"></div>
-                        <p><strong>Gan Saker Evening</strong></p>
-                        <p>15 pictures</p>
-                    </div>
-                </a>
-                
-                
-            </section>
-        </div>
+<div class="event-form-box">
+    <div class="row">
+        <button class="back_button">
+            <img src="../static/Vector.svg">
+        </button>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xs-2"><img src="../static/smallpaw.svg" class="smallpaw"></div>
+        <div class="col-xs-10 title"><span>My Profile</span></div>
+    </div>
 
-        <!-- settings -->
-        <div id="settings" class="container">
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h1>Map:</h1></div>
-                </div>
-            </div>
+    <div class="profile-titles">
+        {% if user.user_img != "static/default-account-img.png"%}
+        <img class="owner-pic" src="../{{user.user_img[10:]}}">
+        {% else %}
+        <img class="owner-pic" src="../{{user.user_img}}">
+        {% endif %}
 
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h2>Radius of view on map:</h2></div>
-                </div>
-            </div>
+        {% if user.dog_img != "static/default-account-img.png"%}
+        <img class="dog-pic" src="../{{user.dog_img[10:]}}">
+        {% else %}
+        <img class="dog-pic" src="../{{user.dog_img}}">
+        {% endif %}
 
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="slidecontainer">
-                        <input type="range" min="1" max="10" value="50" class="slider" id="myRange">
-                        <p class="map-radius">Radius By KM: <span
-                                id="demo"></span></p>
-                    </div>
-                    <script>
-                        var slider = document.getElementById("myRange");
-                        var output = document.getElementById("demo");
-                        output.innerHTML = slider.value;
-
-                        slider.oninput = function() {
-                          output.innerHTML = this.value;
-                        }
-                    </script>
-                </div>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h1>Notifications:</h1></div>
-                </div>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h2>Notify a walk started by:</h2></div>
-                </div>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <label class="pref-box"> My friends only
-                        <input type="radio" name="radio">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="pref-box"> New walkers around, My friends
-                        <input type="radio" name="radio">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="pref-box"> Mute all notifications
-                        <input type="radio" name="radio">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h1>Profile:</h1></div>
-                </div>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <div class="page-header"><h1>Edit your profile
-                        pictures:</h1></div>
-                </div>
-            </div>
-
-            <div class="row">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                                    {% if messages%}
-                                        <div class="invalid-feedback">
-                                        {% for category, message in messages %}
-                                            {% if category == "file_format_error" %}
-                                          <span>{{ message }}</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                       </div>
-                                    {% endif %}
-                {% endwith %}
-
-                <form method="post" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
-                    <div class="col-sm-6 img-wrapper human">
-                        {{ form.user_img(class="my-file") }}
-                    </div>
-                    <div class="col-sm-6 img-wrapper dog">
-                        {{ form.dog_img(class="my-file") }}
-                    </div>
-                    {{ form.submit(class="button") }}
-                </form>
-            </div>
-
-            <div class = "row justify-content-center">
-                <div class = "col-sm-6 d-inline float-left">
-                    <button class="delete">Delete Account</button>
-                </div>
-            </div>
+        <div class="names">
+            <span class="owner-name">{{user.full_name.rsplit(' ', 1)[0]}}</span>
+            <span> & </span>
+            <span class="dog-name">{{user.dog_name}}</span>
         </div>
     </div>
 
-    
+    <div class="row justify-content-center info-box">
+        <div class="column-md-12 info-owner">
+            {% if user.gender == 1 %}
+            <span>Male</span><br>
+            {% endif %}
+            {% if user.gender == 0 %}
+            <span>Female</span><br>
+            {% endif %}
+            {% if user.gender == 3 %}
+            <span>Unidentified</span><br>
+            {% endif %}
+            <span>{{age}}</span>
+        </div>
+        <div class="column-md-12 info-dog">
+            {% if user.dog_gender == 1 %}
+            <span>Male</span><br>
+            {% endif %}
+            {% if user.dog_gender == 0 %}
+            <span>Female</span><br>
+            {% endif %}
+            <span>{{user.dog_age.rsplit('.', 1)[0]}}</span><br>
+            <span>{{user.dog_temperament}}</span><br>
+            <span>{{user.dog_color}}</span>
+        </div>
 
-    <!-- nav bar -->
-    
-</body>
-</html>
+    </div>
+
+    <!-- My profile section bar -->
+    <div class="nav middle_nav">
+        <button class="nav__link_middle" onclick="openPage('settings', this)" id="defaultOpen">
+            <i class="fas fa-cog nav__icon" aria-hidden="true"></i>
+        </button>
+        <button class="nav__link_middle" onclick="openPage('albums', this)" id="defaultOpen">
+            <i class="far fa-images nav__icon current" aria-hidden="true"></i>
+        </button>
+        <a href="{{ url_for('logout') }}" class="nav__link_middle">
+            <i class="fas fa-sign-out-alt nav__icon" aria-hidden="true"></i>
+            <span class="nav__text">Log Out</span>
+        </a>
+        <i class=""></i>
+    </div>
+
+    <!-- Albums -->
+    <div id="albums" class='container'>
+        <section class="albums-gallery">
+            No Albums Yet!
+
+
+        </section>
+    </div>
+
+    <!-- settings -->
+    <div id="settings" class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h1>Map:</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h2>Radius of view on map:</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="10" value="50" class="slider" id="myRange">
+                    <p class="map-radius">Radius By KM: <span id="demo"></span></p>
+                </div>
+                <script>
+                    var slider = document.getElementById("myRange");
+                    var output = document.getElementById("demo");
+                    output.innerHTML = slider.value;
+
+                    slider.oninput = function () {
+                        output.innerHTML = this.value;
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h1>Notifications:</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h2>Notify a walk started by:</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <label class="pref-box"> My friends only
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="pref-box"> New walkers around, My friends
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="pref-box"> Mute all notifications
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+        <br>
+        <br>
+
+
+        <!-- <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h1>Profile:</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <div class="page-header">
+                    <h1>Edit your profile
+                        pictures:</h1>
+                </div>
+            </div>
+        </div> -->
+
+
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 d-inline float-left">
+                <button class="delete">Delete Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

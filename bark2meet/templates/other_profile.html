@@ -12,21 +12,68 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
 <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="../static/other_profile.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='other_profile.css') }}">
+
+<!-- A Java Script function to activate albums / walks as tabs on the profile -->
+<script type="text/javascript">
+    function openPage(pageName, elmnt) {
+        // Hide all elements with class="container" by default */
+        var i, container, tablinks;
+        container = document.getElementsByClassName("container");
+        for (i = 0; i < container.length; i++) {
+            container[i].style.display = "none";
+        }
+
+        // Reset the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("nav__link_middle");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "#F8EAFF";
+        }
+
+        // Show the specific tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Add the specific color to the button used to open the tab content
+        elmnt.style.backgroundColor = "#F4DEFF";
+        linkIcon = elmnt.getElementsByClassName("nav__icon");
+        linkIcon.style.color = "#FFF";
+    }
+
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+
+</script>
+<!-- The full yellow card that contains the profile elements & tabs -->
 <div class="event-form-box">
+
+    <!-- back button row -->
     <div class="row">
         <button class="back_button">
             <img src="../static/Vector.svg">
         </button>
     </div>
+
+    <!-- Logo & title "Profile" -->
     <div class="row justify-content-center">
         <div class="col-xs-2"><img src="../static/smallpaw.svg" class="smallpaw"></div>
         <div class="col-xs-10 title"><span>Profile</span></div>
     </div>
 
+    <!-- profile pics & names -->
     <div class="profile-titles">
+        {% if user.user_img != "static/default-account-img.png"%}
         <img class="owner-pic" src="../{{user.user_img[10:]}}">
+        {% else %}
+        <img class="owner-pic" src="../{{user.user_img}}">
+        {% endif %}
+
+        {% if user.dog_img != "static/default-account-img.png"%}
         <img class="dog-pic" src="../{{user.dog_img[10:]}}">
+        {% else %}
+        <img class="dog-pic" src="../{{user.dog_img}}">
+        {% endif %}
+
         <div class="names">
             <span class="owner-name">{{user.full_name.rsplit(' ', 1)[0]}}</span>
             <span> & </span>
@@ -34,148 +81,295 @@
         </div>
     </div>
 
+    <!-- profile info details for dog & owner -->
     <div class="row justify-content-center info-box">
         <div class="column-md-12 info-owner">
-            <span>Gender</span><br>
-            <span>Age</span>
+            {% if user.gender == 1 %}
+            <span>Male</span><br>
+            {% endif %}
+            {% if user.gender == 0 %}
+            <span>Female</span><br>
+            {% endif %}
+            {% if user.gender == 3 %}
+            <span>Unidentified</span><br>
+            {% endif %}
+            <span>{{age}}</span>
         </div>
         <div class="column-md-12 info-dog">
-            <span>Gender</span><br>
-            <span>Age</span><br>
-            <span>Temperament</span><br>
-            <span>Colors</span>
+            {% if user.dog_gender == 1 %}
+            <span>Male</span><br>
+            {% endif %}
+            {% if user.dog_gender == 0 %}
+            <span>Female</span><br>
+            {% endif %}
+            <span>{{user.dog_age.rsplit('.', 1)[0]}}</span><br>
+            <span>{{user.dog_temperament}}</span><br>
+            <span>{{user.dog_color}}</span>
         </div>
 
     </div>
 
-    <!-- Other profile section bar -->
+    <!-- Other profile section bar - tabs menu & add friend -->
+    <!-- Changes made: the walks & albums tags changed from <a> to <button> -->
     <div class="nav middle_nav">
-        <a href="#" class="nav__link">
-            <i class="fas fa-shoe-prints nav__icon current" aria-hidden="true"></i>
-        </a>
-        <a href="#" class="nav__link">
+
+        <!-- the button for the 'walks' list tab -->
+        <button class="nav__link_middle" onclick="openPage('walks', this)">
+            <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
+        </button>
+
+        <!-- the button for the 'albums' list tab -->
+        <button class="nav__link_middle" onclick="openPage('albums', this)">
             <i class="far fa-images nav__icon" aria-hidden="true"></i>
-        </a>
-        <div class="nav__link">
-            <input type="checkbox" class="add_friend">
+        </button>
+
+        <!-- Add friend checkbox wrapper -->
+
+        <div class="nav__link_middle">
+
+            {% if is_friend == False %}
+            <button class="add_friend" onclick="addAsFriend(this)">
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
+            </button>
+
+            <!-- If a friend request has been sent -->
+            <button class="add_friend sent" style="display: none;" id="changeToAfterRequest">
+                <i class="fas fa-user-clock" aria-hidden="true"></i>
+            </button>
+            {% endif %}
+
+            {% if is_friend == True %}
+            <button class="add_friend approved">
+                <i class="fas fa-user-check" aria-hidden="true"></i>
+            </button>
+            {% endif %}
+            {% if is_friend == False %}
+            <!-- <input type="checkbox" class="add_friend" onchange="addAsFriend(this)" value="false">
             <div class="icon-box">
                 <i class="fas fa-user-plus" aria-hidden="true"></i>
-            </div>
+            </div> -->
+            {% endif %}
         </div>
+
 
     </div>
 
     <!-- walks -->
-    <div class='container'>
+    <div id="walks" class='container'>
         <div class="row">
             <div class="col-lg-12">
                 <div class="sms-send-page">
                     <ul class="list-group">
                         {% for event in future_events %}
+                        {% if is_friend == True %}
+                        {% if event['privacy'] == "orange" %}
+
                         <li class="list-group-item">
                             <div class="col-xs-4 pull-right">
-                                <input type="checkbox" class='orange' name="joinBtn" value="{{ event[" id"] }}">
+                                {% if current_user.email in event['joined'] %}
+                                <!-- Leave a public walk button -->
+                                <button class="join_walk orange leave">
+                                    Leave
+                                </button>
+                                {% else %}
+                                <!-- Join a public walk button -->
+                                <button class="join_walk orange" onclick="joinEvent({{ event['id'] }}, this)">
+                                    Join
+                                </button>
+                                <button class="join_walk orange leave" style="display:none"
+                                    id="changeToAfterJoin_{{ event['id'] }}">
+                                    Leave
+                                </button>
+                                {% endif %}
                             </div>
-                            <div class="col-xs-8 pull-left">
-                                <p class="walk-name"><strong>{{event.title}}</strong></p>
-                                <div class="profile-pics">
-                                    {% if event['users_images'][0] %}
-                                    <img class="head" src="../{{event['users_images'][0][10:]}}">
-                                    {% endif %}
-                                    {% if event['users_images'][1] %}
-                                    <img class="mid" src="../{{event['users_images'][1][10:]}}">
-                                    {% endif %}
-                                    {% if event['users_images'][2] %}
-                                    <img class="tail" src="../{{event['users_images'][2][10:]}}">
-                                    {% endif %}
+
+                            <a href="{{ url_for('event_details', id=event['id']) }}">
+                                <div class="col-xs-8 pull-left">
+                                    <p class="walk-name"><strong>{{event.title}}</strong></p>
+                                    <div class="profile-pics">
+                                        {% if event['users_images'][0] %}
+                                        <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][1] %}
+                                        <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][2] %}
+                                        <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% endif %}
 
 
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
-                        <!-- <li class="list-group-item">
-                                <div class="col-xs-4 pull-right">
-                                    <input type="checkbox" class='green' name="joinBtn" value="{{ event["id"] }}">
-                                </div>
+
+                        {% endif %}
+                        {% endif %}
+                        {% if event['privacy'] == "green" %}
+
+                        <li class="list-group-item">
+
+                            <div class="col-xs-4 pull-right">
+                                {% if current_user.email in event['joined'] %}
+                                <!-- Leave a public walk button -->
+                                <button class="join_walk green leave">
+                                    Leave
+                                </button>
+                                {% else %}
+                                <!-- Join a public walk button -->
+                                <button class="join_walk green" onclick="joinEvent({{ event['id'] }}, this)">
+                                    Join
+                                </button>
+                                <button class="join_walk green leave" style="display:none"
+                                    id="changeToAfterJoin_{{ event['id'] }}">
+                                    Leave
+                                </button>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('event_details', id=event['id']) }}">
                                 <div class="col-xs-8 pull-left">
-                                    <p class="walk-name"><strong>Gan Saker Wed Evening</strong></p>
+                                    <p class="walk-name"><strong>{{event.title}}</strong></p>
                                     <div class="profile-pics">
-                                        <img class="head" src="../static/dogs_owners1.jpg">
-                                        <img class="mid" src="../static/dogs_owners1.jpg">
-                                        <img class="tail" src="../static/dogs_owners1.jpg">
+                                        {% if event['users_images'][0] %}
+                                        <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][1] %}
+                                        <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][2] %}
+                                        <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% endif %}
+
+
                                     </div>
                                 </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="col-xs-4 pull-right">
-                                    <input type="checkbox" class='orange' name="joinBtn" value="{{ event["id"] }}">
-                                </div>
-                                <div class="col-xs-8 pull-left">
-                                    <p class="walk-name"><strong>Gan Saker Wed Evening</strong></p>
-                                    <div class="profile-pics">
-                                        <img class="head" src="../static/dogs_owners1.jpg">
-                                        <img class="mid" src="../static/dogs_owners1.jpg">
-                                        <img class="tail" src="../static/dogs_owners1.jpg">
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="col-xs-4 pull-right">
-                                    <input type="checkbox" class='orange' name="joinBtn" value="{{ event["id"] }}">
-                                </div>
-                                <div class="col-xs-8 pull-left">
-                                    <p class="walk-name"><strong>Gan Saker Wed Evening</strong></p>
-                                    <div class="profile-pics">
-                                        <img class="head" src="../static/dogs_owners1.jpg">
-                                        <img class="mid" src="../static/dogs_owners1.jpg">
-                                        <img class="tail" src="../static/dogs_owners1.jpg">
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="col-xs-4 pull-right">
-                                    <input type="checkbox" class='orange' name="joinBtn" value="{{ event["id"] }}">
-                                </div>
-                                <div class="col-xs-8 pull-left">
-                                    <p class="walk-name"><strong>Gan Saker Wed Evening</strong></p>
-                                    <div class="profile-pics">
-                                        <img class="head" src="../static/dogs_owners1.jpg">
-                                        <img class="mid" src="../static/dogs_owners1.jpg">
-                                        <img class="tail" src="../static/dogs_owners1.jpg">
-                                    </div>
-                                </div>
-                            </li> -->
+                            </a>
+                        </li>
+
+                        {% endif %}
                         {% endfor %}
-
-
                     </ul>
                 </div>
             </div>
         </div>
 
     </div>
+    <!-- Albums -->
+    <!-- Opens when the albums link is touched/pressed, on the middle nav bar -->
+    <!-- albums gallery container - each <a> is suppposed to be linked to the inner page of the album it wraps -->
+    <!-- inside each <a> there is a <div> wuth class 'one-album-item', that contains 
+    a picture from the album <div> + name <p> + number of pictures the album contains <p> -->
+
+    <div id="albums" class='container'>
+        <section class="albums-gallery">
+
+            <!-- album 1 -->
+            <!-- This is an album for cruella's walk event - optional -->
+            <!-- <a href="inside_album.html">
+                    <div class="one-album-item">
+                        <div style="background-image: url('../static/cruella.jpg');"class="one-album-item-img"></div>
+                        <p><strong>Hyde Park, Tue' morning</strong></p>
+                        <p>8 pictures</p>
+                    </div>
+                </a> -->
+
+            <!-- album 2 -->
+            <!-- Links to inner album page with 8 pictures -->
+            <a href="inside_album.html">
+                <div class="one-album-item">
+                    <div style="background-image: url('../static/6.jpg');" class="one-album-item-img"></div>
+                    <p><strong>Gan Saker, Birthday walk</strong></p>
+                    <p>8 pictures</p>
+                </div>
+            </a>
+
+            <!-- album 3 -->
+            <a href="#">
+                <div class="one-album-item">
+                    <div style="background-image: url('../static/4.jpg');" class="one-album-item-img"></div>
+                    <p><strong>I&S dogs walk, Rahavia</strong></p>
+                    <p>12 pictures</p>
+                </div>
+            </a>
+
+            <!-- album 4 -->
+            <a href="#">
+                <div class="one-album-item">
+                    <div style="background-image: url('../static/7.jpg');" class="one-album-item-img"></div>
+                    <p><strong>Rehavia, Morning</strong></p>
+                    <p>23 pictures</p>
+                </div>
+            </a>
+
+            <!-- album 5 -->
+            <a href="#">
+                <div class="one-album-item">
+                    <div style="background-image: url('../static/3.jpg');" class="one-album-item-img"></div>
+                    <p><strong>Gan Saker Evening</strong></p>
+                    <p>15 pictures</p>
+                </div>
+            </a>
+
+            <!-- album 6 -->
+            <a href="#">
+                <div class="one-album-item">
+                    <div style="background-image: url('../static/5.jpg');" class="one-album-item-img"></div>
+                    <p><strong>Sat', Gan Saker</strong></p>
+                    <p>45 pictures</p>
+                </div>
+            </a>
+
+        </section>
+    </div>
 </div>
 
+<script>
+    function joinEvent(event_id, element) {
+        const URL = '/join_to_event';
+        const xhr = new XMLHttpRequest();
+        let sender = JSON.stringify(event_id);
+        xhr.open("POST", URL);
+        xhr.send(sender);
+        element.style['display'] = 'none'
+        afterRequest = document.getElementById('changeToAfterJoin_' + event_id)
+        afterRequest.style['display'] = 'block'
+        console.log("success")
+    }
 
 
-<!-- nav bar -->
-<nav class="nav">
-    <a href="chat-page.html" class="nav__link nav__link--active">
-        <i class="far fa-comments nav__icon" aria-hidden="true"></i>
-        <span class="nav__text">Walks</span>
-    </a>
-    <a href="chat-page.html" class="nav__link">
-        <i class="far fa-map nav__icon" aria-hidden="true"></i>
-        <span class="nav__text">Map</span>
-    </a>
-    <a href="chat-page.html" class="nav__link">
-        <i class="far fa-bell nav__icon" aria-hidden="true"></i>
-        <span class="nav__text">Notification</span>
-    </a>
-    <a href="chat-page.html" class="nav__link">
-        <i class="far fa-user-circle nav__icon" aria-hidden="true"></i>
-        <span class="nav__text">Profile</span>
-    </a>
-</nav>
+    function addAsFriend(element) {
+        const URL = '/send_friend_request';
+        let sender = JSON.stringify([{{ user.id }}]);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", URL);
+    xhr.send(sender);
+    element.style['display'] = 'none'
+    afterRequest = document.getElementById('changeToAfterRequest')
+    afterRequest.style['display'] = 'block'
+    }
+
+    function addAsFriend1(e) {
+        if (e.value == "true") {
+
+            e.value = "false"
+            const URL = '/unsend_friend_request';
+            let sender = JSON.stringify([{{ user.id }}]);
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", URL);
+        xhr.send(sender);
+    }
+        else if (e.value == "false") {
+        e.value = "true"
+        const URL = '/send_friend_request';
+        let sender = JSON.stringify([{{ user.id }}]);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", URL);
+    xhr.send(sender);
+    }
+
+    }
+</script>
+
+
 
 {% endblock content %}

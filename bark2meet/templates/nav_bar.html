@@ -100,9 +100,9 @@
 
 
     <a href="{{ url_for('notifications_page') }}" class="nav__link">
-      {% if title == "Notification" %}
+      {% if title == "Notifications" %}
       <i class="far fa-bell nav__icon text-white" aria-hidden="true"></i>
-      <span class="nav__text text-white">Notification</span>
+      <span class="nav__text text-white">Notifications</span>
       {% else %}
       <i class="far fa-bell nav__icon" aria-hidden="true"></i>
       <span class="nav__text">Notification</span>
@@ -197,9 +197,12 @@
     <div class="now-btn">
       <button id="now-popup-btn">Now</button>
     </div>
-    <div class="create-event-btn">
-      <a id="createEvent-popup-btn" href="{{ url_for('create_event') }}">Create event</a>
-    </div>
+
+          <div class="create-event-btn">
+              <a href="{{ url_for('create_event') }}">
+            <button id="createEvent-popup-btn">Create event</button>
+              </a>
+          </div>
   </div>
 
 
@@ -217,19 +220,19 @@
     </p>
     <div class="container5"><br />
       <div class="green-btn">
-        <button id="green-popup-btn2" onclick="greenFunc()">
+        <button id="green-popup-btn2" onclick="greenFunc(true)">
           <span class="green-btn__icon">
             <ion-icon name="paw-sharp"></ion-icon>
         </button>
       </div>
       <div class="orange-btn">
-        <button id="orange-popup-btn2" onclick="orangeFunc()">
+        <button id="orange-popup-btn2" onclick="orangeFunc(true)">
           <span class="orange-btn__icon">
             <ion-icon name="paw-sharp"></ion-icon>
         </button>
       </div>
       <div class="red-btn">
-        <button id="red-popup-btn2" onclick="redFunc()">
+        <button id="red-popup-btn2" onclick="redFunc(true)">
           <span class="red-btn__icon">
             <ion-icon name="paw-sharp"></ion-icon>
         </button>
@@ -261,10 +264,9 @@
   </div>
 
   <script type="text/javascript">
-    let userStatus = 0;
-
 
     getStatus();
+
 
     function greenFunc(needUpdate) {
       document.getElementById("walkButton").style.background = "#B6E13D";
@@ -296,13 +298,14 @@
           return response.json();
         })
         .then(function (status) {
-          userStatus = status;
-          updateStatusBtn();
+          updateStatusBtn(status);
+          if(status !== -1)
+          newUser = false
         });
     }
 
-    function updateStatusBtn() {
-      switch (userStatus) {
+    function updateStatusBtn(status) {
+      switch (status) {
         case 1:
           greenFunc(false);
           return;
@@ -317,133 +320,160 @@
 
     ////////////////// popups ///////////////////
 
-    const button = document.querySelector('button')
-
-    // active the popups
-
-    document.getElementById("walkButton").addEventListener("click", function () {
-      document.getElementsByClassName("popup5")[0].classList.add("active5");
-      button.disabled = true;
-    });
-
-    document.getElementById("gotit-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup2")[0].classList.add("active2");
-    });
-
-    document.getElementById("gotit-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup5")[0].classList.remove("active5");
-    });
-
-    document.getElementById("now-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup7")[0].classList.add("active7");
-    });
-
-    document.getElementById("now-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup2")[0].classList.remove("active2");
-    });
-
-    document.getElementById("green-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup7")[0].classList.remove("active7");
-      insidePopUp()
-    });
+    var isWalking = false;
+      var newUser = true;
+      const button = document.querySelector('button');
 
 
-    document.getElementById("orange-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup7")[0].classList.remove("active7");
-      insidePopUp()
 
-    });
-    document.getElementById("red-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup7")[0].classList.remove("active7");
-      insidePopUp()
+      document.getElementById("walkButton").addEventListener("click",function(){
+        if (isWalking == false){
 
-    });
+          button.disabled = true;
 
-    document.getElementById("now-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup2")[0].classList.remove("active2");
-    });
+          if (newUser == true){
 
 
-    document.getElementById("createEvent-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup2")[0].classList.remove("active2");
-    });
 
-    document.getElementById("createEvent-popup-btn").addEventListener("click", function () {
-      document.getElementsByClassName("popup5")[0].classList.remove("active5");
-    });
+            // expailnation popup
+            document.getElementsByClassName("popup5")[0].classList.add("active5");
 
-    function insidePopUp() {
+            document.getElementById("close1").addEventListener("click",function(){
+              document.getElementsByClassName("popup5")[0].classList.remove("active5");
+              button.disabled = false;
+              document.getElementsByClassName("popup2")[0].classList.remove("active2");
+              newUser = true;
+            });
 
-      button.disabled = false;
-      document.getElementById("gotit-popup-btn").addEventListener("click", function () {
-        document.getElementsByClassName("popup5")[0].classList.remove("active5");
+            document.getElementById("gotit-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup5")[0].classList.remove("active5");
+              newUser = false;
+            });
+
+             document.getElementById("gotit-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup2")[0].classList.add("active2");
+              newUser = false;
+            });
+
+
+          }
+
+          document.getElementsByClassName("popup2")[0].classList.add("active2");
+
+          document.getElementById("close3").addEventListener("click",function(){
+            document.getElementsByClassName("popup2")[0].classList.remove("active2");
+            button.disabled = false;
+          });
+
+
+          document.getElementById("now-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup2")[0].classList.remove("active2");
+          });
+
+         document.getElementById("now-popup-btn").addEventListener("click",function(){
+            document.getElementsByClassName("popup7")[0].classList.add("active7");
+            button.disabled = true;
+
+          });
+
+          document.getElementById("close2").addEventListener("click",function(){
+            document.getElementsByClassName("popup7")[0].classList.remove("active7");
+            button.disabled = false;
+          });
+
+
+
+         document.getElementById("green-popup-btn").addEventListener("click",function(){
+            document.getElementsByClassName("popup7")[0].classList.remove("active7");
+            isWalking = true;
+            button.disabled = false;
+
+          });
+
+          document.getElementById("orange-popup-btn").addEventListener("click",function(){
+            document.getElementsByClassName("popup7")[0].classList.remove("active7");
+            isWalking = true;
+            button.disabled = false;
+
+          });
+
+          document.getElementById("red-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup7")[0].classList.remove("active7");
+              isWalking = true;
+              button.disabled = false;
+              //
+
+          });
+
+
+
+        }
+
+        //button.disabled = false;
+
+        if (isWalking == true){
+
+         // button.disabled = false;
+
+            document.getElementsByClassName("popup6")[0].classList.add("active6");
+
+            document.getElementById("close4").addEventListener("click",function(){
+              document.getElementsByClassName("popup6")[0].classList.remove("active6");
+              button.disabled = false;
+            });
+
+            document.getElementById("green-popup-btn2").addEventListener("click",function(){
+              document.getElementsByClassName("popup6")[0].classList.remove("active6");
+              button.disabled = false;
+
+            });
+
+            document.getElementById("orange-popup-btn2").addEventListener("click",function(){
+              document.getElementsByClassName("popup6")[0].classList.remove("active6");
+              button.disabled = false;
+
+            });
+
+            document.getElementById("red-popup-btn2").addEventListener("click",function(){
+              document.getElementsByClassName("popup6")[0].classList.remove("active6");
+              button.disabled = false;
+
+            });
+
+            document.getElementById("exit-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup6")[0].classList.remove("active6");
+              button.disabled = true;
+              //isWalking = false;
+            });
+
+            document.getElementById("exit-popup-btn").addEventListener("click",function(){
+              document.getElementsByClassName("popup1")[0].classList.add("active1");
+              //isWalking = false;
+              button.disabled = true;
+
+            });
+
+
+
+            var continueEvent = document.getElementById("continue-popup-btn");
+
+            continueEvent.addEventListener("click",function(){
+              document.getElementsByClassName("popup1")[0].classList.remove("active1");
+
+              isWalking = false;
+              button.disabled = false;
+
+            });
+
+            document.getElementById("close5").addEventListener("click",function(){
+              document.getElementsByClassName("popup1")[0].classList.remove("active1");
+              button.disabled = false;
+            });
+
+
+        }
+
       });
-
-      document.getElementById("walkButton").addEventListener("click", function () {
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-      });
-
-      document.getElementById("walkButton").addEventListener("click", function () {
-        document.getElementsByClassName("popup6")[0].classList.add("active6");
-        button.disabled = true;
-      });
-
-      document.getElementById("walkButton").addEventListener("click", function () {
-        document.getElementsByClassName("popup5")[0].classList.remove("active5");
-      });
-
-      document.getElementById("green-popup-btn2").addEventListener("click", function () {
-        document.getElementsByClassName("popup6")[0].classList.remove("active6");
-        button.disabled = false;
-      });
-
-      document.getElementById("orange-popup-btn2").addEventListener("click", function () {
-        document.getElementsByClassName("popup6")[0].classList.remove("active6");
-        button.disabled = false;
-      });
-
-      document.getElementById("red-popup-btn2").addEventListener("click", function () {
-        document.getElementsByClassName("popup6")[0].classList.remove("active6");
-        button.disabled = false;
-      });
-
-      document.getElementById("exit-popup-btn").addEventListener("click", function () {
-        document.getElementsByClassName("popup1")[0].classList.add("active1");
-      });
-
-      document.getElementById("continue-popup-btn").addEventListener("click", function () {
-        document.getElementsByClassName("popup1")[0].classList.remove("active1");
-      });
-      document.getElementById("exit-popup-btn").addEventListener("click", function () {
-        document.getElementsByClassName("popup6")[0].classList.remove("active6");
-      });
-      document.getElementById("continue-popup-btn").addEventListener("click", function () {
-        document.getElementsByClassName("popup7")[0].classList.remove("active7");
-
-      });
-    }
-
-    // close windows in X
-    document.getElementById("close1").addEventListener("click", function () {
-      document.getElementsByClassName("popup5")[0].classList.remove("active5");
-      button.disabled = false;
-    });
-    document.getElementById("close2").addEventListener("click", function () {
-      document.getElementsByClassName("popup7")[0].classList.remove("active7");
-      button.disabled = false;
-    });
-    document.getElementById("close3").addEventListener("click", function () {
-      document.getElementsByClassName("popup2")[0].classList.remove("active2");
-      button.disabled = false;
-    });
-    document.getElementById("close4").addEventListener("click", function () {
-      document.getElementsByClassName("popup6")[0].classList.remove("active6");
-      button.disabled = false;
-    });
-    document.getElementById("close5").addEventListener("click", function () {
-      document.getElementsByClassName("popup1")[0].classList.remove("active1");
-      button.disabled = false;
-    });
 
   </script>
 

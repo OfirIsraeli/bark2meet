@@ -1,0 +1,39 @@
+{
+    "events": [
+        {
+            "id": 35,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "event1",
+            "joined": [
+                "o@o.com",
+                "g@g.com"
+            ],
+            "location": "place1",
+            "time": "16:01:00"
+        },
+        {
+            "id": 36,
+            "privacy": "orange",
+            "creator": "o@o.com",
+            "title": "Event 2",
+            "joined": [
+                "o@o.com",
+                "g@g.com"
+            ],
+            "location": "My place",
+            "time": "21:05:00"
+        },
+        {
+            "id": 37,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "Event3",
+            "joined": [
+                "o@o.com"
+            ],
+            "location": "My place",
+            "time": "21:07:00"
+        }
+    ]
+}

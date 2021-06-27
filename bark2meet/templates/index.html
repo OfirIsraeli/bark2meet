@@ -24,7 +24,12 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Log In</a></li>
+                        {% if is_login %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('map') }}">Map</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Log In</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -40,18 +45,132 @@
         </header>
         <section>
             <div class="container">
+                <br /><br /><br />
                 <div class="row align-items-center">
                     <div class="col-lg-6 order-lg-2">
-                        <div class="p-5"><img class="img-fluid rounded-circle" src="{{url_for('static', filename='dogs_owners1.jpg')}}" alt="..." /></div>
+                        <div class="d-none d-lg-block">
+                            <div class="p-5"><img class="img-fluid rounded-circle" src="{{url_for('static', filename='dogs_owners1.jpg')}}" alt="..." /></div>
+                        </div>
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="p-5">
-                            <h2 class="display-4">It's a win win situation...</h2>
-                            <p>While your best friend will run & play with other dogs at the park, you will get closer to your neighbors - and find your next best friend! (on two legs haha).</p>
+                            <h1>IT'S A WIN WIN SITUATION...</h1>
+                            <p>While your best friend will run & play with other dogs at the park, you will get closer to your neighbors - and find your next best friend!.</p>
+                            <br /><br /><br /><br />
+                            <h1> THE BEST SO FAR!</h1>
+                            <h5>This app has proved itself to be the best of it's kind...</h5>
+                            <p>We made sure to include high standard features and content to enhance your experience as users.</p>
+                            <br /><br /><br /><br />
+                            <h1>OUR TOP FEATURES!</h1>
+                            <ul>
+                                <li>Find new walk partners around you!</li>
+                                <li>Get notifications and navigate to other walkers!</li>
+                                <li>Create and join an unforgettable events, OH and don't forget to take pictures!</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        <div class="gallery-box">
+            <span style="--i:1;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-pic.png')}}" alt="..." />
+            </span>
+            <span style="--i:2;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='notify.png')}}" alt="..." />
+            </span>
+            <span style="--i:3;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='create-walk-pic.jfif')}}" alt="..." />
+            </span>
+            <span style="--i:4;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-3walkmodes.png')}}" alt="..." />
+            </span>
+            <span style="--i:5;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile-pic.jfif')}}" alt="..." />
+            </span>
+            <span style="--i:6;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='album.jfif')}}" alt="..." />
+            </span>
+            <span style="--i:7;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-attention.png')}}" alt="..." />
+            </span>
+            <span style="--i:8;">
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile2-pic.jfif')}}" alt="..." />
+            </span>
+        </div>
+            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <div class="reviews">
+            <h1>USER REVIEWS</h1>
+            <section1 class="review" id="review">
+                <div class="box-container">
+                    <div class="box">
+                        <i class="fas fa-quote-right"></i>
+                        <div class="user">
+                            <img src="{{url_for('static', filename='pic1.png')}}" alt="..." />
+                            <h3>Lee</h3>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="comment">
+                                Best app ever!!! I've made so many friendships so far, which I saw a couple of times in the park but couldn't have the courage to talk to, thanks to this app now I can!!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <i class="fas fa-quote-right"></i>
+                        <div class="user">
+                            <img src="{{url_for('static', filename='pic2.png')}}" alt="..." />
+                            <h3>John</h3>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <div class="comment">
+                                This app is so much fun! I used to walk alone with my dog, but now that I tried the company, I've to admit the I like it more! it's crazy how 1 app can turn your life.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <i class="fas fa-quote-right"></i>
+                        <div class="user">
+                            <img src="{{url_for('static', filename='pic3.png')}}" alt="..." />
+                            <h3>Shir</h3>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="comment">
+                                Obsessed with this app!! who would've thought that such a daily task could turn into some special experience?! Thanks to those who made this possible :)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section1>
+        </div>
+            <br /><br />
+        <div class="contact-section">
+            <h1 class="masthead-heading mb-0">Contact Us</h1>
+            <div class="border"></div>
+            <form class="contact-form" action="index.html" method="post">
+                <input type="text" class="contact-form-text" placeholder="Your name">
+                <input type="email" class="contact-form-text" placeholder="Your email">
+                <input type="text" class="contact-form-text" placeholder="Your phone">
+                <textarea class="contact-form-text" placeholder="Your message"></textarea>
+                <input type="submit" class="contact-form-btn" value="Send">
+            </form>
+            <footer class="py-5 bg-black">
+            <div class="container"><p class="m-0 text-center text-white small">Copyright &copy; Your Website 2021</p></div>
+            </footer>
+        </div>
         </section>
         <!-- <section>
             <div class="container">
@@ -84,13 +203,12 @@
             </div>
         </section> -->
         <!-- Footer-->
-        <footer class="py-5 bg-black">
-            <div class="container"><p class="m-0 text-center text-white small">Copyright &copy; Your Website 2021</p></div>
-        </footer>
         <!-- Bootstrap core JS-->
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script async src="https://drv.tw/inc/wd.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+
     </body>
 </html>

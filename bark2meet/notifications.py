@@ -9,7 +9,7 @@ NEW_INVITE = 2
 NEW_FRIEND_REQUEST = 3
 FRIEND_REQUEST_APPROVED = 4
 WALK_INVITATION_APPROVED = 5
-
+NEW_USER_JOINED_WALK = 6
 ##
 # RUSH_HOUR = 1
 # NEW_JOIN_WALK_INVITE = 2
@@ -19,7 +19,7 @@ WALK_INVITATION_APPROVED = 5
 
 class Notification:
 
-    def create_notification(self, email, title, msg, pos_x, pos_y, notification_type, noti_from=""):
+    def create_notification(self, email, title, msg, pos_x, pos_y, notification_type, noti_from="", img=""):
         self.email = email
         self.title = title
         self.msg = msg
@@ -27,6 +27,7 @@ class Notification:
         self.pos_y = pos_y
         self.type = notification_type
         self.notification_from = noti_from
+        self.img = img
         self.issue_time = datetime.now().isoformat(' ', 'seconds')  # datetime.utcnow
 
         self.write_notification_in_history()
@@ -37,10 +38,11 @@ class Notification:
 
     def create_walk_invitation_notification(self, current_user, user_dest, event_id):
         title = "New event invitation"
-        msg = current_user.full_name + " and " + current_user.dog_name + "has sent you an invitation to join their" \
+        msg = current_user.full_name + " and " + current_user.dog_name + " has sent you an invitation to join their" \
                                                                          " new event!"
-        invite_address = "invite_" + event_id
-        self.create_notification(user_dest, title, msg, current_user.pos_x, current_user.pos_y, NEW_INVITE, invite_address)
+        invite_address = "invite_" + str(event_id)
+        self.create_notification(user_dest, title, msg, current_user.pos_x, current_user.pos_y, NEW_INVITE,
+                                 invite_address, current_user.user_img)
 
 
     def write_notification_in_history(self):
@@ -52,7 +54,8 @@ class Notification:
             "pos_y": self.pos_y,
             "type": self.type,
             "from": self.notification_from,
-            "issue_time": datetime.now().isoformat(' ', 'seconds')
+            "issue_time": datetime.now().isoformat(' ', 'seconds'),
+            "image": self.img
         }
 
         file_path = self.getNotificationsFileName(self.email)
@@ -76,7 +79,11 @@ class Notification:
                 all_notifications = json.load(file)
 
         for noti in all_notifications["notifications"]:
-            if noti["type"] != type and noti["from"] != notification_from:
+            # if it's a friend request, delete (all of) it
+            # elif it's an event, deleting just the "from", which is the event id so just the specific event
+            if noti["type"] == type and noti["from"] == notification_from:
+                continue
+            else:
                 notifications_after_delete["notifications"].append(noti)
 
         # write the changes to the file

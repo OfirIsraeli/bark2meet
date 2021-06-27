@@ -156,7 +156,7 @@ function mapGender(genderNumber) {
   switch (genderNumber) {
     case 1:
       return "Male";
-    case 2:
+    case 0:
       return "Female";
     case 3:
       return "Unidentified";
@@ -193,15 +193,33 @@ function distance(user_lat, user_lng){
 }
 
 
+function newFriendsTeaser(userInfo){
+  if (userInfo.is_friend == true){
+    return '<h1 class="popup-header">Say Hello to your Friends!' + "</h1>"
+  }
+  return '<h1 class="popup-header">New friends for ' +
+          userInfo.dog_name + "  & You,</h1>" +
+          '<h1 class="popup-header">check them out!</h1>'
+}
+
+function addFriendButton(userInfo){
+    if (userInfo.is_friend == true){
+      return ""
+    }
+    return '<input type="checkbox" onClick="addFriend(this)" value="'+ userInfo.id +'">' +
+    '<div class="icon-box-green">' +
+        '<i class="fas fa-user-plus" aria-hidden="true"></i>' +
+    '</div>'
+
+}
+
+
 function createPopupMarker(userInfo) {
   if (userInfo.privacy === "green") {
     return (
       '<div id="infoContentGreen">' +
       '<div class="container1">' +
-      '<h1 class="popup-header">New friends for ' +
-      userInfo.dog_name +
-      "  & You,</h1>" +
-      '<h1 class="popup-header">check them out!</h1>' +
+      newFriendsTeaser(userInfo) +
 
           "<div class='profile-titles'>" +
       "<img class='owner-pic' src='"+ removeBaseAddress(userInfo.user_image) +"'>" +
@@ -222,7 +240,7 @@ function createPopupMarker(userInfo) {
       mapGender(userInfo.gender) +
       "</p>" +
       "<p>" +
-      mapGender(userInfo.gender) +
+      userInfo.age +
       " years old</p>" +
       "</div>" +
       '<div class="vl"></div>' +
@@ -239,10 +257,7 @@ function createPopupMarker(userInfo) {
 
        '<div class="green-btns">' +
                         '<div class="col-xs-4 pull-right">' +
-                          '<input type="checkbox" onClick="addFriend(this)" value="'+ userInfo.id +'">' +
-                          '<div class="icon-box-green">' +
-                              '<i class="fas fa-user-plus" aria-hidden="true"></i>' +
-                          '</div>' +
+                        addFriendButton(userInfo) +
                         '</div>' +
                         '<div class="col-xs-4 pull-right">' +
                           '<input type="checkbox" onClick="navigateTo(' + userInfo.pos_x + ', '+ userInfo.pos_y + ')">' +
@@ -363,14 +378,26 @@ function navigateTo(dest_x, dest_y){
   directionsService.route(req,
     (response, status) => {
       if (status === "OK") {
+        console.log(response, "h")
         directionsRenderer.setDirections(response);
+        resetNavigation()
       } else {
         window.alert("Directions request failed due to " + status);
       }
     })
+
+
   })
   }}
 
+function resetNavigation(){
+  setTimeout(()=>{
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
+},1000)
+}
 function sendInfo(url, value) {
       const URL = url;
       const xhr = new XMLHttpRequest();

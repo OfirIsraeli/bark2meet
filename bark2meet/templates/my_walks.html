@@ -10,10 +10,41 @@
 <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='my_walks.css') }}">
 
+
+<script type="text/javascript">
+    function openPage(pageName, elmnt) {
+        // Hide all elements with class="tabcontent" by default */
+        var i, container, tablinks;
+        container = document.getElementsByClassName("container");
+        for (i = 0; i < container.length; i++) {
+            container[i].style.display = "none";
+        }
+
+        // Remove the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("nav__link_middle");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "#F8EAFF";
+        }
+
+        // Show the specific tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Add the specific color to the button used to open the tab content
+        elmnt.style.backgroundColor = "#F4DEFF";
+        linkIcon = elmnt.getElementsByClassName("nav__icon");
+        linkIcon.style.color = "#FFF";
+    }
+
+
+    window.onload = function (e) {
+        document.getElementById("defaultOpen").click();
+    }
+</script>
+
 <div class="event-form-box">
     <div class="row justify-content-center">
         <div class="col-xs-2"><img src="../static/smallpaw.svg" class="smallpaw"></div>
-        <div class="col-xs-10 title"><span>My walks</span></div>
+        <div class="col-xs-10 title"><span>Walks</span></div>
     </div>
 
     <form method="POST" action="">
@@ -33,38 +64,53 @@
         </div>
     </form>
 
-    <div class='container'>
+    <div class="nav middle_nav">
+        <button class="nav__link_middle" onclick="openPage('My-Walks', this)" id="defaultOpen">
+            <i class="fas" aria-hidden="true"></i>
+            <span class="nav__walk">My walks</span>
+        </button>
+        <button class="nav__link_middle" onclick="openPage('Join-Walk', this)">
+            <i class="fas" aria-hidden="true"></i>
+            <span class="nav__walk">In my Area</span>
+        </button>
+        <i class=""></i>
+    </div>
+
+    <div id="My-Walks" class='container'>
         <div class="row">
             <div class="col-lg-12">
                 <div class="sms-send-page">
+                    <center>
+                        <div><b>Planned walks</b></div>
+                    </center>
                     <ul class="list-group">
                         {% if walks %}
 
                         {% for walk in walks %}
+                        <a href="{{ url_for('event_details', id=walk['id']) }}">
+                            <li class="list-group-item">
+                                <div class="col-xs-8 pull-left">
+                                    <p class="walk-name"><strong>{{walk.title}},
+                                            {{walk.location}}</strong></p>
+                                    <div class="profile-pics">
 
-                        <li class="list-group-item">
-                            <div class="col-xs-8 pull-left">
-                                <p class="walk-name"><strong>{{walk.title}},
-                                        {{walk.location}}</strong></p>
-                                <div class="profile-pics">
+                                        {% if walk['users_images'][0] %}
+                                        <img class="head" src="../{{walk['users_images'][0][10:]}}">
+                                        {% else %}
+                                        <img clsss="head"
+                                            src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                        {% endif %}
+                                        {% if walk['users_images'][1] %}
+                                        <img class="mid" src="../{{walk['users_images'][1][10:]}}">
+                                        {% endif %}
+                                        {% if walk['users_images'][2] %}
+                                        <img class="tail" src="../{{walk['users_images'][2][10:]}}">
+                                        {% endif %}
 
-                                    {% if walk['users_images'][0] %}
-                                    <img class="head" src="../{{walk['users_images'][0][10:]}}">
-                                    {% endif %}
-                                    {% if walk['users_images'][1] %}
-                                    <img class="mid" src="../{{walk['users_images'][1][10:]}}">
-                                    {% endif %}
-                                    {% if walk['users_images'][2] %}
-                                    <img class="tail" src="../{{walk['users_images'][2][10:]}}">
-                                    {% endif %}
-
-
-
-                                    <img clsss="head"
-                                        src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        </a>
                         <br>
 
                         {% endfor %}
@@ -72,7 +118,7 @@
                         {% else %}
                         <br>
                         <center>
-                            <div>There is no walks</div>
+                            <div>No planned walks yet!</div>
                         </center>
 
                         {% endif %}
@@ -83,7 +129,218 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="sms-send-page">
+                    <center>
+                        <div><b>Past walks</b></div>
+                        <ul class="list-group">
+                            {% if past_walks %}
+
+                            {% for walk in past_walks %}
+                            <a href="{{ url_for('event_details', id=walk['id']) }}">
+                                <li class="list-group-item">
+                                    <div class="col-xs-8 pull-left">
+                                        <p class="walk-name"><strong>{{walk.title}},
+                                                {{walk.location}}</strong></p>
+                                        <div class="profile-pics">
+
+                                            {% if walk['users_images'][0] %}
+                                            <img class="head" src="../{{walk['users_images'][0][10:]}}">
+                                            {% else %}
+                                            <img clsss="head"
+                                                src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                            {% endif %}
+                                            {% if walk['users_images'][1] %}
+                                            <img class="mid" src="../{{walk['users_images'][1][10:]}}">
+                                            {% endif %}
+                                            {% if walk['users_images'][2] %}
+                                            <img class="tail" src="../{{walk['users_images'][2][10:]}}">
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+                                </li>
+                            </a>
+                            <br>
+
+                            {% endfor %}
+
+                            {% else %}
+                            <br>
+                            <center>
+                                <div>There are no walks</div>
+                            </center>
+
+                            {% endif %}
+
+
+                        </ul>
+                    </center>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div id='Join-Walk' class='container'>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="sms-send-page">
+                    <ul class="list-group">
+
+                        {% for event in walks_in_area %}
+                        {% if event['privacy'] == "orange" %}
+
+                        <li class="list-group-item">
+                            <div class="col-xs-4 pull-right">
+                                {% if current_user.email in event['joined'] %}
+                                <!-- Leave a public walk button -->
+                                <button class="join_walk orange leave">
+                                    Leave
+                                </button>
+                                {% else %}
+                                <!-- Join a public walk button -->
+                                <button class="join_walk orange" onclick="joinEvent({{ event['id'] }}, this)">
+                                    Join
+                                </button>
+                                <button class="join_walk orange leave" style="display:none"
+                                    id="changeToAfterJoin_{{ event['id'] }}">
+                                    Leave
+                                </button>
+                                {% endif %}
+                            </div>
+
+                            <a href="{{ url_for('event_details', id=event['id']) }}">
+                                <div class="col-xs-8 pull-left">
+                                    <p class="walk-name"><strong>{{event.title}}</strong></p>
+                                    <div class="profile-pics">
+                                        {% if event['users_images'] %}
+                                        {% if event['users_images'][0] %}
+                                        <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][1] %}
+                                        <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][2] %}
+                                        <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% endif %}
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if event['privacy'] == "green" %}
+
+                        <li class="list-group-item">
+
+                            <div class="col-xs-4 pull-right">
+                                {% if current_user.email in event['joined'] %}
+                                <!-- Leave a public walk button -->
+                                <button class="join_walk green leave">
+                                    Leave
+                                </button>
+                                {% else %}
+                                <!-- Join a public walk button -->
+                                <button class="join_walk green" onclick="joinEvent({{ event['id'] }}, this)">
+                                    Join
+                                </button>
+                                <button class="join_walk green leave" style="display:none"
+                                    id="changeToAfterJoin_{{ event['id'] }}">
+                                    Leave
+                                </button>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('event_details', id=event['id']) }}">
+                                <div class="col-xs-8 pull-left">
+                                    <p class="walk-name"><strong>{{event.title}}</strong></p>
+                                    <div class="profile-pics">
+                                        {% if event['users_images'] %}
+                                        {% if event['users_images'][0] %}
+                                        <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][1] %}
+                                        <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% endif %}
+                                        {% if event['users_images'][2] %}
+                                        <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% endif %}
+                                        {% endif %}
+
+
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        {% endif %}
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<script>
+
+
+    // var checkbox = document.querySelector("input[class=green]");
+
+    // checkbox.addEventListener('change', function () {
+    //     if (this.checked) {
+    //         console.log("Checkbox is checked..");
+    //         console.log(checkbox);
+    //     }
+    //     else {
+    //         console.log("Checkbox is not checked..");
+    //     }
+    // });
+
+
+    // var checkboxes = document.querySelectorAll("input[name=joinBtn]");
+    // let allJoinedEventsId = []
+
+    // // Use Array.forEach to add an event listener to each checkbox.
+    // checkboxes.forEach(function (checkbox) {
+    //     checkbox.addEventListener('change', function () {
+
+    //         if (this.checked) {
+    //             sendInfo("/join_to_event", checkbox.value);
+    //         }
+    //         else {
+    //             sendInfo("/exit_from_event", checkbox.value);
+    //         }
+    //     })
+
+    // });
+
+    // function sendInfo(url, value) {
+    //     const URL = url;
+    //     const xhr = new XMLHttpRequest();
+    //     let sender = JSON.stringify(value);
+    //     xhr.open("POST", URL);
+    //     xhr.send(sender);
+    // }
+
+    function joinEvent(event_id, element) {
+        const URL = '/join_to_event';
+        const xhr = new XMLHttpRequest();
+        let sender = JSON.stringify(event_id);
+        xhr.open("POST", URL);
+        xhr.send(sender);
+        element.style['display'] = 'none'
+        afterRequest = document.getElementById('changeToAfterJoin_' + event_id)
+        afterRequest.style['display'] = 'block'
+        console.log("success")
+    }
+
+
+</script>
+
 
 {% endblock content %}

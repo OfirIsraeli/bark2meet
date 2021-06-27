@@ -96,9 +96,10 @@
     function sendInfo(url, value) {
         const URL = url;
         const xhr = new XMLHttpRequest();
-        let sender = JSON.stringify(value);
-        xhr.open("POST", URL);
-        xhr.send(sender);
+        let sender = JSON.stringify([value, {{ event_id }}]);
+    xhr.open("POST", URL);
+    xhr.send(sender);
+    console.log("here", sender)
     }
 
     function setCheckBoxAsTrue(checkbox) {

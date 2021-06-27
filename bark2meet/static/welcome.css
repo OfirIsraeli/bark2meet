@@ -1,0 +1,205 @@
+/*
+dark purple #4B0B9D
+light purple #F8EAFF
+gradient #FEFFFA #F6E6E5
+dark blue #073170
+: linear-gradient(135deg, #A1B0FF, #FFF
+); body
+
+bg gradient linear-gradient(#FEFFFA, #F6E6E5)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Montserrat', sans-serif;
+	color: #073170;
+}
+
+body {
+	display: flex;
+	height: 100vh;
+	padding: 0;
+	background-image: url("siteBg4.svg");
+	background-size: cover;
+	/*margin: 0 0 55px 0;*/
+	overflow: hidden;
+}
+/*light container*/
+.event-form-box {
+	display: block;
+	max-width: 700px;
+	width: 100%;
+	min-height: 100vh;
+	background: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 25px 30px;
+	overflow: hidden;   
+}
+
+
+.event-form-box .title {
+	font-size: 25px;
+	font-weight: 900;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.event-form-box .title::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	width: 30px;
+	background: #4B0B9D;
+}
+
+.logo {
+    margin-top: 30px;
+}
+
+.event-form-box .smallpaw {
+	margin: 0 10px 0 0px;
+}
+
+.event-form-box {
+	max-width: 600px;
+	height: 95%;
+	border: 1px solid #ced4da;
+	background-image: linear-gradient(#FEFFFA, #F6E6E5);
+	padding: 10px 10px;
+}
+
+.back_button {
+    position: flex-start;
+	float: left;
+	background: transparent;
+	border: none;
+	margin: 0 0 5px 5px;
+}
+
+/*Profile pics & names*/
+
+.profile-titles {
+    text-align: center;
+}
+
+.owner-pic {
+    position: relative;
+    left: 15px;
+    z-index: 2;
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    border: 4px solid #073170;
+    box-shadow: 0 0 8px #4B0B9D;
+    }
+
+.dog-pic {
+    position: relative;
+    right: 15px;
+    z-index: 1;
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    border: 4px solid #073170;
+    box-shadow: 0 0 8px #4B0B9D;
+}
+.names, .welcome_text {
+    font-family: "Montserrat", sans-serif;
+    font-style: bold;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 150%;
+    text-align: center;
+    color: #073170;
+    padding-top: 10px;
+}
+
+.welcome_text {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+
+
+/* nav bar */
+.nav {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 55px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	background-color: #F8EAFF;
+	display: flex;
+	overflow-x: auto;
+	z-index: 999;
+}
+
+.nav__link, .nav__link_middle {
+	background-color: #F8EAFF;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-grow: 1;
+	min-width: 50px;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px;
+	color: #4B0B9D;
+	text-decoration: none;
+	-webkit-tap-highlight-color:  transparent;
+	transition: background-color 0.1s ease-in-out;
+}
+
+.nav__link {
+	padding-bottom: 30px;
+}
+
+.nav__link_middle {
+	border: none;
+}
+
+.nav__link:hover {
+	text-decoration: none;
+	background-color: #F4DEFF;
+}
+
+.nav__link--active {
+	color: #fff !important;
+}
+
+.nav__icon {
+	font-size: 20px;
+}
+
+/*continue button all*/
+
+.button-box {
+    margin-top: 30px;
+    border: 3px solid rgba(75, 11, 157, 1);
+    height: 56.974578857421875px;
+    background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
+    width: 140px;
+    border-radius: 17px;
+    padding: 10px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    text-align: center;
+    letter-spacing: -0.369089px;
+    color: #073170; 
+}
+
+.button-box:hover, .button-box:active, .button-box:focus {
+    color: #073170;
+    text-decoration: none;
+    background: linear-gradient(170deg, #A1B0FF 0%, #FBCBFF 100%);
+    filter: drop-shadow(5px 4px 4px rgba(0, 0, 0, 0.50));
+}

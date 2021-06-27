@@ -66,17 +66,32 @@ class Event:
             return []
 
     def get_event_by_id(self, id):
-        todayEvents = {"events": []}
-        time = datetime.today().strftime('%Y-%m-%d')
-        file_path = self.getEventFileName(time)
-        if os.path.exists(file_path):
-            with open(file_path, "r") as file:
-                todayEvents = json.load(file)
+        dir_path = os.getcwd() + "/bark2meet/databases/eventsHistory/"
+        for filename in os.listdir(dir_path):
+            if filename.endswith(".json"):
+                file_path = dir_path + filename
 
-        for event in todayEvents["events"]:
-            if event["id"] == id:
-                return event
-        return []
+                file = open(file_path, "r")
+                data = json.load(file)
+                file.close()
+                all_events = data["events"]
+
+                for event in all_events:
+                    if int(id) == event["id"]:
+                        return event, filename
+
+        raise Exception("DID NOT FIND THE EVENT", id)
+        # todayEvents = {"events": []}
+        # time = datetime.today().strftime('%Y-%m-%d')
+        # file_path = self.getEventFileName(time)
+        # if os.path.exists(file_path):
+        #     with open(file_path, "r") as file:
+        #         todayEvents = json.load(file)
+        #
+        # for event in todayEvents["events"]:
+        #     if event["id"] == id:
+        #         return event
+        # return []
 
     def join_to_event(self, id, emails):
         self.write_changes_to_joined_event(id, emails, to_join=True)

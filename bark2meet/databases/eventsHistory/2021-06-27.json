@@ -1,0 +1,28 @@
+{
+    "events": [
+        {
+            "id": 38,
+            "privacy": "orange",
+            "creator": "g@g.com",
+            "title": "New date test",
+            "joined": [
+                "g@g.com",
+                "o@o.com"
+            ],
+            "location": "new date location",
+            "time": "10:40:00"
+        },
+        {
+            "id": 40,
+            "privacy": "green",
+            "creator": "o@o.com",
+            "title": "next",
+            "joined": [
+                "o@o.com",
+                "s@s.com"
+            ],
+            "location": "nextp",
+            "time": "19:51:00"
+        }
+    ]
+}

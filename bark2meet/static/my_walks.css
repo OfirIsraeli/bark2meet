@@ -62,7 +62,7 @@ body {
 
 .event-form-box {
 	max-width: 600px;
-	height: 95%;
+	height: 100%;
 	border: 1px solid #ced4da;
 	background-image: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 10px 10px;
@@ -204,6 +204,7 @@ div.friend-card {
 }
 .sms-send-page .list-group-item {
     padding: 10px;
+    height: 80px;
     margin-bottom: 0.3em;
     background-color: #F6F8FF;
     border: 2px solid #073170;
@@ -214,7 +215,11 @@ div.friend-card {
 .sms-send-page .list-group {
     box-shadow: 0 0 11px #eceeef;
     margin: 8px 0.8em;
+    height: 250px;
+    overflow-y: scroll;
+    border: 1px solid #ced4da;
 }
+
 
 input[type="checkbox"] {
 	width: 80px;
@@ -224,90 +229,77 @@ input[type="checkbox"] {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 2px solid #5C6C2F;
 	border-radius: 25px;
 	background: none;
 	font-weight: bold;
 	cursor: pointer;
 	transition: 0.5s;
-	margin-top: 0.3em;
+	margin-top: 0.1em;
+}
+
+input[type="checkbox"].green {
+    border: 2px solid #5C6C2F;
+}
+
+input[type="checkbox"].orange {
+    border: 2px solid #986503;
 }
 
 input[type="checkbox"]:focus{
         outline:0;
     }
 
-input[type="checkbox"]:after {
+input[type="checkbox"].green:after {
 	-webkit-appearance:  none;
-	content: 'INVITE';
+	content: 'Join  ' url('../../static/paw_green.png');
+	text-align: center;
+    vertical-align: middle;
 	color: #5C6C2F;
 }
 
-input[type="checkbox"]:checked {
+input[type="checkbox"].orange:after {
+	-webkit-appearance:  none;
+	content: 'Join  ' url('../../static/paw_orange.png');
+	text-align: center;
+    vertical-align: middle;
+	color: #986503;
+}
+
+input[type="checkbox"].green:checked {
 	-webkit-appearance:  none;
 	float: right;
 	background-color: #B6E13D;
 }
 
+input[type="checkbox"].orange:checked {
+	-webkit-appearance:  none;
+	float: right;
+	background-color: #FFAD0E;
+}
+
 input[type="checkbox"]:checked:after {
 	-webkit-appearance:  none;
 	background: none;
-	content: 'INVITED';
+	content: 'Joined';
+	text-align: center;
+    vertical-align: middle;
 }
+
 
 .sms-send-page .pull-left, .sms-send-page .pull-right{
   padding: 0px;
 }
 
-/* nav bar */
-.nav {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	height: 55px;
-	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-	background-color: #F8EAFF;
-	display: flex;
-	overflow-x: auto;
-}
-
-.nav__link {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	flex-grow: 1;
-	min-width: 50px;
-	overflow: hidden;
-	white-space: nowrap;
-	font-size: 13px;
-	color: #4B0B9D !important;
-	text-decoration: none;
-	-webkit-tap-highlight-color:  transparent;
-	transition: background-color 0.1s ease-in-out;
-}
-
-.nav__link:hover {
-	text-decoration: none;
-	background-color: #F4DEFF;
-}
-
-.nav__link--active {
-	color: #fff !important;
-}
-
-.nav__icon {
-	font-size: 20px;
-}
-
 div.profile-pics {
     margin-top: 0.5em;
+    float: left;
+    height: 30px;
 }
 
 
         img.head {
             position:absolute;
-            float: left;
+            float: right;
             z-index: 3;
             width: 30px;
             height: 30px;
@@ -332,3 +324,107 @@ div.profile-pics {
             height: 30px;
             border-radius: 90px;
         }
+/* nav bar */
+
+.nav__link, .nav__link_middle {
+	background-color: #F8EAFF;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-grow: 1;
+	min-width: 50px;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px;
+	color: #4B0B9D;
+	text-decoration: none;
+	-webkit-tap-highlight-color:  transparent;
+	transition: background-color 0.1s ease-in-out;
+}
+
+.nav__link_middle {
+    border: 1px solid #ced4da;
+}
+
+.nav__link {
+    padding-bottom: 30px;
+}
+
+.nav__link:hover {
+	text-decoration: none;
+	background-color: #F4DEFF;
+}
+
+.nav__link--active {
+	color: #fff !important;
+}
+
+.nav.middle_nav {
+	position: relative;
+}
+
+.nav__walk {
+    font-weight: bold;
+}
+
+.container {
+    height: 575px;
+}
+
+.walk-name {
+    text-align: left;
+}
+
+
+.join_walk {
+	width: 80px;
+	height: 40px;
+	-webkit-appearance:  none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 25px;
+	background: none;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.5s;
+	margin-top: 0.1em;
+	z-index: 900px;
+}
+
+.join_walk.green {
+    border: 2px solid #5C6C2F;
+    float: right;
+    color: #5C6C2F;
+}
+
+.join_walk.green.leave {
+	background: #B6E13D;
+}
+
+.join_walk.orange {
+    border: 2px solid #986503;
+    float: right;
+    color: #986503;
+}
+
+.join_walk.orange.leave {
+	background: #FFAD0E;
+}
+
+.join_walk.green:hover{
+    background: #B6E13D;
+}
+
+.join_walk.orange:hover{
+    background: #FFAD0E;
+}
+
+.join_walk.green.leave:hover{
+    background: #aad33a;
+}
+
+.join_walk.orange.leave:hover{
+    background: #f0a40d;
+}

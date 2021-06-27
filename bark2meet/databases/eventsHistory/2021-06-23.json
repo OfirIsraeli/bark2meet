@@ -1,38 +1,5 @@
 {
     "events": [
-        {
-            "id": 5,
-            "privacy": "green",
-            "creator": "o@o.com",
-            "title": "third",
-            "joined": [
-		"g@g.com",
-		"o@o.com"
-            ],
-            "location": "today past 1",
-            "time": "10:34:00"
-        },
-        {
-            "id": 6,
-            "privacy": "orange",
-            "creator": "o@o.com",
-            "title": "only G",
-            "joined": [
-		"g@g.com"
-            ],
-            "location": "only G location",
-            "time": "20:17:00"
-        },
-        {
-            "id": 7,
-            "privacy": "green",
-            "creator": "o@o.com",
-            "title": "today future 1",
-            "joined": [
-		"o@o.com"
-            ],
-            "location": "fourth location",
-            "time": "19:15:00"
-        }
+        
     ]
 }

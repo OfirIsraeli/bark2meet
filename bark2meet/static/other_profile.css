@@ -177,7 +177,7 @@ margin: 0;
     margin: 8px 0.8em;
 }
 
-input[type="checkbox"] {
+.join_walk {
 	width: 80px;
 	height: 40px;
 	-webkit-appearance:  none;
@@ -190,59 +190,46 @@ input[type="checkbox"] {
 	cursor: pointer;
 	transition: 0.5s;
 	margin-top: 0.1em;
+	z-index: 900px;
 }
 
-input[type="checkbox"].green {
+.join_walk.green {
     border: 2px solid #5C6C2F;
     float: right;
+    color: #5C6C2F;
 }
 
-input[type="checkbox"].orange {
+.join_walk.green.leave {
+	background: #B6E13D;
+}
+
+.join_walk.orange {
     border: 2px solid #986503;
     float: right;
+    color: #986503;
 }
 
-input[type="checkbox"]:focus{
-        outline:0;
-    }
-
-input[type="checkbox"].green:after {
-	-webkit-appearance:  none;
-	content: 'Join  ' url('../../static/paw_green.png');
-	text-align: center;
-    vertical-align: middle;
-	color: #5C6C2F;
-	float: right;
+.join_walk.orange.leave {
+	background: #FFAD0E;
 }
 
-input[type="checkbox"].orange:after {
-	-webkit-appearance:  none;
-	content: 'Join  ' url('../../static/paw_orange.png');
-	text-align: center;
-    vertical-align: middle;
-	color: #986503;
-	float: right;
+
+.join_walk.green:hover{
+    background: #B6E13D;
 }
 
-input[type="checkbox"].green:checked {
-	-webkit-appearance:  none;
-	float: right;
-	background-color: #B6E13D;
+.join_walk.orange:hover{
+    background: #FFAD0E;
 }
 
-input[type="checkbox"].orange:checked {
-	-webkit-appearance:  none;
-	float: right;
-	background-color: #FFAD0E;
+.join_walk.green.leave:hover{
+    background: #aad33a;
 }
 
-input[type="checkbox"]:checked:after {
-	-webkit-appearance:  none;
-	background: none;
-	content: 'Joined';
-	text-align: center;
-    vertical-align: middle;
+.join_walk.orange.leave:hover{
+    background: #f0a40d;
 }
+
 
 .sms-send-page .pull-left, .sms-send-page .pull-right{
   padding: 0px;
@@ -344,13 +331,13 @@ div.profile-pics {
 
 /*Add Friend buttons (as checkboxes)*/
 
-.icon-box {
+.add_friend {
 	width: 50px;
 	height: 40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 2px solid #4B0B9D;
+	border: 2px solid rgba(7, 49, 112, 1);
 	border-radius: 25px;
 	background: none;
 	font-weight: bold;
@@ -360,20 +347,20 @@ div.profile-pics {
 	font-size: 18px;
 }
 
-input[type="checkbox"].add_friend {
-	width: 50px;
-	height: 40px;
-	display: flex;
-	align-items: center;
-	border-radius: 25px;
-	position: absolute;
-	opacity: 0;
-	cursor: pointer;
+.add_friend.approved, .add_friend.sent {
+	border-color: rgba(7, 49, 112, 0.4);
 }
 
-input[type="checkbox"].add_friend:checked ~ .icon-box {
-	-webkit-appearance:  none;
+.add_friend.sent {
 	background: linear-gradient(180deg, #A1B0FF 0%, #FBCBFF 100%);
+}
+
+.add_friend.approved {
+	background-color: rgba(161, 176, 255, 0.7);
+}
+
+.add_friend.approved i, .add_friend.sent i {
+	color: rgba(7, 49, 112, 0.6);
 }
 
 /*grid albums gallery*/
