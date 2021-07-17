@@ -1,9 +1,12 @@
 const space = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
 $(document).ready(function () {
   var socket = io.connect("/");
 
   var socket_messages = io("/messages");
+
+  socket.on("new_friend_walk", function (data) {
+    console.log("im here")
+  });
 
   socket_messages.on("from flask", function (msg) {
     alert(msg);
@@ -87,14 +90,15 @@ $(document).ready(function () {
 
   // ------------------------------- FRIENDS WALK EVENTS -------------------------------
   private_socket.on("new_friend_walk", function (data) {
+    console.log("im here")
     createNotification(data.username + " is on the go!", "");
-    $("#notifications_list").prepend(
-      "<li class='new_notifications'>" +
-        data.username +
-        " is on the go! " +
-        data.issue_time +
-        "</li>"
-    );
+    // $("#notifications_list").prepend(
+    //   "<li class='new_notifications'>" +
+    //     data.username +
+    //     " is on the go! " +
+    //     data.issue_time +
+    //     "</li>"
+    // );
   });
   // $('[id^="bababa"]').on("click", function () {
   //   console.log("helloss")

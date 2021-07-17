@@ -47,38 +47,6 @@
 
 
 				<div class="input-box">
-                    {{ form.dog_temperament.label(class="form-control-label") }}
-
-                    {% if form.dog_temperament.errors %}
-                        {{ form.dog_temperament(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.dog_temperament.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.dog_temperament(class="form-control form-control-lg", placeholder="Temperament") }}
-                    {% endif %}
-				</div>
-
-
-				<div class="input-box">
-                    {{ form.dog_color.label(class="form-control-label") }}
-
-                    {% if form.dog_color.errors %}
-                        {{ form.dog_color(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.dog_color.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.dog_color(class="form-control form-control-lg", placeholder="Enter your dog's coat colors") }}
-                    {% endif %}
-				</div>
-
-
-				<div class="input-box">
                     {{ form.dog_breed.label(class="form-control-label") }}
 
                     {% if form.dog_breed.errors %}

@@ -10,6 +10,8 @@ NEW_FRIEND_REQUEST = 3
 FRIEND_REQUEST_APPROVED = 4
 WALK_INVITATION_APPROVED = 5
 NEW_USER_JOINED_WALK = 6
+
+
 ##
 # RUSH_HOUR = 1
 # NEW_JOIN_WALK_INVITE = 2
@@ -19,7 +21,8 @@ NEW_USER_JOINED_WALK = 6
 
 class Notification:
 
-    def create_notification(self, email, title, msg, pos_x, pos_y, notification_type, noti_from="", img=""):
+    def create_notification(self, email, title, msg, pos_x, pos_y, notification_type, noti_from="",
+                            img=""):
         self.email = email
         self.title = title
         self.msg = msg
@@ -41,9 +44,9 @@ class Notification:
         msg = current_user.full_name + " and " + current_user.dog_name + " has sent you an invitation to join their" \
                                                                          " new event!"
         invite_address = "invite_" + str(event_id)
-        self.create_notification(user_dest, title, msg, current_user.pos_x, current_user.pos_y, NEW_INVITE,
+        self.create_notification(user_dest, title, msg, current_user.pos_x, current_user.pos_y,
+                                 NEW_INVITE,
                                  invite_address, current_user.user_img)
-
 
     def write_notification_in_history(self):
         msg_json = {
@@ -79,8 +82,6 @@ class Notification:
                 all_notifications = json.load(file)
 
         for noti in all_notifications["notifications"]:
-            # if it's a friend request, delete (all of) it
-            # elif it's an event, deleting just the "from", which is the event id so just the specific event
             if noti["type"] == type and noti["from"] == notification_from:
                 continue
             else:
@@ -90,3 +91,18 @@ class Notification:
         with open(file_path, "w") as file:
             data = {"notifications": notifications_after_delete["notifications"]}
             json.dump(data, file, default=str, indent=4)
+
+    def check_if_there_is_noti_from(self, email, type, notification_from):
+        file_path = self.getNotificationsFileName(email)
+        all_notifications = None
+        if os.path.exists(file_path):
+            with open(file_path, "r") as file:
+                all_notifications = json.load(file)
+
+        if not all_notifications:
+            return False
+
+        for noti in all_notifications["notifications"]:
+            if noti["from"] == notification_from and noti["type"] == type:
+                return True
+        return False

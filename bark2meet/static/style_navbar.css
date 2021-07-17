@@ -11,7 +11,7 @@
   display: flex;
   /*overflow-x: auto;*/
   overflow: hidden;
-  z-index:1;
+  z-index:900;
   flex-wrap: inherit;
 }
 
@@ -57,8 +57,8 @@
   color: #4B0B9D;
 }
 
-.nav__link--active {
-  color: #fff !important;
+.text-current {
+  color: #A1B0FF !important;
 }
 
 .nav__icon {

@@ -81,17 +81,7 @@ class Event:
                         return event, filename
 
         raise Exception("DID NOT FIND THE EVENT", id)
-        # todayEvents = {"events": []}
-        # time = datetime.today().strftime('%Y-%m-%d')
-        # file_path = self.getEventFileName(time)
-        # if os.path.exists(file_path):
-        #     with open(file_path, "r") as file:
-        #         todayEvents = json.load(file)
-        #
-        # for event in todayEvents["events"]:
-        #     if event["id"] == id:
-        #         return event
-        # return []
+
 
     def join_to_event(self, id, emails):
         self.write_changes_to_joined_event(id, emails, to_join=True)

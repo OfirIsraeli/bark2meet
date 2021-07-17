@@ -50,8 +50,8 @@ class User(db.Model, UserMixin):
     # dog:
     dog_name = db.Column(db.String(30), nullable=False, default="NULL")
     dog_age = db.Column(db.String(30), nullable=False, default="NULL")
-    dog_temperament = db.Column(db.String(120), nullable=False, default="NULL")
-    dog_color = db.Column(db.String(30), nullable=False, default="No Color")
+    #dog_temperament = db.Column(db.String(120), nullable=False, default="NULL")
+    #dog_color = db.Column(db.String(30), nullable=False, default="No Color")
     dog_breed = db.Column(db.String(50), nullable=False, default="NULL")
     dog_gender = db.Column(db.Integer, nullable=False, default=MALE)
     dog_img = db.Column(db.String(200), nullable=False, default=DEFAULT_IMG)
@@ -90,14 +90,11 @@ class User(db.Model, UserMixin):
         self.dog_img = dog_img
         db.session.commit()
 
-    def update_dog_details(self, name, age, temperament, color, breed, gender=MALE):
-        try:
-            self.dog_age = float(age)
-        except:
-            self.dog_age = 2.5
+    def update_dog_details(self, name, age, breed, gender=MALE):
+        self.dog_age = float(age)
         self.dog_name = name
-        self.dog_temperament = temperament
-        self.dog_color = color
+        #self.dog_temperament = temperament
+        #self.dog_color = color
         self.dog_breed = breed
         self.dog_gender = gender
         db.session.commit()

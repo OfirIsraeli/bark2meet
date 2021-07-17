@@ -931,28 +931,69 @@ input[type="checkbox"]:checked ~ .icon-box-orange {
   float: right;
   background: #986503;
   color: #FFAD0E;
+
 }
 
 .orange-btns{
   display: flex;
   gap: 30px;
   padding-bottom: 15px;
+  align-items: right;
+  float: right;
+  text-align: right;
+  justify-content: flex-end;
 }
 
-#profile_nav_btn{
 
+#addFriend {
+  width: 52px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #5C6C2F;
+  border-radius: 10px;
+  background: #B6E13D;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 18px;
+  padding: 5px;
+  color: #5C6C2F;
 }
 
-#notification_nav_btn{
-
+#requestFriend{
+  width: 52px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #5C6C2F;
+  border-radius: 10px;
+  background: #C5DF7A;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 18px;
+  padding: 5px;
+  color: #5C6C2F;
 }
 
-#walks_nav_btn{
-
+#AreadyFriend{
+  width: 52px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #5C6C2F;
+  border-radius: 10px;
+  background: #5C6C2F;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 18px;
+  padding: 5px;
+  color: #B6E13D;
 }
-
-#popup6{
-  
 }
-
 

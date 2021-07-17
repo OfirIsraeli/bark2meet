@@ -36,6 +36,8 @@ body {
 	background: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 25px 30px;
 	overflow: auto;
+	min-height: 100vh;
+
 }
 
 
@@ -159,7 +161,7 @@ div.friend-card {
     overflow: scroll;
 }
 
-.write-comment {
+.write-comment, .btn.btn-primary-submit {
     alt: Write a message;
     color: #073170;
     width: 80px;

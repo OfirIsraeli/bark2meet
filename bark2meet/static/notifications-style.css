@@ -24,6 +24,8 @@ body {
 	background: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 25px 30px;
 	overflow: auto;
+	min-height: 100vh;
+
 }
 .event-form-box .title {
 	font-size: 25px;
@@ -33,7 +35,7 @@ body {
 
 .event-form-box .title::before {
 	content: "";
-	position: absolute;
+	position: fixed;
 	left: 0;
 	bottom: 0;
 	height: 3px;
@@ -132,7 +134,7 @@ input{
 
       /* nav bar */
 .nav {
-    position: absolute;
+    position: fixed;
     bottom: 0;
 	left: 0;
     width: 100%;

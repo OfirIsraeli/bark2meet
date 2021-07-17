@@ -94,11 +94,16 @@
                                             {{walk.location}}</strong></p>
                                     <div class="profile-pics">
 
+
+
                                         {% if walk['users_images'][0] %}
-                                        <img class="head" src="../{{walk['users_images'][0][10:]}}">
+                                            {% if walk['users_images'][0] != "static/default-account-img.png"%}
+                                                <img class="head" src="../{{walk['users_images'][0][10:]}}">
+                                                {% else %}
+                                                <img class="head" src="../{{walk['users_images'][0]}}">
+                                                {% endif %}
                                         {% else %}
-                                        <img clsss="head"
-                                            src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
+                                        <img clsss="head" src="{{url_for('static', filename='stock_mini_profile_pic.png')}}">
                                         {% endif %}
                                         {% if walk['users_images'][1] %}
                                         <img class="mid" src="../{{walk['users_images'][1][10:]}}">

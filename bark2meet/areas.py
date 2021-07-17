@@ -55,11 +55,6 @@ class Areas:
                 if profile.email != user.email:
                     result.add(profile)
 
-        #if user.email == "o@o.com":
-            #print("all areas:")
-            #self.printAreasDict()
-            #print("area:", [user.email for user in self.Areas_dict[(areaX, areaY)]])
-
         return result
 
     def init_areas(self):
@@ -92,8 +87,6 @@ class Areas:
 
         # if user is in the same area as before
         if curr_x_min == user.current_area_x and curr_y_min == user.current_area_y:
-            #print("same as before:")
-            #self.printAreasDict()
             return curr_x_min, curr_y_min
         try:
             # remove old user area
@@ -101,34 +94,8 @@ class Areas:
         except KeyError:
             # add user to new area
             self.Areas_dict[(curr_x_min, curr_y_min)].add(user)
-            #print("new area for ", user.email, ":")
-            #self.printAreasDict()
             return curr_x_min, curr_y_min
 
-
-        # -----------------------------------------
-        # if not to_initialized and \
-        #         (user.current_area_x, user.current_area_y) in self.Areas_dict.keys():
-        #     try:
-        #         self.Areas_dict[(user.current_area_x, user.current_area_y)].remove(user)
-        #     except:
-        #         print("Error: Areas.update")
-        #
-        # for key in self.Areas_dict:
-        #     curr_dist = self.distance(key, user.pos_x, user.pos_y)
-        #     if curr_dist < min_dist:
-        #         min_dist = curr_dist
-        #         curr_x_min = key[X_POS]
-        #         curr_y_min = key[Y_POS]
-        #
-        # # add user to relevant place in area dict only if he is not already in it
-        # not_add_user = False
-        # for user_in_area in self.Areas_dict[(curr_x_min, curr_y_min)]:
-        #     if user_in_area.email == user.email:
-        #         not_add_user = True
-        # if not not_add_user:
-        #     self.Areas_dict[(curr_x_min, curr_y_min)].add(user)
-        # return curr_x_min, curr_y_min
 
     def remove_user(self, user):
         try:

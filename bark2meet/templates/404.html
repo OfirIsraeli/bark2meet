@@ -11,7 +11,6 @@
         integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='welcome.css') }}">
-
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 </head>
@@ -29,45 +28,19 @@
         </div>
 
         <br>
-
-        <!-- names & pics & bold welcome -->
-        <div class="profile-titles">
-            {% if user.user_img != "static/default-account-img.png"%}
-            <img class="owner-pic" src="../{{user.user_img[10:]}}">
-            {% else %}
-            <img class="owner-pic" src="../{{user.user_img}}">
-            {% endif %}
-
-            {% if user.dog_img != "static/default-account-img.png"%}
-            <img class="dog-pic" src="../{{user.dog_img[10:]}}">
-            {% else %}
-            <img class="dog-pic" src="../{{user.dog_img}}">
-            {% endif %}
-
-            <div class="names">
-                <span>Hello,</span><br>
-                <span class="owner-name">{{user.full_name.rsplit(' ', 1)[0]}}</span>
-                <span> & </span>
-                <span class="dog-name">{{user.dog_name}}</span>
-                <br>
-                <span>Bark2Meet you!</span>
-            </div>
-        </div>
-
         <br>
 
-        <!-- longer welcome regular text -->
         <div class="welcome_text">
-            <span>As B2M walkers you can</span><br>
-            <span>walk together, create events</span><br>
-            <span> & meet new walkers around!</span><br><br>
-            <span><strong>So... Let's get started</strong></span><br>
+            <span>WOOOOOOOOW</span><br>
+            <span>404 Error</span><br>
+            <span> Page not found </span><br><br>
+            <span><strong>What are you trying to do?</strong></span><br>
         </div>
 
         <!-- continue > needs to be linked to the first map page -->
         <div class="row justify-content-center">
             <a href="{{ url_for('map') }}" class="button-box">
-                Continue
+                Map
             </a>
         </div>
 

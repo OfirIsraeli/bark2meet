@@ -30,9 +30,6 @@ function initMap() {
 
         UpdateUserLocation("/update_user_location");
 
-        //infoWindow.setPosition(pos);
-        //infoWindow.setContent("Location found.");
-        //infoWindow.open(map);
         map.setCenter(pos);
       },
       () => {
@@ -78,7 +75,6 @@ function initializeMarkers() {
 
 function attachInfoWindow(marker, userToPush){
   let infoWindow;
-  console.log(userToPush.full_name, userToPush.privacy)
   // green\orange person marker options
   if (userToPush.privacy === "green" || userToPush.privacy === "orange") {
     // open infowindow    
@@ -119,8 +115,11 @@ function attachInfoWindow(marker, userToPush){
 function addMarkers(all_locations) {
   for (let i = 0; i < all_locations.length; i++) {
     // for debugging:
-    if (all_locations[i].full_name == "Ofir Israeli"){
+    if (all_locations[i].full_name === "Assi azar"){
       all_locations[i].pos_x += 0.0015;
+    }
+    if (all_locations[i].full_name === "Paul"){
+      all_locations[i].pos_y += 0.0015;
     }
     // end for debugging
 
@@ -194,16 +193,15 @@ function distance(user_lat, user_lng){
 
 
 function newFriendsTeaser(userInfo){
-  if (userInfo.is_friend == true){
+  if (userInfo.is_friend === true){
     return '<h1 class="popup-header">Say Hello to your Friends!' + "</h1>"
   }
-  return '<h1 class="popup-header">New friends for ' +
-          userInfo.dog_name + "  & You,</h1>" +
+  return '<h1 class="popup-header">New friends!</h1>' +
           '<h1 class="popup-header">check them out!</h1>'
 }
 
 function addFriendButton(userInfo){
-    if (userInfo.is_friend == true){
+    if (userInfo.is_friend === true){
       return ""
     }
     return '<input type="checkbox" onClick="addFriend(this)" value="'+ userInfo.id +'">' +
@@ -220,7 +218,7 @@ function createPopupMarker(userInfo) {
       '<div id="infoContentGreen">' +
       '<div class="container1">' +
       newFriendsTeaser(userInfo) +
-
+      '<a href="/profile/'+ userInfo.id +'" class="a">' +
           "<div class='profile-titles'>" +
       "<img class='owner-pic' src='"+ removeBaseAddress(userInfo.user_image) +"'>" +
       "<img class='dog-pic' src='" + removeBaseAddress(userInfo.dog_image) + "'>" +
@@ -230,6 +228,7 @@ function createPopupMarker(userInfo) {
       "<span class='dog-name'>" + userInfo.dog_name +"</span>" +
       "</div>" +
         "</div>" +
+        "</a>" +
 
       '<h2 class="popup-header2">Only ' +
       distance(userInfo.pos_x, userInfo.pos_y) +
@@ -249,15 +248,14 @@ function createPopupMarker(userInfo) {
       mapGender(userInfo.dog_gender) +
       "</p>" +
       "<p>" +
-      userInfo.dog_age +
+      Math.trunc(userInfo.dog_age) +
       " years old</p>" +
       "</div>" +
       "</div>" +
-      '<a href="/profile/'+ userInfo.id +'" class="a">See full profile  <img src="static/arrowside.png"></a>' +
 
        '<div class="green-btns">' +
                         '<div class="col-xs-4 pull-right">' +
-                        addFriendButton(userInfo) +
+                        checkFriendStatus(userInfo) +
                         '</div>' +
                         '<div class="col-xs-4 pull-right">' +
                           '<input type="checkbox" onClick="navigateTo(' + userInfo.pos_x + ', '+ userInfo.pos_y + ')">' +
@@ -322,6 +320,25 @@ function createPopupMarker(userInfo) {
   );
 }
 
+function checkFriendStatus(userInfo){
+  if (userInfo.is_friend){
+    return ('<button id="AreadyFriend">' +
+            '<i class="fas fa-user-check" aria-hidden="true"></i>' +
+            '</button>')
+  }
+
+  if (userInfo.send_friend_req){
+    return ('<button id="requestFriend">' +
+            '<i class="fas fa-user-clock" aria-hidden="true"></i>' +
+            '</button>')
+  }
+
+  return ('<input type="checkbox" onClick="addFriend(this)" value="'+ userInfo.id +'">' +
+    '<div class="icon-box-green">' +
+      '<i class="fas fa-user-plus" aria-hidden="true"></i>' +
+    '</div>')
+}
+
 
 let shouldUpdateLocation = true;
 const interval = setInterval(function () {
@@ -329,7 +346,7 @@ const interval = setInterval(function () {
     UpdateUserLocation("/update_user_location");
     updateMarkers();
   }
-}, 5000);
+}, 7000);
 
 
 function openChatWithTarget(userName) {
@@ -378,9 +395,9 @@ function navigateTo(dest_x, dest_y){
   directionsService.route(req,
     (response, status) => {
       if (status === "OK") {
-        console.log(response, "h")
+        console.log(response)
         directionsRenderer.setDirections(response);
-        resetNavigation()
+        resetNavigation(dest_x, dest_y)
       } else {
         window.alert("Directions request failed due to " + status);
       }
@@ -390,14 +407,18 @@ function navigateTo(dest_x, dest_y){
   })
   }}
 
-function resetNavigation(){
-  setTimeout(()=>{
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map);
+let endNavigationInterval;
+function resetNavigation(tX, tY){
+  endNavigationInterval = setInterval(()=>{
+    if(distance(tX, tY) < 5){
+      directionsRenderer.setDirections({routes: [], geocoded_waypoints: []});
+      clearInterval(endNavigationInterval);
 
-},1000)
+    }
+  }, 1000)
 }
+
+
 function sendInfo(url, value) {
       const URL = url;
       const xhr = new XMLHttpRequest();
@@ -407,7 +428,14 @@ function sendInfo(url, value) {
 }
 
 
-
+// navigator.serviceWorker.getRegistration("/").then(reg=>{
+//   console.log(reg)
+//   reg.pushManager.subscribe({
+//     userVisibleOnly: true
+//   }).then(sub=>{
+//     sendInfo("/api/notification_subscribe", sub.toJSON())
+//   })
+// })
 
 
 

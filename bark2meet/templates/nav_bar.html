@@ -35,8 +35,8 @@
   <nav class="nav">
     <a href="{{ url_for('my_walks') }}" class="nav__link">
       {% if title == "My Walks" %}
-      <i class="fas fa-shoe-prints nav__icon text-white" aria-hidden="true"></i>
-      <span class="nav__text text-white">Walks</span>
+      <i class="fas fa-shoe-prints nav__icon text-current" aria-hidden="true"></i>
+      <span class="nav__text text-current">Walks</span>
 
       {% else %}
       <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
@@ -47,8 +47,8 @@
     <a href="{{ url_for('map') }}" class="nav__link">
       {% if title == "Map" %}
 
-      <i class="far fa-map nav__icon text-white" aria-hidden="true"></i>
-      <span class="nav__text text-white">Map</span>
+      <i class="far fa-map nav__icon text-current" aria-hidden="true"></i>
+      <span class="nav__text text-current">Map</span>
 
       {% else %}
       <i class="far fa-map nav__icon" aria-hidden="true"></i>
@@ -101,8 +101,8 @@
 
     <a href="{{ url_for('notifications_page') }}" class="nav__link">
       {% if title == "Notifications" %}
-      <i class="far fa-bell nav__icon text-white" aria-hidden="true"></i>
-      <span class="nav__text text-white">Notifications</span>
+      <i class="far fa-bell nav__icon text-current" aria-hidden="true"></i>
+      <span class="nav__text text-current">Notifications</span>
       {% else %}
       <i class="far fa-bell nav__icon" aria-hidden="true"></i>
       <span class="nav__text">Notification</span>
@@ -112,8 +112,8 @@
 
     <a href="{{ url_for('get_user_details') }}" class="nav__link">
       {% if title == "Profile" %}
-      <i class="far fa-user-circle nav__icon text-white" aria-hidden="true"></i>
-      <span class="nav__text text-white">Profile</span>
+      <i class="far fa-user-circle nav__icon text-current" aria-hidden="true"></i>
+      <span class="nav__text text-current">Profile</span>
       {% else %}
       <i class="far fa-user-circle nav__icon" aria-hidden="true"></i>
       <span class="nav__text">Profile</span>
@@ -198,11 +198,11 @@
       <button id="now-popup-btn">Now</button>
     </div>
 
-          <div class="create-event-btn">
-              <a href="{{ url_for('create_event') }}">
-            <button id="createEvent-popup-btn">Create event</button>
-              </a>
-          </div>
+    <div class="create-event-btn">
+      <a href="{{ url_for('create_event') }}">
+        <button id="createEvent-popup-btn">Create event</button>
+      </a>
+    </div>
   </div>
 
 
@@ -299,8 +299,13 @@
         })
         .then(function (status) {
           updateStatusBtn(status);
-          if(status !== -1)
-          newUser = false
+          if (status !== -1) {
+            newUser = false;
+          }
+
+          if (status === 1 || status === 2 || status === 3) {
+            isWalking = true;
+          }
         });
     }
 
@@ -321,159 +326,159 @@
     ////////////////// popups ///////////////////
 
     var isWalking = false;
-      var newUser = true;
-      const button = document.querySelector('button');
+    var newUser = true;
+    const button = document.querySelector('button');
 
 
 
-      document.getElementById("walkButton").addEventListener("click",function(){
-        if (isWalking == false){
+    document.getElementById("walkButton").addEventListener("click", function () {
+      if (isWalking === false) {
 
+        button.disabled = true;
+
+        if (newUser === true) {
+
+
+
+          // expailnation popup
+          document.getElementsByClassName("popup5")[0].classList.add("active5");
+
+          document.getElementById("close1").addEventListener("click", function () {
+            document.getElementsByClassName("popup5")[0].classList.remove("active5");
+            button.disabled = false;
+            document.getElementsByClassName("popup2")[0].classList.remove("active2");
+            newUser = true;
+          });
+
+          document.getElementById("gotit-popup-btn").addEventListener("click", function () {
+            document.getElementsByClassName("popup5")[0].classList.remove("active5");
+            newUser = false;
+          });
+
+          document.getElementById("gotit-popup-btn").addEventListener("click", function () {
+            document.getElementsByClassName("popup2")[0].classList.add("active2");
+            newUser = false;
+          });
+
+
+        }
+
+        document.getElementsByClassName("popup2")[0].classList.add("active2");
+
+        document.getElementById("close3").addEventListener("click", function () {
+          document.getElementsByClassName("popup2")[0].classList.remove("active2");
+          button.disabled = false;
+        });
+
+
+        document.getElementById("now-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup2")[0].classList.remove("active2");
+        });
+
+        document.getElementById("now-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup7")[0].classList.add("active7");
           button.disabled = true;
 
-          if (newUser == true){
+        });
+
+        document.getElementById("close2").addEventListener("click", function () {
+          document.getElementsByClassName("popup7")[0].classList.remove("active7");
+          button.disabled = false;
+        });
 
 
 
-            // expailnation popup
-            document.getElementsByClassName("popup5")[0].classList.add("active5");
+        document.getElementById("green-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup7")[0].classList.remove("active7");
+          isWalking = true;
+          button.disabled = false;
 
-            document.getElementById("close1").addEventListener("click",function(){
-              document.getElementsByClassName("popup5")[0].classList.remove("active5");
-              button.disabled = false;
-              document.getElementsByClassName("popup2")[0].classList.remove("active2");
-              newUser = true;
-            });
+        });
 
-            document.getElementById("gotit-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup5")[0].classList.remove("active5");
-              newUser = false;
-            });
+        document.getElementById("orange-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup7")[0].classList.remove("active7");
+          isWalking = true;
+          button.disabled = false;
 
-             document.getElementById("gotit-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup2")[0].classList.add("active2");
-              newUser = false;
-            });
+        });
 
+        document.getElementById("red-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup7")[0].classList.remove("active7");
+          isWalking = true;
+          button.disabled = false;
+          //
 
-          }
-
-          document.getElementsByClassName("popup2")[0].classList.add("active2");
-
-          document.getElementById("close3").addEventListener("click",function(){
-            document.getElementsByClassName("popup2")[0].classList.remove("active2");
-            button.disabled = false;
-          });
-
-
-          document.getElementById("now-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup2")[0].classList.remove("active2");
-          });
-
-         document.getElementById("now-popup-btn").addEventListener("click",function(){
-            document.getElementsByClassName("popup7")[0].classList.add("active7");
-            button.disabled = true;
-
-          });
-
-          document.getElementById("close2").addEventListener("click",function(){
-            document.getElementsByClassName("popup7")[0].classList.remove("active7");
-            button.disabled = false;
-          });
+        });
 
 
 
-         document.getElementById("green-popup-btn").addEventListener("click",function(){
-            document.getElementsByClassName("popup7")[0].classList.remove("active7");
-            isWalking = true;
-            button.disabled = false;
+      }
 
-          });
+      //button.disabled = false;
 
-          document.getElementById("orange-popup-btn").addEventListener("click",function(){
-            document.getElementsByClassName("popup7")[0].classList.remove("active7");
-            isWalking = true;
-            button.disabled = false;
+      if (isWalking === true) {
 
-          });
+        // button.disabled = false;
 
-          document.getElementById("red-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup7")[0].classList.remove("active7");
-              isWalking = true;
-              button.disabled = false;
-              //
+        document.getElementsByClassName("popup6")[0].classList.add("active6");
 
-          });
+        document.getElementById("close4").addEventListener("click", function () {
+          document.getElementsByClassName("popup6")[0].classList.remove("active6");
+          button.disabled = false;
+        });
 
+        document.getElementById("green-popup-btn2").addEventListener("click", function () {
+          document.getElementsByClassName("popup6")[0].classList.remove("active6");
+          button.disabled = false;
 
+        });
 
-        }
+        document.getElementById("orange-popup-btn2").addEventListener("click", function () {
+          document.getElementsByClassName("popup6")[0].classList.remove("active6");
+          button.disabled = false;
 
-        //button.disabled = false;
+        });
 
-        if (isWalking == true){
+        document.getElementById("red-popup-btn2").addEventListener("click", function () {
+          document.getElementsByClassName("popup6")[0].classList.remove("active6");
+          button.disabled = false;
 
-         // button.disabled = false;
+        });
 
-            document.getElementsByClassName("popup6")[0].classList.add("active6");
+        document.getElementById("exit-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup6")[0].classList.remove("active6");
+          button.disabled = true;
+          //isWalking = false;
+        });
 
-            document.getElementById("close4").addEventListener("click",function(){
-              document.getElementsByClassName("popup6")[0].classList.remove("active6");
-              button.disabled = false;
-            });
+        document.getElementById("exit-popup-btn").addEventListener("click", function () {
+          document.getElementsByClassName("popup1")[0].classList.add("active1");
+          //isWalking = false;
+          button.disabled = true;
 
-            document.getElementById("green-popup-btn2").addEventListener("click",function(){
-              document.getElementsByClassName("popup6")[0].classList.remove("active6");
-              button.disabled = false;
-
-            });
-
-            document.getElementById("orange-popup-btn2").addEventListener("click",function(){
-              document.getElementsByClassName("popup6")[0].classList.remove("active6");
-              button.disabled = false;
-
-            });
-
-            document.getElementById("red-popup-btn2").addEventListener("click",function(){
-              document.getElementsByClassName("popup6")[0].classList.remove("active6");
-              button.disabled = false;
-
-            });
-
-            document.getElementById("exit-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup6")[0].classList.remove("active6");
-              button.disabled = true;
-              //isWalking = false;
-            });
-
-            document.getElementById("exit-popup-btn").addEventListener("click",function(){
-              document.getElementsByClassName("popup1")[0].classList.add("active1");
-              //isWalking = false;
-              button.disabled = true;
-
-            });
+        });
 
 
 
-            var continueEvent = document.getElementById("continue-popup-btn");
+        var continueEvent = document.getElementById("continue-popup-btn");
 
-            continueEvent.addEventListener("click",function(){
-              document.getElementsByClassName("popup1")[0].classList.remove("active1");
+        continueEvent.addEventListener("click", function () {
+          document.getElementsByClassName("popup1")[0].classList.remove("active1");
 
-              isWalking = false;
-              button.disabled = false;
+          isWalking = false;
+          button.disabled = false;
 
-            });
+        });
 
-            document.getElementById("close5").addEventListener("click",function(){
-              document.getElementsByClassName("popup1")[0].classList.remove("active1");
-              button.disabled = false;
-            });
+        document.getElementById("close5").addEventListener("click", function () {
+          document.getElementsByClassName("popup1")[0].classList.remove("active1");
+          button.disabled = false;
+        });
 
 
-        }
+      }
 
-      });
+    });
 
   </script>
 

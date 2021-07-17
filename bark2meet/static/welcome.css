@@ -11,7 +11,6 @@ bg gradient linear-gradient(#FEFFFA, #F6E6E5)
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
 *{
-	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Montserrat', sans-serif;
@@ -29,6 +28,7 @@ body {
 }
 /*light container*/
 .event-form-box {
+	margin: auto;
 	display: block;
 	max-width: 700px;
 	width: 100%;
@@ -65,6 +65,8 @@ body {
 }
 
 .event-form-box {
+	margin: auto;
+
 	max-width: 600px;
 	height: 95%;
 	border: 1px solid #ced4da;
