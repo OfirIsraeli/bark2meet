@@ -1,4 +1,5 @@
-1.	Architectural Overview
+# Bark2Meet
+## Architectural Overview
 Bark2Meet’s server-side is based on the Flask Web Framework.
 Graphs can be seen in the documentation in the submission itself.
 
@@ -16,9 +17,9 @@ The JSON files that represent user’s notification history (by username) and wa
 
 
 
-2.	API
+## API
 
-Server-side inner communication
+### Server-side inner communication
 The application holds various data structures, each with its own API. The server-side uses these data structures to analyze and respond to client-side requests.
 We can divide those data structures into 2 subcategories – data structures that their database is managed by flask SQL database and data structures that are managed by the application itself.
 The data structures that their database is managed by flask SQL database:
@@ -31,7 +32,7 @@ Data structures that are managed by the application itself:
 •	Events – A class that uses access to the JSON files that holds the walk-events data and send to the client-side various information about past and future walk-events of the current user, his friends, and his current area.
 
 
-Client-side to Server-side Communication
+### Client-side to Server-side Communication
 In each request coming from the client-side, the server will perform a series of API calls of the various data structures that were explained above, to generate the needed response (either if it is a GET request, PUT\POST request, or a routing request).
 There are 2 main ways of communication between the two sides:
 •	Routing – as the client side whishes to load a new page within the side, the server will first perform the needed actions to generate the data the page to be loaded requires even before the client-side code (HTML, CSS, and JavaScript) is loaded, so the client-side code could get various information while on the first loading of the DOM elements of the page.
@@ -47,18 +48,18 @@ Examples for both cases can be seen in the documentation in the submission itsel
 
 
 
-3.	Installation and usage
+## Installation and usage
 
-Installing
+### Installing
 To run the site, it is required to install the needed python packages by running the command “pip install -r req.txt” on the root folder.
 If the installation will not run smoothly, all packages can just be copied from the given zip file “site-packages.zip”
 
-Running
+### Running
 Open the file “app.py” on the root directory and run the main (and only) function.
 Example can be seen in the documentation in the submission itself.
 
 
-Usage
+### Usage
 It is important to notice that the local app cannot execute a multiple devices with multiple users scenario. To solve that, we have created a special user that will emulate a user standing approximately 150m north of the device’s current GPS location, so you could experience the application the way it is intended to be experienced – with multiple users online and close to each other.
 The user’s details are:
 •	Username: test@test.com
