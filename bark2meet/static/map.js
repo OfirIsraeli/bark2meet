@@ -165,15 +165,9 @@ function attachInfoWindow(marker, userToPush){
 function addMarkers(all_locations) {
   for (let i = 0; i < all_locations.length; i++) {
     // for debugging:
-    if (all_locations[i].full_name === "Shir Mazor"){
+    if (all_locations[i].full_name === "Ofir Israeli"){
       all_locations[i].pos_x += 0.0015;
     }
-    if (all_locations[i].full_name === "Ofir Israeli"){
-      all_locations[i].pos_x = 32.068348;
-      all_locations[i].pos_y = 34.795463;
-    }
-
-
     // end for debugging
 
     const marker = new google.maps.Marker({
