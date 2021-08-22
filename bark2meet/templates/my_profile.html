@@ -4,56 +4,13 @@
 <meta name="viewport" content="width=device-width">
 <title>My profile</title>
 <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
-    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
-    crossorigin="anonymous"></script>
+
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
-<script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='my_profile.css') }}">
-<script type="text/javascript">
-    function openPage(pageName, elmnt) {
-        // Hide all elements with class="tabcontent" by default */
-        var i, container, tablinks;
-        container = document.getElementsByClassName("container");
-        for (i = 0; i < container.length; i++) {
-            container[i].style.display = "none";
-        }
-
-        // Remove the background color of all tablinks/buttons
-        tablinks = document.getElementsByClassName("nav__link_middle");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].style.backgroundColor = "#F8EAFF";
-        }
-
-        // Show the specific tab content
-        document.getElementById(pageName).style.display = "block";
-
-        // Add the specific color to the button used to open the tab content
-        elmnt.style.backgroundColor = "#F4DEFF";
-        linkIcon = elmnt.getElementsByClassName("nav__icon");
-        linkIcon.style.color = "#FFF";
-    }
-
-
-    // Get the element with id="defaultOpen" and click on it
-    $(document).ready(function () {
-        $('[id="defaultOpen"]').trigger("click")
-    })
-    // const a = document.getElementById("defaultOpen");
-    // console.log(a, "a")
-
-</script>
 
 <div class="event-form-box">
-    <div class="row">
-        <button class="back_button">
-            <img src="../static/Vector.svg">
-        </button>
-    </div>
+
     <div class="row justify-content-center">
         <div class="col-xs-2"><img src="../static/smallpaw.svg" class="smallpaw"></div>
         <div class="col-xs-10 title"><span>My Profile</span></div>
@@ -90,7 +47,7 @@
             {% if user.gender == 3 %}
             <span>Unidentified</span><br>
             {% endif %}
-            <span>{{age}}</span>
+            <span>{{age}} Years Old</span>
         </div>
         <div class="column-md-12 info-dog">
             {% if user.dog_gender == 1 %}
@@ -99,7 +56,7 @@
             {% if user.dog_gender == 0 %}
             <span>Female</span><br>
             {% endif %}
-            <span>{{user.dog_age.rsplit('.', 1)[0]}}</span><br>
+            <span>{{user.dog_age.rsplit('.', 1)[0]}} Years Old</span><br>
             <span>{{user.dog_temperament}}</span><br>
             <span>{{user.dog_color}}</span>
         </div>
@@ -111,7 +68,7 @@
         <button class="nav__link_middle" onclick="openPage('settings', this)" id="defaultOpen">
             <i class="fas fa-cog nav__icon" aria-hidden="true"></i>
         </button>
-        <button class="nav__link_middle" onclick="openPage('albums', this)" id="defaultOpen">
+        <button class="nav__link_middle" onclick="openPage('albums', this)">
             <i class="far fa-images nav__icon current" aria-hidden="true"></i>
         </button>
         <a href="{{ url_for('logout') }}" class="nav__link_middle">
@@ -125,6 +82,15 @@
     <div id="albums" class='container'>
         <section class="albums-gallery">
             No Albums Yet!
+            <!-- album 2 -->
+            <!-- Links to inner album page with 8 pictures -->
+<!--            <a href="inside_album.html">-->
+<!--                <div class="one-album-item">-->
+<!--                    <div style="background-image: url('../static/6.jpg');" class="one-album-item-img"></div>-->
+<!--                    <p><strong>Gan Saker, Birthday walk</strong></p>-->
+<!--                    <p>8 pictures</p>-->
+<!--                </div>-->
+<!--            </a>-->
 
 
         </section>
@@ -174,7 +140,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center">
+        {#<div class="row justify-content-center">
             <div class="col-sm-6 d-inline float-left">
                 <div class="page-header">
                     <h1>Notifications:</h1>
@@ -210,32 +176,47 @@
         <br>
 
 
-        <!-- <div class="row justify-content-center">
-            <div class="col-sm-6 d-inline float-left">
-                <div class="page-header">
-                    <h1>Profile:</h1>
-                </div>
-            </div>
-        </div>
-
-        <div class="row justify-content-center">
-            <div class="col-sm-6 d-inline float-left">
-                <div class="page-header">
-                    <h1>Edit your profile
-                        pictures:</h1>
-                </div>
-            </div>
-        </div> -->
-
-
 
         <div class="row justify-content-center">
             <div class="col-sm-6 d-inline float-left">
                 <button class="delete">Delete Account</button>
             </div>
-        </div>
+        </div>#}
     </div>
 </div>
 
+<script type="text/javascript">
+    function openPage(pageName, elmnt) {
+        // Hide all elements with class="tabcontent" by default */
+        var i, container, tablinks;
+        container = document.getElementsByClassName("container");
+        for (i = 0; i < container.length; i++) {
+            container[i].style.display = "none";
+        }
+
+        // Remove the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("nav__link_middle");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "#F8EAFF";
+        }
+
+        // Show the specific tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Add the specific color to the button used to open the tab content
+        elmnt.style.backgroundColor = "#F4DEFF";
+        linkIcon = elmnt.getElementsByClassName("nav__icon");
+        linkIcon.style.color = "#FFF";
+    }
+
+
+    // Get the element with id="defaultOpen" and click on it
+    $(document).ready(function () {
+        $('[id="defaultOpen"]').trigger("click")
+    })
+    // const a = document.getElementById("defaultOpen");
+    // console.log(a, "a")
+
+</script>
 
 {% endblock content %}

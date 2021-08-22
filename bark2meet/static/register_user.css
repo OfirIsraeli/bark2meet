@@ -613,4 +613,8 @@ div.friend {
                 background-color: rgba(246, 248, 255, 1);
                 margin: 18px;
             }
-
+.invalid-feedback span{
+    color: #C11D1D;
+    font-size: 12px;
+    font-weight: 700;
+}

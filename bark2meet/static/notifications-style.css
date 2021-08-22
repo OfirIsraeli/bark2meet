@@ -4,8 +4,11 @@
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Montserrat', sans-serif;
-	color: #073170;
     }
+
+h3 {
+    color: #073170;
+}
 
 body {
 	display: flex;
@@ -13,10 +16,11 @@ body {
 	justify-content: center;
 	align-items: center;
 	padding: 0;
-	background-image: url("../../static/siteBg4.svg");
+	background-image: url("../../static/siteBg.svg");
 	background-size: cover;
 	margin: 0 0 55px 0;
 }
+
 .event-form-box {
 	display: block;
 	max-width: 700px;
@@ -31,11 +35,13 @@ body {
 	font-size: 25px;
 	font-weight: 900;
 	position: relative;
+	margin-bottom: 20px;
+	color: #073170;
 }
 
 .event-form-box .title::before {
 	content: "";
-	position: fixed;
+	position: absolute;
 	left: 0;
 	bottom: 0;
 	height: 3px;
@@ -58,7 +64,7 @@ body {
     background-color: #F6F8FF;
     border-radius: 7px;
     border: 2px solid #0B469D ;
-
+    color: #073170;
 }
 .notifi-item1, .notifi-item2,.notifi-item5, .notifi-item3 {
 	display: flex;
@@ -147,91 +153,6 @@ input{
     z-index:1;
     flex-wrap: inherit;
 	color:#4B0B9D;
-}
-
-.nav__link {
-    display: flex;
-    flex-direction: column;
-	align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    min-width: 50px;
-    /*overflow: hidden;*/
-    white-space: nowrap;
-    font-size: 13px;
-    color: #4B0B9D;
-    text-decoration: none;
-    -webkit-tap-highlight-color:  transparent;
-    transition: background-color 0.1s ease-in-out;
-    width: 50px;
-    z-index: 1;
-    /*position: absolute;*/
-}
-.nav__link_img {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	flex-grow: 1;
-	min-width: 50px;
-	/*overflow: hidden;*/
-	white-space: nowrap;
-	font-size: 13px;
-	color: #4B0B9D;
-	text-decoration: none;
-	-webkit-tap-highlight-color:  transparent;
-	transition: background-color 0.1s ease-in-out;
-	width: 50px;
-	z-index: 2;
-	position: relative;
-	left: -30px;
-}
-.nav__link:hover {
-	text-decoration: none;
-	background-color: #F4DEFF;
-}
-
-.nav__link--active {
-	color: #fff !important;
-}
-.nav__icon {
-	font-size: 20px;
-}
-#imgBar{
-	width: 80px;
-	height: 90px;
-	background: url('Pics/start_a_walk.png') no-repeat;
-	background-size: 80px, 80px;
-	bottom: 10px;
-	/*left:140px;*/
-	z-index:1000;
-	align-items: center;
-	position: fixed;
-	overflow: hidden;
-}
-.nav__link_img {
-	width: 90px;
-	height: 90px;
-}
-#imgBar:hover{
-	background: url('Pics/pushedstartwalkmode.png') no-repeat;
-	width: 50px;
-	height: 40px;
-}
-
-#walkButton{
-	padding:10px 15px;
-	background:linear-gradient(#A1B0FF,#FBCBFF);
-	color:#4B0B9D;
-	border:none;
-	font-size:30px;
-	border-radius:50px;
-	bottom: 10px;
-	z-index:1000;
-	align-items: center;
-	position: fixed;
-	overflow: hidden;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .allow-btn, .confirm-btn {

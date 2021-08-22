@@ -560,6 +560,11 @@ pre code {
 }
 
 
+@media (min-width: 375px) {
+  .container-sm, .container {
+    max-width: 350px;
+  }
+
 @media (min-width: 576px) {
   .container-sm, .container {
     max-width: 540px;
@@ -2454,6 +2459,7 @@ fieldset:disabled a.btn {
   color: #fff;
   background-color: #A1B0FF;
   border: 3px solid #4B0B9D;
+  min-width: 200px;
 }
 .btn-primary:hover {
   color: #fff;
@@ -7639,7 +7645,9 @@ button.bg-dark:focus {
   margin: 3rem !important;
 }
 
-.mt-5,
+.mt-5 {
+  margin-top: 1rem !important;
+}
 .my-5 {
   margin-top: 3rem !important;
 }
@@ -10021,7 +10029,7 @@ h3 {
 }
 .btn-xl {
   text-transform: uppercase;
-  padding: 1.5rem 3rem;
+  padding: 1.5rem 2rem;
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.1rem;
@@ -10051,11 +10059,12 @@ header.masthead {
   overflow: hidden;
   padding-top: calc(7rem + 72px);
   padding-bottom: 7rem;
-  background-image: url(sitebg4.svg);
+  background-image: url(siteBg4.svg);
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
   background-size: cover;
+  width: 100%;
 }
 header.masthead .masthead-content {
   z-index: 1;
@@ -10066,7 +10075,8 @@ header.masthead .masthead-content .masthead-heading {
 }
 header.masthead .masthead-content .masthead-subheading {
   font-size: 2rem;
-  color: #fff;
+  color: #FFFFFF;
+  text-shadow: -1px 0 black, 0 3px black, 3px 0 black, 0 -1px black;
 }
 header.masthead .bg-circle {
   z-index: 0;
@@ -10112,7 +10122,7 @@ header.masthead .bg-circle-4 {
   }
 }
 .contact-section{
-  background: url(sitebg4.svg) no-repeat center;
+  background: url(siteBg4.svg) no-repeat center;
   background-size: cover;
   padding: 40px 0;
   bottom: 0;
@@ -10131,7 +10141,7 @@ header.masthead .bg-circle-4 {
 }
 
 .contact-form{
-  max-width: 600px;
+  max-width: 300px;
   margin: auto;
   padding: 0 10px;
   overflow: hidden;
@@ -10250,9 +10260,8 @@ section1{
 
 .gallery-box{
 	position:relative;
-	top:160px;
+	top:120px;
 	width:140px;
-	height:100px;
 	transform-style:preserve-3d;
 	animation:animate 20s linear infinite;
 	display:flex;
@@ -10262,7 +10271,7 @@ section1{
 	float:center;
 	text-align:center;
 	display:block;
-    margin:0 auto;
+    margin: auto;
 }
 
 @keyframes animate{
@@ -10279,10 +10288,10 @@ section1{
 	position: absolute;
 	top:0;
 	left:0;
-	width:100%;
+	width:60%;
 	transform-origin:center;
 	transform-style:preserve-3d;
-	transform:rotateY(calc(var(--i) * 45deg)) translateZ(400px);
+	transform:rotateY(calc(var(--i) * 45deg)) translateZ(150px);
 }
 
 .gallery-box span img{

@@ -8,17 +8,23 @@
   <meta http-equiv="refresh" content="3600">
 
   <!-- Bootstrap CSS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-    crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
+  <!-- JQUERY -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+      integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+      crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+  <!-- icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
+  <script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
   <!-- OUR CSS -->
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style_navbar.css')}}">
 
 
-  <!-- JQUERY -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 
   {% if title %}
   <title>{{ title }}</title>
@@ -30,6 +36,12 @@
 <body>
 
   {% block content %}{% endblock %}
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+    integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+    crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='notifications.js') }}"></script>
 
   <!-- nav bar -->
   <nav class="nav">
@@ -104,8 +116,13 @@
       <i class="far fa-bell nav__icon text-current" aria-hidden="true"></i>
       <span class="nav__text text-current">Notifications</span>
       {% else %}
-      <i class="far fa-bell nav__icon" aria-hidden="true"></i>
-      <span class="nav__text">Notification</span>
+
+
+      <span class="fa-stack fa-2x" data-count="&nbsp;" style="display: none;" id="new_notification_bell"></span>
+      <i class="far fa-bell nav__icon notifications_icon" aria-hidden="true"></i><br>
+      <span class="nav__text notifications_text">Notification</span>
+
+
       {% endif %}
     </a>
 
@@ -121,6 +138,13 @@
     </a>
   </nav>
 
+  <div style="visibility: hidden;" id="realtime_porter"></div>
+  <script type="text/javascript">
+    if (localStorage.getItem("newNotification") == "true" || localStorage.getItem("newNotification") == true) {
+
+      $("#new_notification_bell").show()
+    }
+  </script>
 
   {% if title == "Map" %}
 
@@ -130,19 +154,20 @@
     <div id="close1">
       <i class="fas fa-times"></i>
     </div>
-    <h3 class="popup-header">Wait a second! Read about your three possible walk modes before you start:</h3>
+    <h3 class="popup-header">Wait a second!</h3>
+    <h3  class="popup-header">Read about the walk modes before you start:</h3>
     <div class="container0">
       <div class="img">
-        <img src="static/3walk-modes.svg" width="110" hight="50px" alt="">
+        <img src="static/3walk-modes.svg" width="94" alt="">
       </div>
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800&display=swap" rel="stylesheet">
       <div class="description5">
         Everyone can see my current location and contact me.
-        <br /><br /><br />
-        Only my friends can see my current location and contact me.
-        <br /><br /><br />
-        Only my dog's breed is visible with my location. No walker can contact, navigate, or view my profile.
+        <br /><br />
+        Only my friends can see my current location and contact me, and I can only see them.
+        <br /><br />
+        Everyone can see my dog's breed but no one can contact me.
       </div>
     </div>
     <br>
@@ -184,28 +209,6 @@
   </div>
 
 
-  <!-- Popup choose time to go for a walk- now, timer or event -->
-
-  <div class="popup2 center">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <div id="close3">
-      <i class="fas fa-times"></i>
-    </div>
-    <h2 class="popup-header">You'll be out in...</h2><br />
-    <div class="now-btn">
-      <button id="now-popup-btn">Now</button>
-    </div>
-
-    <div class="create-event-btn">
-      <a href="{{ url_for('create_event') }}">
-        <button id="createEvent-popup-btn">Create event</button>
-      </a>
-    </div>
-  </div>
-
-
 
   <!-- Popup change mode in the middle or finish walk -->
 
@@ -240,30 +243,35 @@
       <div class="exit-btn">
         <button id="exit-popup-btn" onclick="finishedWlkFunc()">
           <span class="exit-btn__icon">
-            <ion-icon name="close-circle-sharp"></ion-icon>
+            <ion-icon name="paw-sharp"></ion-icon>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Popup finished walk msg -->
+          <!-- Popup welcome -->
 
-  <div class="popup1 center">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <div id="close5">
-      <i class="fas fa-times"></i>
+    <div class="popup10 center" id="popup10">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+         <div id="close3">
+            <i class="fas fa-times"></i>
+         </div>
+        <h3 class="popup-header">First time here?</h3>
+        <h3 class="popup-header">To start a walk and meet friends click on </h3>
+        <!-- <div class="container6"><br /> -->
+        <!-- <div class="img"> -->
+        <img src="static/start_a_walk.png" width="70">
+        <!-- </div> -->
+        <!-- </div> -->
+        <div class="gotit-btn">
+            <button id="ok">OK!</button>
+        </div>
     </div>
-    <h2 class="popup-header">What a great walk it was!</h2>
-    <div class="description1">
-      <h3 class="popup-header2">See you soon! Maybe your friends will want to set a date together</h3>
-    </div>
-    <div class="continue-btn">
-      <button id="continue-popup-btn">Continue</button>
-    </div>
-  </div>
 
   <script type="text/javascript">
+
+
 
     getStatus();
 
@@ -306,6 +314,25 @@
           if (status === 1 || status === 2 || status === 3) {
             isWalking = true;
           }
+
+          if (newUser === true){
+        window.onload = function() {
+
+          // document.addEventListener("load",function(){
+          document.getElementsByClassName("popup10")[0].classList.add("active10");
+
+          }
+        // });
+
+        document.getElementById("close3").addEventListener("click",function(){
+              document.getElementsByClassName("popup10")[0].classList.remove("active10");
+        });
+
+        document.getElementById("ok").addEventListener("click",function(){
+              document.getElementsByClassName("popup10")[0].classList.remove("active10");
+        });
+        }
+
         });
     }
 
@@ -330,7 +357,6 @@
     const button = document.querySelector('button');
 
 
-
     document.getElementById("walkButton").addEventListener("click", function () {
       if (isWalking === false) {
 
@@ -338,15 +364,13 @@
 
         if (newUser === true) {
 
-
-
           // expailnation popup
           document.getElementsByClassName("popup5")[0].classList.add("active5");
 
           document.getElementById("close1").addEventListener("click", function () {
             document.getElementsByClassName("popup5")[0].classList.remove("active5");
             button.disabled = false;
-            document.getElementsByClassName("popup2")[0].classList.remove("active2");
+            document.getElementsByClassName("popup7")[0].classList.remove("active7");
             newUser = true;
           });
 
@@ -356,30 +380,16 @@
           });
 
           document.getElementById("gotit-popup-btn").addEventListener("click", function () {
-            document.getElementsByClassName("popup2")[0].classList.add("active2");
+            document.getElementsByClassName("popup7")[0].classList.add("active7");
             newUser = false;
           });
 
 
         }
 
-        document.getElementsByClassName("popup2")[0].classList.add("active2");
-
-        document.getElementById("close3").addEventListener("click", function () {
-          document.getElementsByClassName("popup2")[0].classList.remove("active2");
-          button.disabled = false;
-        });
+        document.getElementsByClassName("popup7")[0].classList.add("active7");
 
 
-        document.getElementById("now-popup-btn").addEventListener("click", function () {
-          document.getElementsByClassName("popup2")[0].classList.remove("active2");
-        });
-
-        document.getElementById("now-popup-btn").addEventListener("click", function () {
-          document.getElementsByClassName("popup7")[0].classList.add("active7");
-          button.disabled = true;
-
-        });
 
         document.getElementById("close2").addEventListener("click", function () {
           document.getElementsByClassName("popup7")[0].classList.remove("active7");
@@ -447,38 +457,15 @@
 
         document.getElementById("exit-popup-btn").addEventListener("click", function () {
           document.getElementsByClassName("popup6")[0].classList.remove("active6");
-          button.disabled = true;
-          //isWalking = false;
-        });
-
-        document.getElementById("exit-popup-btn").addEventListener("click", function () {
-          document.getElementsByClassName("popup1")[0].classList.add("active1");
-          //isWalking = false;
-          button.disabled = true;
-
-        });
-
-
-
-        var continueEvent = document.getElementById("continue-popup-btn");
-
-        continueEvent.addEventListener("click", function () {
-          document.getElementsByClassName("popup1")[0].classList.remove("active1");
-
+          button.disabled = false;
           isWalking = false;
-          button.disabled = false;
-
         });
-
-        document.getElementById("close5").addEventListener("click", function () {
-          document.getElementsByClassName("popup1")[0].classList.remove("active1");
-          button.disabled = false;
-        });
-
-
       }
 
+
     });
+
+
 
   </script>
 

@@ -3,8 +3,6 @@ from datetime import datetime
 import json
 
 # types:
-FRIEND_WALK = 0
-NEW_MSG = 1
 NEW_INVITE = 2
 NEW_FRIEND_REQUEST = 3
 FRIEND_REQUEST_APPROVED = 4
@@ -12,11 +10,6 @@ WALK_INVITATION_APPROVED = 5
 NEW_USER_JOINED_WALK = 6
 
 
-##
-# RUSH_HOUR = 1
-# NEW_JOIN_WALK_INVITE = 2
-# USER_WANTS_TO_JOIN_WALK = 3
-##
 
 
 class Notification:

@@ -15,7 +15,7 @@ bg gradient linear-gradient(#FEFFFA, #F6E6E5)
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Montserrat', sans-serif;
-	color: #073170;
+
 }
 
 body {
@@ -56,6 +56,7 @@ body {
 	font-weight: 900;
 	position: relative;
 	margin-bottom: 20px;
+	color: #073170;
 }
 
 .event-form-box .title::before {
@@ -137,11 +138,13 @@ margin: 0;
 	padding-right: 10px;
 	min-width: 150px;
 	text-align: right;
+	color: #073170;
 }
 
 .info-dog {
 	padding-left: 10px;
 	min-width: 150px;
+	color: #073170;
 }
 
 /*css for friends list*/
@@ -170,6 +173,10 @@ margin: 0;
     border: 2px solid #073170;
     border-radius: 5px;
     position: relative;
+}
+
+.walk-name strong {
+    color: #073170;
 }
 
 .sms-send-page .list-group {
@@ -236,19 +243,7 @@ margin: 0;
 }
 
 /* nav bar */
-.nav {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	height: 55px;
-	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-	background-color: #F8EAFF;
-	display: flex;
-	overflow-x: auto;
-	z-index: 999;
-}
-
-.nav__link, .nav__link_middle {
+.nav__link_middle {
 	background-color: #F8EAFF;
 	display: flex;
 	flex-direction: column;
@@ -259,33 +254,12 @@ margin: 0;
 	overflow: hidden;
 	white-space: nowrap;
 	font-size: 13px;
-	color: #4B0B9D;
+	color: #073170;
 	text-decoration: none;
 	-webkit-tap-highlight-color:  transparent;
 	transition: background-color 0.1s ease-in-out;
-}
-
-.nav__link_middle {
 	border: none;
 }
-
-.nav__link {
-	padding-bottom: 30px;
-}
-
-.nav__link:hover {
-	text-decoration: none;
-	background-color: #F4DEFF;
-}
-
-.nav__link--active {
-	color: #fff !important;
-}
-
-.nav__icon {
-	font-size: 20px;
-}
-
 
 /*participants little pics*/
 div.profile-pics {
@@ -325,7 +299,7 @@ div.profile-pics {
     background-color: #ccc;
 }
 
-.nav.middle_nav {
+.middle_nav {
 	position: relative;
 }
 
@@ -397,8 +371,16 @@ div.profile-pics {
 	background-position: center;
 }
 
+.one-album-item p {
+    color: #073170;
+}
+
 @media(max-width: 300px) {
 	.albums-gallery {
 		grid-template-columns: 1fr;
 	}
+}
+
+.sms-send-page .list-group {
+    border: 0px solid #ced4da;
 }

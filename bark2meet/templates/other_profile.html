@@ -4,55 +4,14 @@
 <meta name="viewport" content="width=device-width">
 <title>Other profile</title>
 <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
-    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
-    crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
-<script src="https://kit.fontawesome.com/0f6d5f5ca6.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='my_walks.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='other_profile.css') }}">
 
-<!-- A Java Script function to activate albums / walks as tabs on the profile -->
-<script type="text/javascript">
-    function openPage(pageName, elmnt) {
-        // Hide all elements with class="container" by default */
-        var i, container, tablinks;
-        container = document.getElementsByClassName("container");
-        for (i = 0; i < container.length; i++) {
-            container[i].style.display = "none";
-        }
-
-        // Reset the background color of all tablinks/buttons
-        tablinks = document.getElementsByClassName("nav__link_middle");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].style.backgroundColor = "#F8EAFF";
-        }
-
-        // Show the specific tab content
-        document.getElementById(pageName).style.display = "block";
-
-        // Add the specific color to the button used to open the tab content
-        elmnt.style.backgroundColor = "#F4DEFF";
-        linkIcon = elmnt.getElementsByClassName("nav__icon");
-        linkIcon.style.color = "#FFF";
-    }
 
 
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
-
-</script>
 <!-- The full yellow card that contains the profile elements & tabs -->
 <div class="event-form-box">
-
-    <!-- back button row -->
-    <div class="row">
-        <button class="back_button">
-            <img src="../static/Vector.svg">
-        </button>
-    </div>
 
     <!-- Logo & title "Profile" -->
     <div class="row justify-content-center">
@@ -93,7 +52,7 @@
             {% if user.gender == 3 %}
             <span>Unidentified</span><br>
             {% endif %}
-            <span>{{age}}</span>
+            <span>{{age}} Years Old</span>
         </div>
         <div class="column-md-12 info-dog">
             {% if user.dog_gender == 1 %}
@@ -102,7 +61,7 @@
             {% if user.dog_gender == 0 %}
             <span>Female</span><br>
             {% endif %}
-            <span>{{user.dog_age.rsplit('.', 1)[0]}}</span><br>
+            <span>{{user.dog_age.rsplit('.', 1)[0]}} Years Old</span><br>
             <span>{{user.dog_temperament}}</span><br>
             <span>{{user.dog_color}}</span>
         </div>
@@ -114,7 +73,7 @@
     <div class="nav middle_nav">
 
         <!-- the button for the 'walks' list tab -->
-        <button class="nav__link_middle" onclick="openPage('walks', this)">
+        <button id="defaultOpen" class="nav__link_middle" onclick="openPage('walks', this)">
             <i class="fas fa-shoe-prints nav__icon" aria-hidden="true"></i>
         </button>
 
@@ -128,14 +87,22 @@
         <div class="nav__link_middle">
 
             {% if is_friend == False %}
+            {% if is_send_friend_req == True %}
+            <!-- If a friend request has been sent -->
+            <button class="add_friend sent">
+                <i class="fas fa-user-clock" aria-hidden="true"></i>
+            </button>
+            {% else %}
             <button class="add_friend" onclick="addAsFriend(this)">
                 <i class="fas fa-user-plus" aria-hidden="true"></i>
             </button>
+            {% endif %}
 
             <!-- If a friend request has been sent -->
             <button class="add_friend sent" style="display: none;" id="changeToAfterRequest">
                 <i class="fas fa-user-clock" aria-hidden="true"></i>
             </button>
+
             {% endif %}
 
             {% if is_friend == True %}
@@ -143,14 +110,7 @@
                 <i class="fas fa-user-check" aria-hidden="true"></i>
             </button>
             {% endif %}
-            {% if is_friend == False %}
-            <!-- <input type="checkbox" class="add_friend" onchange="addAsFriend(this)" value="false">
-            <div class="icon-box">
-                <i class="fas fa-user-plus" aria-hidden="true"></i>
-            </div> -->
-            {% endif %}
         </div>
-
 
     </div>
 
@@ -167,19 +127,13 @@
                         <li class="list-group-item">
                             <div class="col-xs-4 pull-right">
                                 {% if current_user.email in event['joined'] %}
-                                <!-- Leave a public walk button -->
-                                <button class="join_walk orange leave">
-                                    Leave
-                                </button>
+                                <!-- Leave a private walk button -->
+                                <input type="checkbox" class='orange' name="joinBtn" value={{ event['id'] }} checked>
+
                                 {% else %}
-                                <!-- Join a public walk button -->
-                                <button class="join_walk orange" onclick="joinEvent({{ event['id'] }}, this)">
-                                    Join
-                                </button>
-                                <button class="join_walk orange leave" style="display:none"
-                                    id="changeToAfterJoin_{{ event['id'] }}">
-                                    Leave
-                                </button>
+
+                                <input type="checkbox" name="joinBtn" value={{ event['id'] }} class='orange'>
+
                                 {% endif %}
                             </div>
 
@@ -187,16 +141,28 @@
                                 <div class="col-xs-8 pull-left">
                                     <p class="walk-name"><strong>{{event.title}}</strong></p>
                                     <div class="profile-pics">
+
                                         {% if event['users_images'][0] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% else %}
+                                        <img class="head" src="../{{event['users_images'][0]}}">
+                                        {% endif %}
                                         {% endif %}
                                         {% if event['users_images'][1] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% else %}
+                                        <img class="mid" src="../{{event['users_images'][1]}}">
+                                        {% endif %}
                                         {% endif %}
                                         {% if event['users_images'][2] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% else %}
+                                        <img class="tail" src="../{{event['users_images'][2]}}">
                                         {% endif %}
-
+                                        {% endif %}
 
                                     </div>
                                 </div>
@@ -212,34 +178,40 @@
                             <div class="col-xs-4 pull-right">
                                 {% if current_user.email in event['joined'] %}
                                 <!-- Leave a public walk button -->
-                                <button class="join_walk green leave">
-                                    Leave
-                                </button>
+                                <input type="checkbox" class='green' name="joinBtn" value={{ event['id'] }} checked>
+
                                 {% else %}
-                                <!-- Join a public walk button -->
-                                <button class="join_walk green" onclick="joinEvent({{ event['id'] }}, this)">
-                                    Join
-                                </button>
-                                <button class="join_walk green leave" style="display:none"
-                                    id="changeToAfterJoin_{{ event['id'] }}">
-                                    Leave
-                                </button>
+
+                                <input type="checkbox" class='green' name="joinBtn" value={{ event['id'] }}>
+
                                 {% endif %}
                             </div>
                             <a href="{{ url_for('event_details', id=event['id']) }}">
                                 <div class="col-xs-8 pull-left">
                                     <p class="walk-name"><strong>{{event.title}}</strong></p>
                                     <div class="profile-pics">
+
                                         {% if event['users_images'][0] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="head" src="../{{event['users_images'][0][10:]}}">
+                                        {% else %}
+                                        <img class="head" src="../{{event['users_images'][0]}}">
+                                        {% endif %}
                                         {% endif %}
                                         {% if event['users_images'][1] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="mid" src="../{{event['users_images'][1][10:]}}">
+                                        {% else %}
+                                        <img class="mid" src="../{{event['users_images'][1]}}">
+                                        {% endif %}
                                         {% endif %}
                                         {% if event['users_images'][2] %}
+                                        {% if user.user_img != "static/default-account-img.png"%}
                                         <img class="tail" src="../{{event['users_images'][2][10:]}}">
+                                        {% else %}
+                                        <img class="tail" src="../{{event['users_images'][2]}}">
                                         {% endif %}
-
+                                        {% endif %}
 
                                     </div>
                                 </div>
@@ -257,12 +229,12 @@
     <!-- Albums -->
     <!-- Opens when the albums link is touched/pressed, on the middle nav bar -->
     <!-- albums gallery container - each <a> is suppposed to be linked to the inner page of the album it wraps -->
-    <!-- inside each <a> there is a <div> wuth class 'one-album-item', that contains 
+    <!-- inside each <a> there is a <div> with class 'one-album-item', that contains
     a picture from the album <div> + name <p> + number of pictures the album contains <p> -->
 
     <div id="albums" class='container'>
         <section class="albums-gallery">
-
+            No Albums Yet!
             <!-- album 1 -->
             <!-- This is an album for cruella's walk event - optional -->
             <!-- <a href="inside_album.html">
@@ -275,66 +247,81 @@
 
             <!-- album 2 -->
             <!-- Links to inner album page with 8 pictures -->
-            <a href="inside_album.html">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/6.jpg');" class="one-album-item-img"></div>
-                    <p><strong>Gan Saker, Birthday walk</strong></p>
-                    <p>8 pictures</p>
-                </div>
-            </a>
+            <!--            <a href="inside_album.html">-->
+            <!--                <div class="one-album-item">-->
+            <!--                    <div style="background-image: url('../static/6.jpg');" class="one-album-item-img"></div>-->
+            <!--                    <p><strong>Gan Saker, Birthday walk</strong></p>-->
+            <!--                    <p>8 pictures</p>-->
+            <!--                </div>-->
+            <!--            </a>-->
 
-            <!-- album 3 -->
-            <a href="#">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/4.jpg');" class="one-album-item-img"></div>
-                    <p><strong>I&S dogs walk, Rahavia</strong></p>
-                    <p>12 pictures</p>
-                </div>
-            </a>
+            <!--            &lt;!&ndash; album 3 &ndash;&gt;-->
+            <!--            <a href="#">-->
+            <!--                <div class="one-album-item">-->
+            <!--                    <div style="background-image: url('../static/4.jpg');" class="one-album-item-img"></div>-->
+            <!--                    <p><strong>I&S dogs walk, Rahavia</strong></p>-->
+            <!--                    <p>12 pictures</p>-->
+            <!--                </div>-->
+            <!--            </a>-->
 
-            <!-- album 4 -->
-            <a href="#">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/7.jpg');" class="one-album-item-img"></div>
-                    <p><strong>Rehavia, Morning</strong></p>
-                    <p>23 pictures</p>
-                </div>
-            </a>
+            <!--            &lt;!&ndash; album 4 &ndash;&gt;-->
+            <!--            <a href="#">-->
+            <!--                <div class="one-album-item">-->
+            <!--                    <div style="background-image: url('../static/7.jpg');" class="one-album-item-img"></div>-->
+            <!--                    <p><strong>Rehavia, Morning</strong></p>-->
+            <!--                    <p>23 pictures</p>-->
+            <!--                </div>-->
+            <!--            </a>-->
 
-            <!-- album 5 -->
-            <a href="#">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/3.jpg');" class="one-album-item-img"></div>
-                    <p><strong>Gan Saker Evening</strong></p>
-                    <p>15 pictures</p>
-                </div>
-            </a>
+            <!--            &lt;!&ndash; album 5 &ndash;&gt;-->
+            <!--            <a href="#">-->
+            <!--                <div class="one-album-item">-->
+            <!--                    <div style="background-image: url('../static/3.jpg');" class="one-album-item-img"></div>-->
+            <!--                    <p><strong>Gan Saker Evening</strong></p>-->
+            <!--                    <p>15 pictures</p>-->
+            <!--                </div>-->
+            <!--            </a>-->
 
-            <!-- album 6 -->
-            <a href="#">
-                <div class="one-album-item">
-                    <div style="background-image: url('../static/5.jpg');" class="one-album-item-img"></div>
-                    <p><strong>Sat', Gan Saker</strong></p>
-                    <p>45 pictures</p>
-                </div>
-            </a>
+            <!--            &lt;!&ndash; album 6 &ndash;&gt;-->
+            <!--            <a href="#">-->
+            <!--                <div class="one-album-item">-->
+            <!--                    <div style="background-image: url('../static/5.jpg');" class="one-album-item-img"></div>-->
+            <!--                    <p><strong>Sat', Gan Saker</strong></p>-->
+            <!--                    <p>45 pictures</p>-->
+            <!--                </div>-->
+            <!--            </a>-->
 
         </section>
     </div>
 </div>
 
 <script>
-    function joinEvent(event_id, element) {
-        const URL = '/join_to_event';
+    var checkboxes = document.querySelectorAll("input[name=joinBtn]");
+    let allJoinedEventsId = []
+
+    // Use Array.forEach to add an event listener to each checkbox.
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+
+            if (this.checked) {
+                sendInfo("/join_to_event", checkbox.value);
+                $("#realtime_porter").trigger("port_event_join", [{{ user.id }}])
+    }
+            else {
+            sendInfo("/exit_from_event", checkbox.value);
+            }
+        })
+
+    });
+
+    function sendInfo(url, value) {
+        const URL = url;
         const xhr = new XMLHttpRequest();
-        let sender = JSON.stringify(event_id);
+        let sender = JSON.stringify(value);
         xhr.open("POST", URL);
         xhr.send(sender);
-        element.style['display'] = 'none'
-        afterRequest = document.getElementById('changeToAfterJoin_' + event_id)
-        afterRequest.style['display'] = 'block'
-        console.log("success")
     }
+
 
 
     function addAsFriend(element) {
@@ -343,31 +330,43 @@
     const xhr = new XMLHttpRequest();
     xhr.open("POST", URL);
     xhr.send(sender);
+    $("#realtime_porter").trigger("port_friend_request", [{{ user.id }}])
     element.style['display'] = 'none'
     afterRequest = document.getElementById('changeToAfterRequest')
     afterRequest.style['display'] = 'block'
     }
 
-    function addAsFriend1(e) {
-        if (e.value == "true") {
+</script>
 
-            e.value = "false"
-            const URL = '/unsend_friend_request';
-            let sender = JSON.stringify([{{ user.id }}]);
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", URL);
-        xhr.send(sender);
-    }
-        else if (e.value == "false") {
-        e.value = "true"
-        const URL = '/send_friend_request';
-        let sender = JSON.stringify([{{ user.id }}]);
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", URL);
-    xhr.send(sender);
+<!-- A Java Script function to activate albums / walks as tabs on the profile -->
+<script type="text/javascript">
+    function openPage(pageName, elmnt) {
+        // Hide all elements with class="container" by default */
+        var i, container, tablinks;
+        container = document.getElementsByClassName("container");
+        for (i = 0; i < container.length; i++) {
+            container[i].style.display = "none";
+        }
+
+        // Reset the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("nav__link_middle");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "#F8EAFF";
+        }
+
+        // Show the specific tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Add the specific color to the button used to open the tab content
+        elmnt.style.backgroundColor = "#F4DEFF";
+        linkIcon = elmnt.getElementsByClassName("nav__icon");
+        linkIcon.style.color = "#FFF";
     }
 
-    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+
 </script>
 
 

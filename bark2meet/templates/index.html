@@ -1,86 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>BARK2MEET</title>
-    <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
-    <!--         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" /> -->
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i"
-        rel="stylesheet" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="{{url_for('static', filename='landing_page.css')}}" rel="stylesheet" />
-</head>
-
-<body>
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#!"><img src="{{url_for('static', filename='sidelogo.svg')}}" width="200"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span
-                    class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    {% if is_login %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('map') }}">Map</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
-                    {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Log In</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <header class="masthead text-center text-white">
-        <div class="masthead-content">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>BARK2MEET</title>
+        <link rel="shortcut icon" href="{{url_for('static', filename='smallpaw.svg')}}" />
+<!--         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" /> -->
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{url_for('static', filename='landing_page.css')}}" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
             <div class="container">
-                <h1 class="masthead-heading mb-0">Walk Together</h1>
-                <h2 class="masthead-subheading mb-0">The dog will be just an excuse..</h2>
-                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('register_user') }}">Let's get
-                    started!</a>
+                <a class="navbar-brand" href="#!"><img src="{{url_for('static', filename='sidelogo.svg')}}" width="200"></a>
+
             </div>
-        </div>
-    </header>
-    <section>
-        <div class="container">
-            <br /><br /><br />
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-2">
-                    <div class="d-none d-lg-block">
-                        <div class="p-5"><img class="img-fluid rounded-circle"
-                                src="{{url_for('static', filename='dogs_owners1.jpg')}}" alt="..." /></div>
-                    </div>
-                </div>
-                <div class="col-lg-6 order-lg-1">
-                    <div class="p-5">
-                        <h1>IT'S A WIN WIN SITUATION...</h1>
-                        <p>While your best friend will run & play with other dogs at the park, you will get closer to
-                            your neighbors - and find your next best friend!.</p>
-                        <br /><br /><br /><br />
-                        <h1> THE BEST SO FAR!</h1>
-                        <h5>This app has proved itself to be the best of it's kind...</h5>
-                        <p>We made sure to include high standard features and content to enhance your experience as
-                            users.</p>
-                        <br /><br /><br /><br />
-                        <h1>OUR TOP FEATURES!</h1>
-                        <ul>
-                            <li>Find new walk partners around you!</li>
-                            <li>Get notifications and navigate to other walkers!</li>
-                            <li>Create and join an unforgettable events, OH and don't forget to take pictures!</li>
-                        </ul>
-                    </div>
+        </nav>
+        <header class="masthead text-center text-white">
+            <div class="masthead-content">
+                <div class="container">
+                    <h1 class="masthead-heading mb-0">Walk Together</h1>
+                    <h2 class="masthead-subheading mb-0">The dog is just an
+                        excuse...</h2><br>
+                    <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('login') }}">Sign in</a>
+                    <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('register_user') }}">Let's get started!</a>
                 </div>
             </div>
-        </div>
+        </header>
+        <section>
+            <div class="container">
+                <br /><br /><br />
+                <div class="row align-items-center">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="d-none d-lg-block">
+                            <div class="p-5"><img class="img-fluid rounded-circle" src="{{url_for('static', filename='dogs_owners1.jpg')}}" alt="..." /></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="p-5">
+                            <h1>IT'S A WIN WIN SITUATION...</h1>
+                            <p>While your best friend will run & play with other dogs at the park, you will get closer to your neighbors - and find your next best friend!.</p>
+                            <br /><br /><br /><br />
+                            <h1> THE BEST SO FAR!</h1>
+                            <h5>This app has proved itself to be the best of it's kind...</h5>
+                            <p>We made sure to include high standard features and content to enhance your experience as users.</p>
+                            <br /><br /><br /><br />
+                            <h1>OUR TOP FEATURES!</h1>
+                            <ul>
+                                <li>Find new walk partners around you!</li>
+                                <li>Get notifications and navigate to other walkers!</li>
+                                <li>Create and join an unforgettable events, OH and don't forget to take pictures!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <div class="gallery-box">
             <span style="--i:1;">
                 <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-pic.png')}}" alt="..." />
@@ -89,30 +71,25 @@
                 <img class="img-fluid rounded-circle" src="{{url_for('static', filename='notify.png')}}" alt="..." />
             </span>
             <span style="--i:3;">
-                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='create-walk-pic.jfif')}}"
-                    alt="..." />
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='create-walk-pic.jfif')}}" alt="..." />
             </span>
             <span style="--i:4;">
-                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-3walkmodes.png')}}"
-                    alt="..." />
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-3walkmodes.png')}}" alt="..." />
             </span>
             <span style="--i:5;">
-                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile-pic.jfif')}}"
-                    alt="..." />
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile-pic.jfif')}}" alt="..." />
             </span>
             <span style="--i:6;">
                 <img class="img-fluid rounded-circle" src="{{url_for('static', filename='album.jfif')}}" alt="..." />
             </span>
             <span style="--i:7;">
-                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-attention.png')}}"
-                    alt="..." />
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='map-attention.png')}}" alt="..." />
             </span>
             <span style="--i:8;">
-                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile2-pic.jfif')}}"
-                    alt="..." />
+                <img class="img-fluid rounded-circle" src="{{url_for('static', filename='profile2-pic.jfif')}}" alt="..." />
             </span>
         </div>
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
         <div class="reviews">
             <h1>USER REVIEWS</h1>
             <section1 class="review" id="review">
@@ -130,8 +107,10 @@
                                 <i class="fas fa-star"></i>
                             </div>
                             <div class="comment">
-                                Best app ever!!! I've made so many friendships so far, which I saw a couple of times in
-                                the park but couldn't have the courage to talk to, thanks to this app now I can!!
+                                Best app ever!!! I've made so many friends so
+                                far. I saw them a couple of times  before in
+                                the park, but didn't have the courage to
+                                talk to them. thanks to this app, now I can!!
                             </div>
                         </div>
                     </div>
@@ -148,8 +127,10 @@
                                 <i class="fas fa-star-half-alt"></i>
                             </div>
                             <div class="comment">
-                                This app is so much fun! I used to walk alone with my dog, but now that I tried the
-                                company, I've to admit the I like it more! it's crazy how 1 app can turn your life.
+                                This app is so much fun! I used to walk alone
+                                with my dog. but now, with the app, there are
+                                no lonely walks no more! it's
+                                crazy how 1 app can turn your life.
                             </div>
                         </div>
                     </div>
@@ -166,15 +147,14 @@
                                 <i class="fas fa-star"></i>
                             </div>
                             <div class="comment">
-                                Obsessed with this app!! who would've thought that such a daily task could turn into
-                                some special experience?! Thanks to those who made this possible :)
+                                Obsessed with this app!! who would've thought that such a daily task could turn into some special experience?! Thanks to those who made this possible :)
                             </div>
                         </div>
                     </div>
                 </div>
             </section1>
         </div>
-        <br /><br />
+            <br /><br />
         <div class="contact-section">
             <h1 class="masthead-heading mb-0">Contact Us</h1>
             <div class="border"></div>
@@ -186,13 +166,11 @@
                 <input type="submit" class="contact-form-btn" value="Send">
             </form>
             <footer class="py-5 bg-black">
-                <div class="container">
-                    <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2021</p>
-                </div>
+            <div class="container"><p class="m-0 text-center text-white small">Copyright &copy; Your Website 2021</p></div>
             </footer>
         </div>
-    </section>
-    <!-- <section>
+        </section>
+        <!-- <section>
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
@@ -222,14 +200,13 @@
                 </div>
             </div>
         </section> -->
-    <!-- Footer-->
-    <!-- Bootstrap core JS-->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script async src="https://drv.tw/inc/wd.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+        <!-- Footer-->
+        <!-- Bootstrap core JS-->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script async src="https://drv.tw/inc/wd.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
 
-</body>
-
+    </body>
 </html>

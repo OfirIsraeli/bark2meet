@@ -1,5 +1,9 @@
 let map;
 let all_markers = [];
+const APP_NAME = "Bark2Meet"
+
+let TIMEOUT = 5000;
+
 let user_pos = {
   lat: 0,
   lng:0,
@@ -47,12 +51,21 @@ function initMap() {
   var geoloccontrol = new klokantech.GeolocationControl(map, 1);
 
   initializeMarkers();
+  if(!checkIfFriendsAround()){
+    checkIfRushHour()
+  }
 }
 
 
 function UpdateUserLocation(url) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+
+      user_pos= pos;
       const URL = url;
       const xhr = new XMLHttpRequest();
       let sender = JSON.stringify([position.coords.latitude, position.coords.longitude]);
@@ -73,8 +86,40 @@ function initializeMarkers() {
     });
 }
 
+function checkIfFriendsAround() {
+  let result = false;
+  fetch("/api/are_friends_around")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (friendsAround) {
+      if (friendsAround > 0){
+        createNotification(APP_NAME, "You have " + friendsAround + " friends walking around. Join them!");
+        result = true;
+
+      }
+    });
+    return result;
+}
+
+function checkIfRushHour() {
+  fetch("/api/rush_hour_check")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (walkersAround) {
+      if (walkersAround > 0 ){
+        createNotification(APP_NAME, "There are " + walkersAround + " walkers around you. Join them!");
+
+      }
+    });
+}
+
+
 function attachInfoWindow(marker, userToPush){
   let infoWindow;
+
+
   // green\orange person marker options
   if (userToPush.privacy === "green" || userToPush.privacy === "orange") {
     // open infowindow    
@@ -105,6 +150,11 @@ function attachInfoWindow(marker, userToPush){
     if (userToPush.privacy !== "me"){
             shouldUpdateLocation = false;
     }
+
+    /*if (userToPush.status === 0) {
+      shouldUpdateLocation = true;
+    }*/
+
     infoWindow.setContent(infoWindow.content);
     infoWindow.open(map, marker);
     map.setZoom(18);
@@ -115,12 +165,15 @@ function attachInfoWindow(marker, userToPush){
 function addMarkers(all_locations) {
   for (let i = 0; i < all_locations.length; i++) {
     // for debugging:
-    if (all_locations[i].full_name === "Assi azar"){
+    if (all_locations[i].full_name === "Shir Mazor"){
       all_locations[i].pos_x += 0.0015;
     }
-    if (all_locations[i].full_name === "Paul"){
-      all_locations[i].pos_y += 0.0015;
+    if (all_locations[i].full_name === "Ofir Israeli"){
+      all_locations[i].pos_x = 32.068348;
+      all_locations[i].pos_y = 34.795463;
     }
+
+
     // end for debugging
 
     const marker = new google.maps.Marker({
@@ -213,22 +266,35 @@ function addFriendButton(userInfo){
 
 
 function createPopupMarker(userInfo) {
+  if(userInfo.status === 0 || userInfo.status === -1 ||(userInfo.status === 3 && userInfo.privacy !== "red")){
+    return (
+    '<div id="infoContentNotWalking">' +
+    '<div class="container3">' +
+    '<h1 class="popup-header">Privacy Mode</h1>' +
+    "<div>" +
+    "<p class='popup-dog-side'> Please change privacy mode <br> to see users details </p>" +
+    "</div>" +
+    "</div>" +
+    "</div>"
+  );
+  }
+
   if (userInfo.privacy === "green") {
     return (
       '<div id="infoContentGreen">' +
       '<div class="container1">' +
       newFriendsTeaser(userInfo) +
-      '<a href="/profile/'+ userInfo.id +'" class="a">' +
           "<div class='profile-titles'>" +
+                '<a href="/profile/'+ userInfo.id +'" class="a">' +
       "<img class='owner-pic' src='"+ removeBaseAddress(userInfo.user_image) +"'>" +
       "<img class='dog-pic' src='" + removeBaseAddress(userInfo.dog_image) + "'>" +
+                  "</a>" +
       "<div class='names'>" +
       "<span class='owner-name'>"+ getFirstName(userInfo.full_name) +"</span>" +
       "<span> & </span>" +
       "<span class='dog-name'>" + userInfo.dog_name +"</span>" +
       "</div>" +
         "</div>" +
-        "</a>" +
 
       '<h2 class="popup-header2">Only ' +
       distance(userInfo.pos_x, userInfo.pos_y) +
@@ -240,7 +306,7 @@ function createPopupMarker(userInfo) {
       "</p>" +
       "<p>" +
       userInfo.age +
-      " years old</p>" +
+      " Years Old</p>" +
       "</div>" +
       '<div class="vl"></div>' +
       '<div class="popup-dog-side">' +
@@ -249,7 +315,7 @@ function createPopupMarker(userInfo) {
       "</p>" +
       "<p>" +
       Math.trunc(userInfo.dog_age) +
-      " years old</p>" +
+      " Years Old</p>" +
       "</div>" +
       "</div>" +
 
@@ -258,7 +324,7 @@ function createPopupMarker(userInfo) {
                         checkFriendStatus(userInfo) +
                         '</div>' +
                         '<div class="col-xs-4 pull-right">' +
-                          '<input type="checkbox" onClick="navigateTo(' + userInfo.pos_x + ', '+ userInfo.pos_y + ')">' +
+                          '<input type="checkbox" onClick="navigateTo('  + 'this, ' + userInfo.pos_x + ', '+ userInfo.pos_y + ')">' +
                           '<div class="icon-box-green">' +
                             '<i class="fas fa-location-arrow" aria-hidden="true"></i>' +
                           '</div>' +
@@ -277,8 +343,11 @@ function createPopupMarker(userInfo) {
       '<h1 class="popup-header">Join their walk</h1>' +
 
           "<div class='profile-titles'>" +
+          '<a href="/profile/'+ userInfo.id +'" class="a">' +
       "<img class='owner-pic' src='"+ removeBaseAddress(userInfo.user_image) +"'>" +
       "<img class='dog-pic' src='" + removeBaseAddress(userInfo.dog_image) + "'>" +
+                            "</a>" +
+
       "<div class='names'>" +
       "<span class='owner-name'>"+ getFirstName(userInfo.full_name) +"</span>" +
       "<span> & </span>" +
@@ -289,7 +358,6 @@ function createPopupMarker(userInfo) {
       '<h2 class="popup-header2">Only ' +
       distance(userInfo.pos_x, userInfo.pos_y) +
       "m away!</h2>" +
-      '<a href="/profile/'+ userInfo.id +'" class="a">See full profile  <img src="static/arrowside.png"></a>' +
 
           '<div class="orange-btns">' +
                                 '<div class="col-xs-4 pull-right">' +
@@ -346,7 +414,7 @@ const interval = setInterval(function () {
     UpdateUserLocation("/update_user_location");
     updateMarkers();
   }
-}, 7000);
+}, TIMEOUT);
 
 
 function openChatWithTarget(userName) {
@@ -369,6 +437,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function addFriend(btn){
+  $("#realtime_porter").trigger("port_friend_request",[btn.value])
   if (btn.checked) {
         sendInfo("/send_friend_request", btn.value);
   }
@@ -381,36 +450,43 @@ function update_status(statusCode){
   sendInfo("/api/update_status", statusCode);
 }
 
-function navigateTo(dest_x, dest_y){
+
+let onNavigation = false;
+function navigateTo(src, dest_x, dest_y){
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((position) => {
-    const req = {
-    origin: {lat: position.coords.latitude, lng: position.coords.longitude},
-    destination: {lat: dest_x, lng: dest_y},
-    provideRouteAlternatives: false,
-    travelMode: 'WALKING',
-    unitSystem: google.maps.UnitSystem.METRIC
-  }
-
-  directionsService.route(req,
-    (response, status) => {
-      if (status === "OK") {
-        console.log(response)
-        directionsRenderer.setDirections(response);
-        resetNavigation(dest_x, dest_y)
-      } else {
-        window.alert("Directions request failed due to " + status);
+    if (!onNavigation){
+      const req = {
+        origin: {lat: user_pos.lat, lng: user_pos.lng},
+        destination: {lat: dest_x, lng: dest_y},
+        provideRouteAlternatives: false,
+        travelMode: 'WALKING',
+        unitSystem: google.maps.UnitSystem.METRIC
       }
-    })
+    
+      directionsService.route(req,
+        (response, status) => {
+          if (status === "OK") {            
+            directionsRenderer.setDirections(response);
+            resetNavigation(dest_x, dest_y)
+          } else {
+            window.alert("Directions request failed due to " + status);
+          }
+        })
+    }
+    else{
+      directionsRenderer.setDirections({routes: [], geocoded_waypoints: []});
+    }
+    onNavigation = !onNavigation;
 
 
-  })
   }}
 
 let endNavigationInterval;
 function resetNavigation(tX, tY){
   endNavigationInterval = setInterval(()=>{
-    if(distance(tX, tY) < 5){
+
+    const curDist = distance(tX, tY)
+    if(curDist < 30){
       directionsRenderer.setDirections({routes: [], geocoded_waypoints: []});
       clearInterval(endNavigationInterval);
 

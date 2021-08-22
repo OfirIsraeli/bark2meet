@@ -15,7 +15,6 @@ bg gradient linear-gradient(#FEFFFA, #F6E6E5)
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Montserrat', sans-serif;
-	color: #073170;
 }
 
 body {
@@ -50,6 +49,7 @@ body {
 	font-size: 25px;
 	font-weight: 900;
 	position: relative;
+	color: #073170;
 }
 
 .event-form-box .title::before {
@@ -146,6 +146,7 @@ input[type="radio"]:checked + .private-mode {
 
 .mode-text {
 	font-size: 14px;
+	color: #073170;
 }
 
 .radio-btn span {
@@ -220,49 +221,5 @@ input[type="radio"]:checked + .private-mode {
 }
 
 /* nav bar */
-.nav {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	height: 55px;
-	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-	background-color: #F8EAFF;
-	display: flex;
-	overflow-x: auto;
-	z-index: 999;
-}
-
-.nav__link {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	flex-grow: 1;
-	min-width: 50px;
-	overflow: hidden;
-	white-space: nowrap;
-	font-size: 13px;
-	color: #4B0B9D;
-	text-decoration: none;
-	-webkit-tap-highlight-color:  transparent;
-	transition: background-color 0.1s ease-in-out;
-	padding-bottom: 30px;
-}
-
-.nav__link:hover {
-	text-decoration: none;
-	background-color: #F4DEFF;
-}
-
-.nav__link--active {
-	color: #fff !important;
-}
-
-.nav__icon {
-	font-size: 20px;
-}
-
-
-
 
 

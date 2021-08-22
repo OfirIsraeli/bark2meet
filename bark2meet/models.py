@@ -34,7 +34,6 @@ class User(db.Model, UserMixin):
     current_area_y = db.Column(db.Integer, nullable=False, default=35.217018)
 
     # last time user checked notifications
-    # TODO: update correctly
     date_last_session = db.Column(db.DateTime, nullable=False, default=datetime.now())
 
     # privacy status
@@ -138,7 +137,6 @@ class Friends(db.Model):
     def get_all(self):
         friends_emails = set()
 
-        # all_friends = Friends.query.filter_by(user_email=user_email).all()
         all_friends = db.session.query(Friends).all()
 
         for friend in all_friends:

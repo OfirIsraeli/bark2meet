@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_socketio import SocketIO
 
+# --------------------------- APPLICATION INITIALIZATION --------------------------- #
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628b3b0b13ce0c676dfde280ba245'
@@ -19,9 +20,3 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
 from bark2meet import routes
-from bark2meet.areas import area
-
-# try:
-#     area.init_areas()
-# except:
-#     print("no users in db")

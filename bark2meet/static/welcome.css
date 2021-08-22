@@ -35,7 +35,7 @@ body {
 	min-height: 100vh;
 	background: linear-gradient(#FEFFFA, #F6E6E5);
 	padding: 25px 30px;
-	overflow: hidden;   
+	overflow-y: scroll;
 }
 
 

@@ -1,7 +1,6 @@
 import json
 import os
 from flask import render_template, url_for, flash, redirect, request, jsonify
-from requests import post
 
 from bark2meet import app, db, bcrypt
 from bark2meet.forms import *
@@ -9,17 +8,16 @@ from bark2meet.models import User, Friends, START_WALK, OPEN, PRIVATE, FRIENDS
 from flask_login import login_user, current_user, logout_user, login_required
 from bark2meet import socketio
 from flask_socketio import emit
-from cryptography.fernet import Fernet
 from werkzeug.utils import secure_filename
-from bark2meet.notifications import Notification, FRIEND_WALK, FRIEND_REQUEST_APPROVED, WALK_INVITATION_APPROVED, \
+from bark2meet.notifications import Notification, FRIEND_REQUEST_APPROVED, WALK_INVITATION_APPROVED, \
     NEW_USER_JOINED_WALK, NEW_FRIEND_REQUEST, NEW_INVITE
 from bark2meet.event import Event
 from datetime import timedelta
 
-# ------ GLOBAL DATA START------
-
+# --------------------------- GLOBAL DATA --------------------------- #
 
 OPEN_IMG = "static/GPSgreen.png"
+OPEN_FRIEND_IMG = "static/greenfriend.svg"
 FRIENDS_IMG = "static/GPSorange.png"
 PRIVATE_IMG = "static/GPSred.png"
 
@@ -29,12 +27,9 @@ IMG_LEVEL = 2
 DEFAULT_IMG = "static/default-account-img.png"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-fernet_with_key = Fernet(b"8eDa1w9-C8THy0nz_dpeoBS0BX_UAf5D_oIhRd8nlgA=")
 
-# ------ GLOBAL DATA END------
+# --------------------------- FLASK USER QUERIES --------------------------- #
 
-
-# ------ MESSAGING FUNCTIONS ------
 def getUserByEmail(email):
     return User.query.filter_by(email=email).first()
 
@@ -47,19 +42,18 @@ def get_all_connected_users():
     return User.query.filter_by(is_online=True).all()
 
 
+# --------------------------- SOCKET CONNECTION EVENTS --------------------------- #
+
 @socketio.on('connect')
 @socketio.on('online')
 def registerConnection():
     current_user.update_is_online(True)
-    print(current_user.email, "has connected")
 
 
 @socketio.on('disconnect')
 @socketio.on('offline')
 def registerDisconnection():
     current_user.update_is_online(False)
-    # current_user.change_status(0)
-    print(current_user.email, "has disconnected")
 
 
 @socketio.on('email', namespace='/private')
@@ -67,98 +61,8 @@ def receive_user_email():
     current_user.update_session(request.sid)
 
 
-#
-# @socketio.on('friend-walk', namespace='/private')
-# def register_walk():
-#     all_users = User.query.all()
-#     # friends_around = area.getFriendsInRadius(current_user, current_user.radius_view)
-#     connected_users = get_all_connected_users()
-#     for recipient in connected_users:
-#         if recipient != current_user.email:
-#             # recipient_user = getUserByEmail(recipient)
-#             recipient_session_id = connected_users[recipient]
-#             emit('new_friend_walk', {"username": current_user.full_name,
-#                                      "issue_time": datetime.now().isoformat(' ', 'seconds')},
-#                  room=recipient_session_id)
-#             Notification().create_notification(recipient, "", current_user.full_name + " is on the go!",
-#                                                current_user.pos_x, current_user.pos_y, FRIEND_WALK)
-#
-#     for user in all_users:
-#         if user.email != current_user.email and user.email not in connected_users:
-#             Notification().create_notification(user.email, "", current_user.full_name + " was on the go!",
-#                                                current_user.pos_x, current_user.pos_y, FRIEND_WALK)
+# --------------------------- NOTIFICATIONS BACKEND ROUTING --------------------------- #
 
-
-# @socketio.on('private_message', namespace='/private')
-# def private_message(payload):
-# message = payload['message']
-# try:
-#     # sender = getUserByEmail(payload['email'])
-#     sender_session_id = connected_users[payload['email']]
-#     emit('new_private_message',
-#          {"msg": message, "username": current_user.full_name, "email": current_user.email,
-#           "send_time": datetime.now().isoformat(' ', 'seconds')},
-#          room=sender_session_id)
-#     writeMessageInHistory(current_user.email, payload['email'], message)
-# except KeyError:  # so user is not logged in right now
-#     writeMessageInHistory(current_user.email, payload['email'], message)
-
-# ------ MESSAGING FUNCTIONS END ------
-
-# ------ CHAT HISTORY ------
-# def getHistoryFileName(sender, recipient):
-#     HOME_DIR = os.getcwd() + "/bark2meet/databases/chatHistory/"
-#     if sender < recipient:
-#         return HOME_DIR + sender + "&" + recipient + ".json"
-#
-#     return HOME_DIR + recipient + "&" + sender + ".json"
-#
-#
-# def writeMessageInHistory(sender, recipient, msg):
-#     encMessage = fernet_with_key.encrypt(msg.encode())
-#     msg_json = {
-#         "msg": encMessage.decode(),
-#         "sender": sender,
-#         "send_time": datetime.now().isoformat(' ', 'seconds')
-#     }
-#
-#     file_path = getHistoryFileName(sender, recipient)
-#     if os.path.exists(file_path):
-#         file = open(file_path, "r+")
-#         data = json.load(file)
-#         data["chat"].append(msg_json)
-#         file.seek(0)
-#         json.dump(data, file, default=str, indent=4)
-#     else:
-#         file = open(file_path, "w")
-#         data = {"chat": [msg_json]}
-#         json.dump(data, file, default=str, indent=4)
-#     file.close()
-#
-#
-# def getChatHistory(sender, recipient):
-#     file_path = getHistoryFileName(sender, recipient)
-#     if os.path.exists(file_path):
-#         file = open(file_path, "r")
-#         data = json.load(file)
-#         file.close()
-#         return data
-#     else:
-#         return {"chat": []}
-#
-#
-# @app.route("/api/history/<sender>", methods=['GET', 'POST'])
-# def getHistory(sender):
-#     if request.method == 'GET':
-#         history = getChatHistory(current_user.email, sender)
-#         for chat in history["chat"]:
-#             chat["msg"] = fernet_with_key.decrypt(chat["msg"].encode()).decode()
-#         return jsonify(history)
-
-
-# ------ CHAT HISTORY END ------
-
-# ------ NOTIFICATIONS START ------
 def getNotificationsFileName():
     HOME_DIR = os.getcwd() + "/bark2meet/databases/notificationsHistory/"
     return HOME_DIR + current_user.email + ".json"
@@ -203,19 +107,6 @@ def get_notifications():
         return [], []
 
 
-@app.route("/notifications")
-@login_required
-def notifications_page():
-    form = SearchForm()
-    new, old = get_notifications()
-    print(old)
-    current_user.update_date_last_session(datetime.now())
-    current_user.update_is_online(True)
-    return render_template('notifications.html', title="Notifications", form=form, status=current_user.status,
-                           old_notifications=old[:20], new_notifications=new)
-
-
-# ------ WEBPAGES BACKEND START ------
 @app.context_processor
 def override_url_for():
     return dict(url_for=dated_url_for)
@@ -231,12 +122,24 @@ def dated_url_for(endpoint, **values):
     return url_for(endpoint, **values)
 
 
+# --------------------------- MAIN ROUTES --------------------------- #
+
 @app.route("/")
 @app.route("/index")
 def landing_page():
     if current_user.is_authenticated:
         return redirect(url_for('map'))
     return render_template('index.html', is_login=current_user.is_authenticated)
+
+
+@app.route("/notifications")
+@login_required
+def notifications_page():
+    form = SearchForm()
+    new, old = get_notifications()
+    current_user.update_date_last_session(datetime.now())
+    return render_template('notifications.html', title="Notifications", form=form, status=current_user.status,
+                           old_notifications=old[:20], new_notifications=new)
 
 
 @app.route("/map", methods=['GET', 'POST'])
@@ -250,29 +153,7 @@ def map():
     for user in connected_users:
         update_user_area(user)
 
-    # friends = Friends().get_all_friends_of(current_user.email)
-    # for friend_email in friends:
-    #     friend = getUserByEmail(friend_email)
-    #     if not friend.is_online:
-    #         continue
-    #     socketio.emit('new_friend_walk', {"username": current_user.full_name,
-    #                              "issue_time": datetime.now().isoformat(' ', 'seconds')},room=user_sids[friend.email])
-
     return render_template('map.html', title="Map", status=current_user.status, current_user=current_user)
-
-
-@app.route("/update_user_location", methods=['GET', 'POST'])
-@login_required
-def update_user_location():
-    information = str(request.data)[3:-2]
-    coordinates = information.split(',')
-
-    if coordinates[0] and coordinates[1]:
-        coordinate_x = float(coordinates[0])
-        coordinate_y = float(coordinates[1])
-        current_user.update_user_location(coordinate_x, coordinate_y)
-
-    return "1"
 
 
 @app.route("/register_user", methods=['GET', 'POST'])
@@ -301,20 +182,12 @@ def register_dog():
         return redirect(url_for('map'))
     form = RegistrationDogForm()
     if form.validate_on_submit():
-        # todo: validate gender field
         gender = request.form['gender']
         current_user.update_dog_details(form.dog_name.data, form.dog_age.data,
                                         form.dog_breed.data, gender)
         current_user.update_sing_level()
         return redirect(url_for('upload_file'))
     return render_template('register_dog.html', title='Register', form=form)
-
-
-# ------ IMG UPLOAD START ------
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/upload_file', methods=['GET', 'POST'])
@@ -376,13 +249,9 @@ def welcome_screen():
     return render_template('welcome.html', user=current_user)
 
 
-# ------ IMG UPLOAD END ------
-
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        current_user.update_is_online(True)
         current_user.change_status(START_WALK)
         update_user_area(current_user)
         return redirect(url_for('map'))
@@ -391,7 +260,6 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            user.update_is_online(True)
             user.change_status(START_WALK)
             next_page = request.args.get('next')
             update_user_area(current_user)
@@ -415,33 +283,13 @@ def get_user_details():
     today = date.today()
     age = today.year - current_user.birth_date.year - ((today.month, today.day) < (current_user.birth_date.month,
                                                                                    current_user.birth_date.day))
-    current_user.update_is_online(True)
     return render_template('my_profile.html', title="Profile", status=current_user.status, user=current_user, age=age)
-
-
-def add_to_event_count():
-    file_path = os.getcwd() + "/bark2meet/databases/eventsHistory/ID_COUNT"
-    if os.path.exists(file_path):
-        with open(file_path, "r+") as file:
-
-            current = int(file.read())
-            file.close()
-            f = open(file_path, "w")
-            f.write(str(current + 1))
-            f.close()
-            return current + 1
-    else:
-        with open(file_path, "w") as file:
-            file.write(str(1))
-            file.close()
-            return 1
 
 
 @app.route("/event", methods=['GET', 'POST'])
 @login_required
 def create_event():
     form = EventForm()
-    current_user.update_is_online(True)
     if form.validate_on_submit():
         event_id = add_to_event_count()
         privacy = request.form['privacy']
@@ -456,44 +304,143 @@ def create_event():
     return render_template('create_event.html', status=current_user.status, form=form, title="Create Event")
 
 
-@app.route("/join", methods=['GET', 'POST'])
+@app.route("/invite_friends/<event_id>", methods=['GET', 'POST'])
 @login_required
-def join_walk():
+def invite_friends(event_id):
     form = SearchForm()
-    event_filter = form.search_filter.data
-    all_today_events = Event().get_today_events(current_user.email)
-    show_events = []
-    users_imgs = []
+    search_friend = form.search_filter.data
+    all_friends_emails = Friends().get_all_friends_of(current_user.email)
+    all_friends_users_list = []
+    is_send_friend_req_dict = {}
 
-    counter = 0
-    if event_filter == None:
-        show_events = all_today_events
-    else:
-        for event in all_today_events:
-            if event_filter in event["title"]:
-                show_events.append(event)
+    for friend_email in all_friends_emails:
+        complete_user = getUserByEmail(friend_email)
+        is_send_friend_req = Notification().check_if_there_is_noti_from(
+            friend_email, NEW_INVITE, "invite_" + str(event_id))
+        is_send_friend_req_dict[friend_email] = is_send_friend_req
 
-    for event in show_events:
-        img_dict = {
-            "id": event["id"],
-            "imgs": []
-        }
-        for email in event["joined"]:
-            if counter > 2: break
-            user_img = getUserByEmail(email).user_img
-            img_dict["imgs"].append(user_img)
+        if search_friend == None:
+            all_friends_users_list.append(complete_user)
+        elif search_friend in complete_user.full_name:
+            all_friends_users_list.append(complete_user)
 
-        users_imgs.append(img_dict)
-        counter = 0
-    return render_template("join_walk.html", title="Join a Walk", events=show_events,
-                           my_email=current_user.email, users_imgs=users_imgs, form=form,
-                           status=current_user.status)
+    return render_template("friends_invite_list.html", title="Invite Friends",
+                           friends=all_friends_users_list, status=current_user.status,
+                           form=form, event_id=event_id, friend_req=is_send_friend_req_dict)
+
+
+@app.route("/my_walks", methods=['GET', 'POST'])
+@login_required
+def my_walks():
+    search_form = SearchForm()
+    future_walks, past_walks = generateWalks(current_user)
+    walks_in_area = get_walks_in_area_today()
+    return render_template("my_walks.html", title="My Walks", walks=future_walks, past_walks=past_walks,
+                           form=search_form, status=current_user.status, walks_in_area=walks_in_area,
+                           my_email=current_user.email)
+
+
+@app.route("/profile/<user_id>", methods=['GET', 'POST'])
+@login_required
+def get_profile(user_id):
+    user = getUserById(user_id)
+    future_events = get_all_future_user_events(user)
+    is_friend = user.email in Friends().get_all_friends_of(current_user.email)
+    today = date.today()
+    age = today.year - user.birth_date.year - ((today.month, today.day) < (user.birth_date.month,
+                                                                           user.birth_date.day))
+    is_send_friend_req = False
+    if not is_friend:
+        is_send_friend_req = Notification().check_if_there_is_noti_from(
+            user.email, 3, current_user.email)
+    return render_template("other_profile.html", title=current_user.full_name + "'s Profile", user=user,
+                           status=current_user.status,
+                           future_events=future_events, is_friend=is_friend, age=age,
+                           current_user=current_user, is_send_friend_req=is_send_friend_req)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
+
+
+@app.route("/event_details/<id>", methods=['GET', 'POST'])
+@login_required
+def event_details(id):
+    event, event_date = Event().get_event_by_id(id)
+    event_date = event_date[:-5].split("-")
+    day = event_date[2]
+    month = event_date[1]
+    year = event_date[0]
+    participants = []
+    friends = Friends().get_all_friends_of(current_user.email)
+    for email in event["joined"]:
+        if email == current_user.email:
+            continue
+        user = getUserByEmail(email)
+        participants.append({"user": user, "is_friend": user.email in friends})
+    if current_user.email in event['joined']:
+        participants = [{"user": current_user, "is_friend": False}] + participants
+
+    return render_template("event_details.html", title="Event Details", event=event, participants=participants, day=day,
+                           month=month, year=year, current_user_email=current_user.email, status=current_user.status)
+
+
+# --------------------------- FRONTEND API CALLS --------------------------- #
+
+@app.route("/api/are_friends_around", methods=['GET', 'POST'])
+@login_required
+def encourage_walk():
+    if request.method == 'GET':
+        if current_user.status != START_WALK:
+            return "0"
+        friends_walking = 0
+        friends = Friends().get_all_friends_of(current_user.email)
+        for friend_email in friends:
+            friend = getUserByEmail(friend_email)
+            if friend.is_online and friend.current_area_x == current_user.current_area_x and \
+                    friend.current_area_y == current_user.current_area_y:
+                friends_walking += 1
+        return str(friends_walking)
+
+
+@app.route("/api/rush_hour_check", methods=['GET', 'POST'])
+@login_required
+def rush_hour_check():
+    if request.method == 'GET':
+        RUSH_HOUR_AMOUNT = 5
+        if current_user.status != START_WALK:
+            return "0"
+        connected_in_area_no_radius = User.query.filter_by(current_area_x=current_user.current_area_x,
+                                                           current_area_y=current_user.current_area_y,
+                                                           is_online=True).all()
+        connected_in_area = []
+        for user in connected_in_area_no_radius:
+            if radius_distance(user.pos_x, user.pos_y) <= current_user.radius_view and user.status != START_WALK:
+                connected_in_area.append(user)
+
+        return str(len(connected_in_area))
+
+
+@app.route("/update_user_location", methods=['GET', 'POST'])
+@login_required
+def update_user_location():
+    information = str(request.data)[3:-2]
+    coordinates = information.split(',')
+
+    if coordinates[0] and coordinates[1]:
+        coordinate_x = float(coordinates[0])
+        coordinate_y = float(coordinates[1])
+        current_user.update_user_location(coordinate_x, coordinate_y)
+
+    return "1"
 
 
 @app.route("/join_to_event", methods=['GET', 'POST'])
 @login_required
 def join_event_by_id():
-    event_id = str(request.data)[2:-1]
+    event_id = str(request.data)[3:-2]
     event = add_user_to_event(event_id, True, current_user.email)
     creator = event['creator']
     Notification().create_notification(creator, event["title"] + " just got an addition!",
@@ -518,6 +465,7 @@ def update_user_radius():
     current_user.update_radius_view(int(radius) * 1000)
     return radius
 
+
 @app.route("/api/get_status", methods=['GET', 'POST'])
 @login_required
 def get_user_status():
@@ -535,152 +483,29 @@ def exit_event_by_id():
     return "1"
 
 
-@app.route("/invite_friends/<event_id>", methods=['GET', 'POST'])
-@login_required
-def invite_friends(event_id):
-    form = SearchForm()
-    search_friend = form.search_filter.data
-    all_friends_emails = Friends().get_all_friends_of(current_user.email)
-    all_friends_users_list = []
+# --------------------------- IMG UPLOAD --------------------------- #
 
-    for friend_email in all_friends_emails:
-        complete_user = getUserByEmail(friend_email)
-        if search_friend == None:
-            all_friends_users_list.append(complete_user)
-        elif search_friend in complete_user.full_name:
-            all_friends_users_list.append(complete_user)
-
-    current_user.update_is_online(True)
-    return render_template("friends_invite_list.html", title="Invite Friends",
-                           friends=all_friends_users_list, status=current_user.status,
-                           form=form, event_id=event_id)
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def add_user_to_event(id_event, to_join, user):
-    if id_event.startswith("invite_"):
-        id_event = id_event[7:]
-    dir_path = os.getcwd() + "/bark2meet/databases/eventsHistory/"
-    for filename in os.listdir(dir_path):
-        if filename.endswith(".json"):
-            file_path = dir_path + filename
+# --------------------------- EVENTS BACKEND ROUTING  --------------------------- #
 
-            file = open(file_path, "r")
-            data = json.load(file)
-            file.close()
-            all_events = data["events"]
+def get_all_future_user_events(user):
+    past, future = generateWalks(user)
+    events = past + future
+    result = []
+    for event in events:
+        if user.email in event["joined"]:
+            users_images = []
+            for joined in event["joined"][:3]:
+                joined_user = getUserByEmail(joined)
+                users_images.append(joined_user.user_img)
+            event['users_images'] = users_images
+            result.append(event)
 
-            for event in all_events:
-                if int(id_event) == event["id"]:
-
-                    if to_join:
-                        if user not in event["joined"]:
-                            event["joined"].append(user)
-                    else:
-                        if user in event["joined"]:
-                            event["joined"].remove(user)
-                    with open(file_path, "w") as file:
-                        data = {"events": all_events}
-                        json.dump(data, file, default=str, indent=4)
-                    return event
-
-    raise Exception("DID NOT FIND THE EVENT", id_event)
-
-
-@app.route("/event_invite_approve", methods=['GET', 'POST'])
-@login_required
-def join_event():
-    req = str(request.data)[3:-2].split(",")
-    should_accept = req[0]
-    event_id = req[1][1:-1]
-
-    if should_accept == "true":
-
-        event = add_user_to_event(event_id, True, current_user.email)
-
-        Notification().delete_notifications(current_user.email, NEW_INVITE, event["id"])
-        Notification().create_notification(event["creator"],
-                                           "Invitation approved",
-                                           current_user.full_name + " has accepted your walk invitation!",
-                                           current_user.pos_x,
-                                           current_user.pos_y,
-                                           WALK_INVITATION_APPROVED,
-                                           current_user.email, current_user.user_img)
-
-    else:
-        event = add_user_to_event(event_id, False, current_user.email)
-        Notification().delete_notifications(current_user.email, NEW_INVITE, event["id"])
-    return "1"
-
-
-@app.route("/invite_this_friend", methods=['GET', 'POST'])
-@login_required
-def create_notification_to_friend():
-    friend_id, event_id = str(request.data)[3:-2].split(",")
-    friend = getUserById(int(friend_id[1:-1]))
-    Notification().create_walk_invitation_notification(current_user, friend.email, event_id)
-
-    return "1"
-
-
-@app.route("/friend_request_approve", methods=['GET', 'POST'])
-@login_required
-def add_friend():
-    req = str(request.data)[3:-2].split(",")
-    should_accept = req[0]
-    requester = req[1][1:-1]
-
-    if should_accept == "true":
-        Friends().add(current_user.email, requester)
-        Friends().add(requester, current_user.email)
-        new_friend = getUserByEmail(requester)
-        Notification().delete_notifications(new_friend.email, NEW_FRIEND_REQUEST, current_user.email)
-        Notification().delete_notifications(current_user.email, NEW_FRIEND_REQUEST, new_friend.email)
-        Notification().create_notification(new_friend.email,
-                                           "Friend request approved",
-                                           current_user.full_name + " has accepted your friend request!",
-                                           current_user.pos_x,
-                                           current_user.pos_y,
-                                           FRIEND_REQUEST_APPROVED,
-                                           current_user.email, current_user.user_img)
-
-    else:
-        not_friend = getUserByEmail(requester)
-        Notification().delete_notifications(not_friend.email, NEW_FRIEND_REQUEST, current_user.email)
-        Notification().delete_notifications(current_user.email, NEW_FRIEND_REQUEST, not_friend.email)
-    return "1"
-
-
-@app.route("/send_friend_request", methods=['GET', 'POST'])
-@login_required
-def send_friend_request():
-    friend_id = str(request.data)[3:-2]
-    friend = getUserById(int(friend_id))
-    Notification().create_notification(friend.email,
-                                       "New friend request",
-                                       "You got new friend request from: " + current_user.full_name,
-                                       friend.pos_x,
-                                       friend.pos_y,
-                                       NEW_FRIEND_REQUEST,
-                                       current_user.email, current_user.user_img)
-    return "1"
-
-
-@app.route("/unsend_friend_request", methods=['GET', 'POST'])
-@login_required
-def unsend_friend_request():
-    friend_id = str(request.data)[3:-2]
-    friend = getUserById(int(friend_id))
-    Notification().delete_notifications(friend.email, NEW_FRIEND_REQUEST, current_user.email)
-    return "1"
-
-
-@app.route("/remove_friend", methods=['GET', 'POST'])
-@login_required
-def remove_friend():
-    friend_id = str(request.data)[3:-2]
-    friend = getUserById(int(friend_id))
-    Friends().delete(current_user.email, friend.email)
-    return "1"
+    return result
 
 
 def getEventsFileName(event_date):
@@ -748,82 +573,199 @@ def get_walks_in_area_today():
     return future_today
 
 
-@app.route("/my_walks", methods=['GET', 'POST'])
+def add_to_event_count():
+    file_path = os.getcwd() + "/bark2meet/databases/eventsHistory/ID_COUNT"
+    if os.path.exists(file_path):
+        with open(file_path, "r+") as file:
+
+            current = int(file.read())
+            file.close()
+            f = open(file_path, "w")
+            f.write(str(current + 1))
+            f.close()
+            return current + 1
+    else:
+        with open(file_path, "w") as file:
+            file.write(str(1))
+            file.close()
+            return 1
+
+
+def add_user_to_event(id_event, to_join, user):
+    if id_event.startswith("invite_"):
+        id_event = id_event[7:]
+    dir_path = os.getcwd() + "/bark2meet/databases/eventsHistory/"
+    for filename in os.listdir(dir_path):
+        if filename.endswith(".json"):
+            file_path = dir_path + filename
+
+            file = open(file_path, "r")
+            data = json.load(file)
+            file.close()
+            all_events = data["events"]
+
+            for event in all_events:
+                if int(id_event) == event["id"]:
+
+                    if to_join:
+                        if user not in event["joined"]:
+                            event["joined"].append(user)
+                    else:
+                        if user in event["joined"]:
+                            event["joined"].remove(user)
+                    with open(file_path, "w") as file:
+                        data = {"events": all_events}
+                        json.dump(data, file, default=str, indent=4)
+                    return event
+
+    raise Exception("DID NOT FIND THE EVENT", id_event)
+
+
+@app.route("/event_invite_approve", methods=['GET', 'POST'])
 @login_required
-def my_walks():
-    search_form = SearchForm()
-    future_walks, past_walks = generateWalks(current_user)
-    walks_in_area = get_walks_in_area_today()
-    current_user.update_is_online(True)
-    return render_template("my_walks.html", title="My Walks", walks=future_walks, past_walks=past_walks,
-                           form=search_form, status=current_user.status, walks_in_area=walks_in_area,
-                           my_email=current_user.email)
+def join_event():
+    req = str(request.data)[3:-2].split(",")
+    should_accept = req[0]
+    event_id = req[1][1:-1]
+
+    if should_accept == "true":
+
+        event = add_user_to_event(event_id, True, current_user.email)
+
+        Notification().delete_notifications(current_user.email, NEW_INVITE, "invite_" + str(event["id"]))
+        Notification().create_notification(event["creator"],
+                                           "Invitation approved",
+                                           current_user.full_name + " has accepted your walk invitation!",
+                                           current_user.pos_x,
+                                           current_user.pos_y,
+                                           WALK_INVITATION_APPROVED,
+                                           current_user.email, current_user.user_img)
+
+    else:
+        event = add_user_to_event(event_id, False, current_user.email)
+        Notification().delete_notifications(current_user.email, NEW_INVITE, "invite_" + str(event["id"]))
+    return "1"
 
 
-def get_all_future_user_events(user):
-    past, future = generateWalks(user)
-    events = past + future
-    result = []
-    for event in events:
-        if user.email in event["joined"]:
-            users_images = []
-            for joined in event["joined"][:3]:
-                joined_user = getUserByEmail(joined)
-                users_images.append(joined_user.user_img)
-            event['users_images'] = users_images
-            result.append(event)
-
-    return result
-
-
-@app.route("/profile/<user_id>", methods=['GET', 'POST'])
+@app.route("/invite_this_friend", methods=['GET', 'POST'])
 @login_required
-def get_profile(user_id):
-    user = getUserById(user_id)
-    future_events = get_all_future_user_events(user)
-    is_friend = user.email in Friends().get_all_friends_of(current_user.email)
-    today = date.today()
-    age = today.year - user.birth_date.year - ((today.month, today.day) < (user.birth_date.month,
-                                                                           user.birth_date.day))
-    current_user.update_is_online(True)
-    return render_template("other_profile.html", title=current_user.full_name + "'s Profile", user=user,
-                           status=current_user.status,
-                           future_events=future_events, is_friend=is_friend, age=age, current_user=current_user)
+def create_notification_to_friend():
+    friend_id, event_id = str(request.data)[3:-2].split(",")
+    friend = getUserById(int(friend_id[1:-1]))
+    Notification().create_walk_invitation_notification(current_user, friend.email, event_id)
+    return "1"
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('404.html'), 404
+# --------------------------- FRIENDS API ROUTING  --------------------------- #
 
-
-@app.route("/event_details/<id>", methods=['GET', 'POST'])
+@app.route("/unsend_friend_request", methods=['GET', 'POST'])
 @login_required
-def event_details(id):
-    event, event_date = Event().get_event_by_id(id)
-    event_date = event_date[:-5].split("-")
-    day = event_date[2]
-    month = event_date[1]
-    year = event_date[0]
-    participants = []
-    friends = Friends().get_all_friends_of(current_user.email)
-    for email in event["joined"]:
-        if email == current_user.email:
-            continue
-        user = getUserByEmail(email)
-        participants.append({"user": user, "is_friend": user.email in friends})
-    if current_user.email in event['joined']:
-        participants = [{"user": current_user, "is_friend": False}] + participants
-
-    current_user.update_is_online(True)
-    return render_template("event_details.html", title="Event Details", event=event, participants=participants, day=day,
-                           month=month, year=year, current_user_email=current_user.email, status=current_user.status)
+def unsend_friend_request():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Notification().delete_notifications(friend.email, NEW_FRIEND_REQUEST, current_user.email)
+    return "1"
 
 
-# ------ WEBPAGES BACKEND END ------
+@app.route("/remove_friend", methods=['GET', 'POST'])
+@login_required
+def remove_friend():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Friends().delete(current_user.email, friend.email)
+    return "1"
 
-# ------ GET LOCATIONS START ------
 
+@app.route("/friend_request_approve", methods=['GET', 'POST'])
+@login_required
+def add_friend():
+    req = str(request.data)[3:-2].split(",")
+    should_accept = req[0]
+    requester = req[1][1:-1]
+
+    if should_accept == "true":
+        Friends().add(current_user.email, requester)
+        Friends().add(requester, current_user.email)
+        new_friend = getUserByEmail(requester)
+        Notification().delete_notifications(new_friend.email, NEW_FRIEND_REQUEST, current_user.email)
+        Notification().delete_notifications(current_user.email, NEW_FRIEND_REQUEST, new_friend.email)
+        Notification().create_notification(new_friend.email,
+                                           "Friend request approved",
+                                           current_user.full_name + " has accepted your friend request!",
+                                           current_user.pos_x,
+                                           current_user.pos_y,
+                                           FRIEND_REQUEST_APPROVED,
+                                           current_user.email, current_user.user_img)
+    else:
+        not_friend = getUserByEmail(requester)
+        Notification().delete_notifications(not_friend.email, NEW_FRIEND_REQUEST, current_user.email)
+        Notification().delete_notifications(current_user.email, NEW_FRIEND_REQUEST, not_friend.email)
+    return "1"
+
+
+@app.route("/send_friend_request", methods=['GET', 'POST'])
+@login_required
+def send_friend_request():
+    friend_id = str(request.data)[3:-2]
+    friend = getUserById(int(friend_id))
+    Notification().create_notification(friend.email,
+                                       "New friend request",
+                                       "You got new friend request from: " + current_user.full_name,
+                                       friend.pos_x,
+                                       friend.pos_y,
+                                       NEW_FRIEND_REQUEST,
+                                       current_user.email, current_user.user_img)
+    return "1"
+
+
+# -------------------------------- SOCKET-IO NOTIFICATIONS EMITTING -------------------------------- #
+@socketio.on("friend-request-notification", namespace='/private')
+def send_friend_request_noti(data):
+    friend = getUserById(data)
+    recipient_session_id = friend.session
+    emit('new_friend_request', {"username": current_user.full_name,
+                                "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
+
+
+@socketio.on("friend-approve-notification", namespace='/private')
+def send_friend_approve_noti(data):
+    friend = getUserByEmail(data)
+    recipient_session_id = friend.session
+    emit('friend_request_approve', {"username": current_user.full_name,
+                                    "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
+
+
+@socketio.on("event-invite-notification", namespace='/private')
+def send_event_invite_noti(data):
+    friend = getUserById(data)
+    recipient_session_id = friend.session
+    emit('new_event_invite', {"username": current_user.full_name,
+                              "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
+
+
+@socketio.on("event-approve-notification", namespace='/private')
+def send_event_approve_noti(data):
+    event, filename = Event().get_event_by_id(data[7:])
+    friend = getUserByEmail(event["creator"])
+    recipient_session_id = friend.session
+    emit('event_invite_approve', {"username": current_user.full_name,
+                                  "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
+
+
+@socketio.on("event-join-notification", namespace='/private')
+def send_event_invite_noti(data):
+    friend = getUserById(data)
+    recipient_session_id = friend.session
+    emit('new_event_join', {"username": current_user.full_name,
+                            "issue_time": datetime.now().isoformat(' ', 'seconds')},
+         room=recipient_session_id)
+
+
+# -------------------------------- GPS LOCATIONS CHANNELING -------------------------------- #
 
 @app.route("/api/locations", methods=['GET', 'POST'])
 @login_required
@@ -837,7 +779,7 @@ def get_locations():
 def map_privacy_to_string(privacy_int, user):
     if user.email == current_user.email:
         return "me"
-    if privacy_int == PRIVATE or current_user.status == PRIVATE:
+    if privacy_int == PRIVATE:
         return "red"
     if privacy_int == FRIENDS:
         return "orange"
@@ -849,23 +791,32 @@ def map_privacy_to_string(privacy_int, user):
     return "notWalking"
 
 
-def map_image_to_user(user):
+def map_image_to_user(user, is_friend):
     if user.email == current_user.email:
-        return "static/userPic.png"
-    if user.status == PRIVATE or current_user.status == PRIVATE:
+        return "static/userPic.svg"
+    if user.status == PRIVATE:
         return PRIVATE_IMG
     if user.status == FRIENDS:
         return FRIENDS_IMG
+    if is_friend:
+        return OPEN_FRIEND_IMG
     return OPEN_IMG
 
 
+def radius_distance(user_pos_x, user_pos_y):
+    return ((current_user.pos_x - user_pos_x) ** 2 + (current_user.pos_y - user_pos_y) ** 2) ** 0.5
+
+
 def get_all_locations(all_locations):
+    connected_in_area_no_radius = User.query.filter_by(current_area_x=current_user.current_area_x,
+                                                       current_area_y=current_user.current_area_y,
+                                                       is_online=True, ).all()
+    connected_in_area = []
+    for user in connected_in_area_no_radius:
+        if radius_distance(user.pos_x, user.pos_y) <= current_user.radius_view:
+            connected_in_area.append(user)
 
-    connected_in_area = User.query.filter_by(current_area_x=current_user.current_area_x,
-                                             current_area_y=current_user.current_area_y, is_online=True).all()
-
-    if current_user not in connected_in_area:
-        connected_in_area = [current_user] + connected_in_area
+    connected_in_area = [current_user] + connected_in_area
 
     all_friends_of_user = Friends().get_all_friends_of(current_user.email)
 
@@ -881,18 +832,21 @@ def get_all_locations(all_locations):
                 user.email, 3, current_user.email)
 
         privacy = map_privacy_to_string(user.status, user)
-        # if privacy == "notWalking" or (not is_friend and user.status == FRIENDS and privacy != "me"):
         if privacy == "notWalking" or (current_user.status == FRIENDS and not is_friend and privacy != "me") \
                 or ((current_user.status == OPEN or current_user.status == PRIVATE) and
-                    not is_friend and privacy != "me" and user.status == FRIENDS):
+                    not is_friend and privacy != "me" and user.status == FRIENDS) or \
+                (current_user.status == START_WALK and not is_friend and
+                 privacy != "me" and user.status == FRIENDS) or \
+                (current_user.status == -1 and not is_friend and privacy != "me" and user.status == FRIENDS):
             continue
         user_info = {
             "privacy": privacy,
+            "status": current_user.status,
             "full_name": user.full_name,
             "age": age,
             "pos_x": user.pos_x,
             "pos_y": user.pos_y,
-            "image": map_image_to_user(user),
+            "image": map_image_to_user(user, is_friend),
             "user_image": user.user_img.replace('\\', '/') if user.status != PRIVATE else "",
             "dog_image": user.dog_img.replace('\\', '/') if user.status != PRIVATE else "",
             "gender": user.gender if user.status != PRIVATE else "",
@@ -908,11 +862,6 @@ def get_all_locations(all_locations):
         all_locations.append(user_info)
 
 
-# ------ GET LOCATIONS END ------
-
-# ------ GET AREA START ------
-
-
 X_POS = 0
 Y_POS = 1
 
@@ -920,20 +869,25 @@ JERUSALEM = (31.771959, 35.217018)
 TEL_AVIV = (32.109333, 34.855499)
 MODIIN = (31.89670800658577, 35.007197003536874)
 BEER_SHEVA = (31.249006188313423, 34.78929831233399)
-# todo: add haifa and more cities
+HAIFA = (32.794044, 34.989571)
+RISHON_LETSION = (31.971446748700092, 34.789905030890395)
+EILAT = (29.558427166230377, 34.94631812068723)
 
 Areas_dict = {
     JERUSALEM,
     TEL_AVIV,
     MODIIN,
-    BEER_SHEVA
+    BEER_SHEVA,
+    HAIFA,
+    RISHON_LETSION,
+    EILAT,
 }
 
 
 def update_user_area(user):
-    min_dist = 999999999999
-    curr_x_min = 999999999999
-    curr_y_min = 999999999999
+    min_dist = float("inf")
+    curr_x_min = float("inf")
+    curr_y_min = float("inf")
     for city in Areas_dict:
         curr_dist = distance(city, user.pos_x, user.pos_y)
         if curr_dist < min_dist:
@@ -950,5 +904,3 @@ def update_user_area(user):
 
 def distance(city, user_pos_x, user_pos_y):
     return (city[X_POS] - user_pos_x) ** 2 + (city[Y_POS] - user_pos_y) ** 2
-
-# ------ GET AREA END ------
